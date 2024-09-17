@@ -17,4 +17,16 @@ class Usuario(models.Model):
     def __str__(self):
         return self.nombre
     
+    class Cliente(models.Model):
+        nombre = models.CharField(max_length=100)
+        telefono = models.CharField(12)
     
+    class Pedido(models.Model):
+        ESTADO_CHOICES = [
+            ('pendiente','Pendiente'),
+            ('en_ruta','En Ruta'),
+            ('entregado', 'Entregado'),
+            ('cancelado', 'Cancelado')
+        ]
+        
+        cliente
