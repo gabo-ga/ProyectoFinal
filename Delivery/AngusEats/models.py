@@ -61,3 +61,21 @@ class Vehiculo(models.Model):
     
     def __str__(self):
         return self.vehiculo_nombre
+
+class Ruta(models.Model):
+    ESTADO_CHOICES = [
+        ('planificada', 'Planificada'),
+        ('en_curso', 'En curso'),
+        ('completada', 'Completada'),
+        ('cancelada', 'Cancelada')
+    ]
+    
+    vehiculo = models.ForeignKey('Vehiculo', on_delete=models.CASCADE)
+    paradas = gis_models.LineStringField(srid=4326)
+    distancia_total_km = models.DecimalField(max_digits=10, decimal_places=2)
+    tiempo_estimado_minutos = models.IntegerField()
+    estado = models.CharField(max_length=50, choices=ESTADO_CHOICES)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Ruta {self.id} - {self.vehiculo}"
