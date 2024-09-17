@@ -11,6 +11,7 @@ class Usuario(models.Model):
     nombre = models.CharField(max_length=100)
     correo = models.EmailField(unique=True)
     contrasena_hash = models = models.CharField(max_length=64)
+    rol = models.CharField(max_length=50, choices=ROL_CHOICES)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
