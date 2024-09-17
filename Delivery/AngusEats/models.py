@@ -88,3 +88,12 @@ class HistorialGPS(models.Model):
     def __str__(self):
         return f"Historial GPS {self.id} - Vehiculo {self.vehiculo}"
 
+class AnalisisPedido(models.Model):
+    pedidos_totales = models.IntegerField()
+    pedidos_entregados = models.IntegerField()
+    tiempo_promedio_entrega_minutos = models.IntegerField(null=True, blank=True)
+    kilometros_recorridos_totales = models.DecimalField(max_digits=10, decimal_places=2)
+    fecha_analisis = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Analisis {self.id} = {self.fecha_analisis}"
