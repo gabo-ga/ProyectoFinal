@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.gis.db import models as gis_models
+from django.contrib.postgres.operations import CreateExtension
 
 # Create your models here.
 class Usuario(models.Model):
@@ -11,7 +12,7 @@ class Usuario(models.Model):
     
     nombre = models.CharField(max_length=100)
     correo = models.EmailField(unique=True)
-    contrasena_hash = models = models.CharField(max_length=64)
+    contrasena_hash = models.CharField(max_length=64)
     rol = models.CharField(max_length=50, choices=ROL_CHOICES)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     

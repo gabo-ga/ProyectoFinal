@@ -37,15 +37,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
+    'django.contrib.gis',
+    #'corsheaders',
     'AngusEats',
-    'rest_framework',
+    #'rest_framework',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    #'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -79,7 +80,7 @@ WSGI_APPLICATION = 'Delivery.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'ChasquiGo',
         'USER': 'postgres',
         'PASSWORD': 'password',
@@ -87,6 +88,14 @@ DATABASES = {
         'PORT': '5432',       # El puerto predeterminado de PostgreSQL
     }
 }
+
+#DATABASES = {
+#   'default': {
+#        'ENGINE': 'django.db.backends.postgis',
+#        'NAME': 'ChasquiGo',
+#        'USER': 'postgres',
+#    }
+#}
 
 
 
@@ -130,3 +139,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+GDAL_LIBRARY_PATH = '/opt/local/lib/libgdal.dylib'
+GEOS_LIBRARY_PATH = '/opt/local/lib/libgeos_c.dylib'
