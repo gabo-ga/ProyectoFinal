@@ -84,20 +84,10 @@ DATABASES = {
         'NAME': 'ChasquiGo',
         'USER': 'postgres',
         'PASSWORD': 'password',
-        'HOST': 'localhost',  # O la IP donde esté ejecutándose PostgreSQL
-        'PORT': '5432',       # El puerto predeterminado de PostgreSQL
+        'HOST': 'localhost',  
+        'PORT': '5432',      
     }
 }
-
-#DATABASES = {
-#   'default': {
-#        'ENGINE': 'django.db.backends.postgis',
-#        'NAME': 'ChasquiGo',
-#        'USER': 'postgres',
-#    }
-#}
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
