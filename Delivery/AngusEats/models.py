@@ -19,16 +19,17 @@ class Usuario(models.Model):
     def __str__(self):
         return self.nombre
     
-    class Cliente(models.Model):
+    
+class Cliente(models.Model):
         nombre = models.CharField(max_length=100)
         telefono = models.CharField(max_length=12)
         fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+        def __str__(self):
+            return self.nombre
     
-    def __str__(self):
-        return self.nombre
     
-    
-    class Pedido(models.Model):
+class Pedido(models.Model):
         ESTADO_CHOICES = [
             ('pendiente','Pendiente'),
             ('en_ruta','En Ruta'),

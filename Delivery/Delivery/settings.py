@@ -131,3 +131,10 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 GDAL_LIBRARY_PATH = '/opt/local/lib/libgdal.dylib'
 GEOS_LIBRARY_PATH = '/opt/local/lib/libgeos_c.dylib'
+
+#Rest Framework 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES':(
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
