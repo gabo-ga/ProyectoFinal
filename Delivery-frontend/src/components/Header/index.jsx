@@ -2,7 +2,7 @@ import styled from "styled-components";
 import UserProfile from "../../assets/user.png";
 
 const HeaderContainer = styled.header`
-  width: 100vw;
+  width: 100vp;
   height: 112px;
   flex-shrink: 0;
   background-color: #1abc9c;
