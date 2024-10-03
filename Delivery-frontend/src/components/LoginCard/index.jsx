@@ -38,8 +38,8 @@ const Body = styled.div`
   background-color: #1abc9c;
 `;
 const LoginContainer = styled.div`
-  width: 350px;
-  padding: 40px;
+  width: 25vw;
+  padding: 4vw;
   background-color: #fff;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -47,7 +47,7 @@ const LoginContainer = styled.div`
 `;
 const H1 = styled.h1`
   margin-bottom: 30px;
-  font-size: 24px;
+  font-size: 1.75rem;
   color: #37474f;
 `;
 
@@ -101,9 +101,12 @@ function PasswordInput() {
 }
 
 function LoginButton() {
+  const handleClick = () => {
+    console.log("click");
+  };
   return (
     <>
-      <Button>INICIAR SESION</Button>
+      <Button onClick={handleClick}>INICIAR SESION</Button>
     </>
   );
 }
