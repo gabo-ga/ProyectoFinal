@@ -27,7 +27,7 @@ const Container = styled.div`
   margin-bottom: 20px;
   text-align: left;
 `;
-const Body = styled.body`
+const Body = styled.div`
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
@@ -72,7 +72,7 @@ function EmailInput() {
   return (
     <>
       <Container>
-        <Label for="email">Correo electrónico</Label>
+        <Label htmlFor="email">Correo electrónico</Label>
         <Input
           type="email"
           id="email"
@@ -88,7 +88,7 @@ function PasswordInput() {
   return (
     <>
       <div>
-        <Label for="password">Contraseña</Label>
+        <Label htmlFor="password">Contraseña</Label>
         <Input
           type="password"
           id="password"

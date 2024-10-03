@@ -5,13 +5,7 @@ import Footer from "./components/Footer";
 import Dashboard from "./components/DashboardCard";
 
 function App() {
-  return (
-    <div>
-      <Header></Header>
-      <Dashboard></Dashboard>
-      <Footer></Footer>
-    </div>
-  );
+  return <LoginCard></LoginCard>;
 }
 
 export default App;
