@@ -35,7 +35,7 @@ const Body = styled.body`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #00a794;
+  background-color: #1abc9c;
 `;
 const LoginContainer = styled.div`
   width: 350px;
