@@ -26,6 +26,13 @@ const Label = styled.label`
 const Container = styled.div`
   margin-bottom: 20px;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  @media (min-width: 390px) {
+    width: 80%;
+  }
 `;
 const Body = styled.div`
   margin: 0;
@@ -38,17 +45,29 @@ const Body = styled.div`
   background-color: #1abc9c;
 `;
 const LoginContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: 25vw;
   padding: 4vw;
   background-color: #fff;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   text-align: center;
+
+  @media (min-width: 390px) {
+    width: 80%;
+    height: 70%;
+  }
 `;
 const H1 = styled.h1`
   margin-bottom: 30px;
   font-size: 1.75rem;
   color: #37474f;
+
+  @media (min-width: 390px) {
+    font-size: 1.5rem;
+  }
 `;
 
 function LoginCard() {
@@ -71,15 +90,13 @@ function LoginCard() {
 function EmailInput() {
   return (
     <>
-      <Container>
-        <Label htmlFor="email">Correo electrónico</Label>
-        <Input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="Ingrese su correo"
-        />
-      </Container>
+      <Label htmlFor="email">Correo electrónico</Label>
+      <Input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="Ingrese su correo"
+      />
     </>
   );
 }
@@ -87,15 +104,13 @@ function EmailInput() {
 function PasswordInput() {
   return (
     <>
-      <div>
-        <Label htmlFor="password">Contraseña</Label>
-        <Input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Ingrese su contraseña"
-        />
-      </div>
+      <Label htmlFor="password">Contraseña</Label>
+      <Input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Ingrese su contraseña"
+      />
     </>
   );
 }
