@@ -19,7 +19,6 @@ class Usuario(models.Model):
     def __str__(self):
         return self.nombre
     
-    
 class Cliente(models.Model):
         nombre = models.CharField(max_length=100)
         telefono = models.CharField(max_length=12)
@@ -27,7 +26,6 @@ class Cliente(models.Model):
 
         def __str__(self):
             return self.nombre
-    
     
 class Pedido(models.Model):
         ESTADO_CHOICES = [
@@ -48,7 +46,6 @@ class Pedido(models.Model):
         def __str__(self):
             return f"Pedido {self.id} - {self.cliente.nombre if self.cliente else 'Sin cliente'}"
      
-
 class Vehiculo(models.Model):
     TIPO_CHOICES = [
         ('van','Van'),
