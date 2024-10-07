@@ -1,0 +1,15 @@
+.HeaderStyles{
+  height: 10vh;
+  flex-shrink: 0;
+  background-color: #1abc9c;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
+.Profile{
+    width: 76px;
+    height: 76px;
+    margin-right: 5px;
+    margin-top: 5px;
+}
