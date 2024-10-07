@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'AngusEats',
     'rest_framework',
+    'coreapi',
 ]
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:5174",]
@@ -138,5 +139,6 @@ GEOS_LIBRARY_PATH = '/opt/local/lib/libgeos_c.dylib'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':(
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }

@@ -5,8 +5,27 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { getAllUsers } from "../../api/delivery.api";
+import React, { useState } from "react";
+import axios from "axios";
 
 function LoginCard() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e) => {
+    const response = await axios.post("http://localhost:8000/api/login/", {
+      email,
+      password,
+    });
+
+    localStorage.setItem("access_token", response.data.access);
+    localStorage.setItem("refresh_irem", response.data.refresh);
+    axios.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer ${response.data.access}`;
+  };
+
   return (
     <>
       <div className={styles.Background}>
@@ -18,9 +37,12 @@ function LoginCard() {
                   <Card.Title className={styles.LoginTitle}>
                     INICIAR SESION
                   </Card.Title>
-                  <Form>
-                    <EmailInput></EmailInput>
-                    <PasswordInput></PasswordInput>
+                  <Form onSubmit={handleSubmit}>
+                    <EmailInput email={email} setEmail={setEmail} />
+                    <PasswordInput
+                      password={password}
+                      setPassword={setPassword}
+                    />
                     <LoginButton></LoginButton>
                   </Form>
                 </Card.Body>
@@ -45,6 +67,7 @@ function EmailInput() {
             className={styles.InputStyle}
             type="email"
             placeholder="Ingrese su correo"
+            onChange={(e) => setEmail(e.target.value)}
           />
         </Form.Group>
       </div>
@@ -62,6 +85,7 @@ function PasswordInput() {
             className={styles.InputStyle}
             type="password"
             placeholder="Ingrese su contraseña"
+            onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
       </div>
@@ -70,9 +94,10 @@ function PasswordInput() {
 }
 
 function LoginButton() {
-  const handleClick = () => {
-    console.log("click");
-  };
+  async function handleClick() {
+    const res = await getAllUsers();
+    console.log(res);
+  }
   return (
     <>
       <div>
