@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import Container from "react-bootstrap/esm/Container";
+import styles from "./footer.module.css";
 
 const FooterContainer = styled.footer`
   display: flex;
@@ -12,9 +14,9 @@ const FooterContainer = styled.footer`
 function Footer() {
   return (
     <>
-      <FooterContainer>
+      <Container fluid className={styles.FooterStyle}>
         <h2>Proyecto de Grado 2/24</h2>
-      </FooterContainer>
+      </Container>
     </>
   );
 }

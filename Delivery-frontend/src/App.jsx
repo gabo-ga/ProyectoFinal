@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginCard from "./components/LoginCard";
 import Dashboard from "./components/DashboardCard";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login"></Navigate>}></Route>
         <Route path="/login" element={<LoginCard></LoginCard>}></Route>
-        <Route path="/dashboard" element={<Header></Header>}></Route>
+        <Route path="/dashboard" element={<Footer></Footer>}></Route>
       </Routes>
     </BrowserRouter>
   );

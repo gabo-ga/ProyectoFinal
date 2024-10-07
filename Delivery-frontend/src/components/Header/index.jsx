@@ -1,6 +1,6 @@
 import Row from "react-bootstrap/esm/Row";
 import UserProfile from "../../assets/user.png";
-import styles from "./styles.module.css";
+import styles from "./header.module.css";
 import Container from "react-bootstrap/esm/Container";
 import Col from "react-bootstrap/esm/Col";
 
