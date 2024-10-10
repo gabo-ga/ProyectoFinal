@@ -8,8 +8,10 @@ function Header() {
   return (
     <>
       <Container fluid className={styles.HeaderStyles}>
-        <Row className="w-100">
-          <Col>
+        <Row className="w-100 h-100">
+          <Col
+            className={`${styles.ProfileContainer} d-flex justify-content-end align-items-start`}
+          >
             <img
               src={UserProfile}
               alt="user-picture"

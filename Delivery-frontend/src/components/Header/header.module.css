@@ -5,11 +5,22 @@
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
 }
 
+.ProfileContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+
 .Profile{
-    width: 76px;
-    height: 76px;
+    width: 10%;
+    height: 10%;
+    object-fit: cover;
     margin-right: 5px;
     margin-top: 5px;
 }
