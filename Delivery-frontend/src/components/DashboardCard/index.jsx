@@ -4,6 +4,8 @@ import ButtonsContainer from "./buttons";
 import Metrics from "./metricsComponent";
 import CompletedOrders from "./completedOrders";
 import ActiveVehicles from "./activeVehicles";
+import Header from "../Header";
+import Footer from "../Footer";
 
 const Hero = styled.body`
   background-color: #ecf0f1;
@@ -42,6 +44,7 @@ const OrdersContainer = styled.div`
 function Dashboard() {
   return (
     <>
+      <Header></Header>
       <Hero>
         <Main>
           <MapContainer>
@@ -56,6 +59,7 @@ function Dashboard() {
           </OrdersContainer>
         </Main>
       </Hero>
+      <Footer></Footer>
     </>
   );
 }

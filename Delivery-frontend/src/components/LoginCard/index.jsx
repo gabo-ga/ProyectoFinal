@@ -8,6 +8,7 @@ import Col from "react-bootstrap/Col";
 import { getAllUsers } from "../../api/delivery.api";
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function LoginCard() {
   const [email, setEmail] = useState("");
@@ -98,6 +99,7 @@ function LoginButton() {
     const res = await getAllUsers();
     console.log(res);
   }
+  const navigate = useNavigate();
   return (
     <>
       <div>
@@ -105,7 +107,7 @@ function LoginButton() {
           className={styles.LoginButton}
           variant="warning"
           type="submit"
-          onClick={handleClick}
+          onClick={() => navigate("/dashboard")}
         >
           INICIAR SESIÓN
         </Button>
