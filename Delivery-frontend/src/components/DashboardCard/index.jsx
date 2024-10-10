@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styles from "./index.module.css";
 import ActiveOrders from "./activeOrders";
 import ButtonsContainer from "./buttons";
 import Metrics from "./metricsComponent";
@@ -6,59 +6,28 @@ import CompletedOrders from "./completedOrders";
 import ActiveVehicles from "./activeVehicles";
 import Header from "../Header";
 import Footer from "../Footer";
-
-const Hero = styled.body`
-  background-color: #ecf0f1;
-  width: 100vp;
-  height: 100vh;
-  padding: 32px 119px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  flex-shrink: 0;
-`;
-const Main = styled.div`
-  display: flex;
-  align-items: flex-end;
-  gap: 20px;
-  align-self: stretch;
-`;
-const MapContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px;
-  flex: 1 0 0;
-  align-self: stretch;
-`;
-const OrdersContainer = styled.div`
-  display: flex;
-  width: 711px;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  align-self: stretch;
-`;
+import Container from "react-bootstrap/esm/Container";
 
 function Dashboard() {
   return (
     <>
       <Header></Header>
-      <Hero>
-        <Main>
-          <MapContainer>
+
+      <Container fluid className={styles.Body}>
+        <div className={styles.BodyContainer}>
+          <div className={styles.MapContainer}>
             <Map></Map>
             <Metrics></Metrics>
             <ButtonsContainer></ButtonsContainer>
-          </MapContainer>
-          <OrdersContainer>
+          </div>
+          <div className={styles.OrdersContainer}>
             <ActiveOrders></ActiveOrders>
             <CompletedOrders></CompletedOrders>
             <ActiveVehicles></ActiveVehicles>
-          </OrdersContainer>
-        </Main>
-      </Hero>
+          </div>
+        </div>
+      </Container>
+
       <Footer></Footer>
     </>
   );
