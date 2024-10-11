@@ -1,9 +1,9 @@
 import styles from "./index.module.css";
-import ActiveOrders from "./activeOrders";
+import ActiveOrders from "./OrderComponent/activeOrders";
 import ButtonsContainer from "./ButtonsComponent/buttons";
 import Metrics from "../MetricsComponent";
-import CompletedOrders from "./completedOrders";
-import ActiveVehicles from "./activeVehicles";
+import CompletedOrders from "./OrderComponent/completedOrders";
+import ActiveVehicles from "./OrderComponent/activeVehicles";
 import Header from "../Header";
 import Footer from "../Footer";
 import Container from "react-bootstrap/esm/Container";
@@ -23,15 +23,12 @@ function Dashboard() {
             <ButtonsContainer></ButtonsContainer>
           </Col>
           <Col xs={12} md={6} className={styles.OrdersContainer}>
-            orders container
-            {/*<ActiveOrders></ActiveOrders>
-            <CompletedOrders></CompletedOrders>
-            <ActiveVehicles></ActiveVehicles>*/}
+            <ActiveOrders></ActiveOrders>
           </Col>
         </Row>
       </Container>
 
-      <Footer></Footer>
+      {/*<Footer></Footer>*/}
     </>
   );
 }

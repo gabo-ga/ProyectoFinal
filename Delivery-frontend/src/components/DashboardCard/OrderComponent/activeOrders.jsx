@@ -1,4 +1,9 @@
+import styles from "./orders.module.css";
+import Col from "react-bootstrap/esm/Col";
+import Container from "react-bootstrap/esm/Container";
+import Row from "react-bootstrap/esm/Row";
 import styled from "styled-components";
+import Card from "react-bootstrap/Card";
 
 const ActiveOrdersContainer = styled.div`
   display: flex;
@@ -6,14 +11,6 @@ const ActiveOrdersContainer = styled.div`
   align-items: flex-start;
   gap: 8px;
   align-self: stretch;
-`;
-const TittleStyle = styled.h4`
-  display: flex;
-  width: 173px;
-  height: 22px;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
 `;
 const OrderCardContainer = styled.div`
   display: flex;
@@ -44,12 +41,20 @@ const TextContainer = styled.div`
 function ActiveOrders() {
   return (
     <>
-      <ActiveOrdersContainer>
-        <TittleStyle>PEDIDOS EN CURSO</TittleStyle>
-        <OrderCardContainer>
-          <OrderCard></OrderCard>
-        </OrderCardContainer>
-      </ActiveOrdersContainer>
+      <Container fluid>
+        <Row>
+          <Col xs={12}>
+            <h4 className={styles.TextStyle}>PEDIDOS EN CURSO</h4>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Card>
+              <OrderCard></OrderCard>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 }
