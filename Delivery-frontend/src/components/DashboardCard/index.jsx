@@ -1,6 +1,6 @@
 import styles from "./index.module.css";
 import ActiveOrders from "./activeOrders";
-import ButtonsContainer from "./buttons";
+import ButtonsContainer from "./ButtonsComponent/buttons";
 import Metrics from "../MetricsComponent";
 import CompletedOrders from "./completedOrders";
 import ActiveVehicles from "./activeVehicles";
