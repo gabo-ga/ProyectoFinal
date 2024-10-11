@@ -12,31 +12,6 @@ const ActiveOrdersContainer = styled.div`
   gap: 8px;
   align-self: stretch;
 `;
-const OrderCardContainer = styled.div`
-  display: flex;
-  width: 200px;
-  height: 133px;
-  padding: 35px 23px;
-  align-items: center;
-  gap: 6px;
-  background-color: #fff;
-  border-radius: 10px;
-`;
-const TextStyle = styled.p`
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  margin: 0;
-`;
-const TextContainer = styled.div`
-  display: flex;
-  width: 140px;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  flex-shrink: 0;
-`;
 
 function ActiveOrders() {
   return (
@@ -49,9 +24,7 @@ function ActiveOrders() {
         </Row>
         <Row>
           <Col>
-            <Card>
-              <OrderCard></OrderCard>
-            </Card>
+            <OrderCard></OrderCard>
           </Col>
         </Row>
       </Container>
@@ -62,13 +35,15 @@ function ActiveOrders() {
 function OrderCard() {
   return (
     <>
-      <TextContainer>
-        <TextStyle>Cliente:</TextStyle>
-        <TextStyle>Telefono:</TextStyle>
-        <TextStyle>Destino:</TextStyle>
-        <TextStyle>Hora de Entrega:</TextStyle>
-        <TextStyle>Descripcion:</TextStyle>
-      </TextContainer>
+      <Card className={styles.CardStyle}>
+        <Card.Body className={styles.textContainer}>
+          <Card.Text className={styles.TextStyle}>Cliente:</Card.Text>
+          <Card.Text className={styles.TextStyle}>Telefono:</Card.Text>
+          <Card.Text className={styles.TextStyle}>Destino:</Card.Text>
+          <Card.Text className={styles.TextStyle}>Hora de entrega:</Card.Text>
+          <Card.Text className={styles.TextStyle}>Descripcion:</Card.Text>
+        </Card.Body>
+      </Card>
     </>
   );
 }
