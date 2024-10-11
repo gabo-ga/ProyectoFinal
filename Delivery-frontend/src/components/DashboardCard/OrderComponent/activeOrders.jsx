@@ -2,24 +2,15 @@ import styles from "./orders.module.css";
 import Col from "react-bootstrap/esm/Col";
 import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
-import styled from "styled-components";
 import Card from "react-bootstrap/Card";
 
-const ActiveOrdersContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  align-self: stretch;
-`;
-
-function ActiveOrders() {
+function ActiveOrders(props) {
   return (
     <>
       <Container fluid>
         <Row>
           <Col xs={12}>
-            <h4 className={styles.TextStyle}>PEDIDOS EN CURSO</h4>
+            <h4 className={styles.TextStyle}>{props.tittle}</h4>
           </Col>
         </Row>
         <Row>

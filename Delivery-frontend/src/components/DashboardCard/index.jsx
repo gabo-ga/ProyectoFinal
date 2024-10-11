@@ -23,12 +23,13 @@ function Dashboard() {
             <ButtonsContainer></ButtonsContainer>
           </Col>
           <Col xs={12} md={6} className={styles.OrdersContainer}>
-            <ActiveOrders></ActiveOrders>
+            <ActiveOrders tittle={"PEDIDOS EN CURSO"}></ActiveOrders>
+            <ActiveOrders tittle={"PEDIDOS COMPLETADOS"}></ActiveOrders>
+            <ActiveOrders tittle={"VEHICULOS ACTIVOS"}></ActiveOrders>
           </Col>
         </Row>
       </Container>
-
-      {/*<Footer></Footer>*/}
+      <Footer></Footer>
     </>
   );
 }
