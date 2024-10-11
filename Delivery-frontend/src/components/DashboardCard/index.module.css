@@ -3,7 +3,7 @@
   height: 100vh;
   padding: 1.1rem;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
   gap: 8px;
   flex-shrink: 0;
@@ -11,9 +11,7 @@
 }
 
 .BodyContainer{
-    display: flex;
-  align-items: flex-end;
-  gap: 20px;
+  width: 100%;
   align-self: stretch;
 }
 
@@ -25,8 +23,7 @@
 }
 
 .OrdersContainer{
-    display: flex;
-  width: 711px;
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
