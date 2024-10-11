@@ -17,26 +17,20 @@ function MetricsBody() {
   return (
     <>
       <Row>
-        <Col xs={12} md={4} className="mb-3">
-          <Card>
-            <Card.Body>
-              <Card.Title>Pedidos en curso:</Card.Title>
-            </Card.Body>
-          </Card>
+        <Col xs={12} md={4}>
+          <Card.Title className={styles.TextStyle}>
+            Pedidos en curso:
+          </Card.Title>
         </Col>
-        <Col xs={12} md={4} className="mb-3">
-          <Card>
-            <Card.Body>
-              <Card.Title>Vehículos Disponibles:</Card.Title>
-            </Card.Body>
-          </Card>
+        <Col xs={12} md={4}>
+          <Card.Title className={styles.TextStyle}>
+            Vehículos Disponibles:
+          </Card.Title>
         </Col>
-        <Col xs={12} md={4} className="mb-3">
-          <Card>
-            <Card.Body>
-              <Card.Title>Tiempo promedio de entrega:</Card.Title>
-            </Card.Body>
-          </Card>
+        <Col xs={12} md={4}>
+          <Card.Title className={styles.TextStyle}>
+            Tiempo promedio de entrega:
+          </Card.Title>
         </Col>
       </Row>
     </>

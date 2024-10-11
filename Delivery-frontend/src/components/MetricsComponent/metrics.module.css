@@ -8,6 +8,7 @@
   border-radius: 10px;
   background-color: #fff;
 }
+
 .TextStyle{
     color: #34495e;
     font-size: 14px;
@@ -15,4 +16,16 @@
     font-weight: 600;
     word-wrap: break-word;
     margin: 5px;
+}
+
+@media (max-width: 575.98px) {
+  .MetricsContainer {
+      height: 13vh;
+      padding: 1rem;
+  }
+
+  .TextStyle {
+      font-size: 0.45rem;
+      margin-bottom: 0.40rem;
+  }
 }

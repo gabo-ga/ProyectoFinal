@@ -13,26 +13,25 @@ import Col from "react-bootstrap/esm/Col";
 function Dashboard() {
   return (
     <>
-      <div className="d-flex flex-column min-vh-100">
-        <Header></Header>
+      <Header></Header>
 
-        <Container fluid className={styles.Body}>
-          <Row className={styles.BodyContainer}>
-            <Col className={styles.MapContainer}>
-              <Map></Map>
-              <Metrics></Metrics>
-              <ButtonsContainer></ButtonsContainer>
-            </Col>
-            <Col className={styles.OrdersContainer}>
-              <ActiveOrders></ActiveOrders>
-              <CompletedOrders></CompletedOrders>
-              <ActiveVehicles></ActiveVehicles>
-            </Col>
-          </Row>
-        </Container>
+      <Container fluid className={styles.Body}>
+        <Row className={styles.BodyContainer}>
+          <Col xs={12} md={6} className={styles.MapContainer}>
+            <Metrics></Metrics>
+            <Map></Map>
+            <ButtonsContainer></ButtonsContainer>
+          </Col>
+          <Col xs={12} md={6} className={styles.OrdersContainer}>
+            orders container
+            {/*<ActiveOrders></ActiveOrders>
+            <CompletedOrders></CompletedOrders>
+            <ActiveVehicles></ActiveVehicles>*/}
+          </Col>
+        </Row>
+      </Container>
 
-        <Footer></Footer>
-      </div>
+      <Footer></Footer>
     </>
   );
 }

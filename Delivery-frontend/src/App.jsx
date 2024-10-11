@@ -1,4 +1,5 @@
 import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginCard from "./components/LoginCard";
 import Dashboard from "./components/DashboardCard";
