@@ -12,10 +12,16 @@ function OrdersHistory() {
       <Header></Header>
       <Container fluid className={styles.body}>
         <Row>
-          <Col></Col>
-          <Col></Col>
+          <Col xs={9}>
+            <h4>GESTION DE PEDIDOS</h4>
+          </Col>
+          <Col xs={3}></Col>
         </Row>
-        <Row></Row>
+        <Row>
+          <Col xs={12}>
+            <h3>PEDIDOS</h3>
+          </Col>
+        </Row>
       </Container>
       <Footer></Footer>
     </>
