@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginCard from "./components/LoginCard";
 import Dashboard from "./components/DashboardCard";
+import OrdersHistory from "./components/OrdersHistory";
 
 function App() {
   return (
@@ -11,6 +12,10 @@ function App() {
         <Route path="/" element={<Navigate to="/login"></Navigate>}></Route>
         <Route path="/login" element={<LoginCard></LoginCard>}></Route>
         <Route path="/dashboard" element={<Dashboard></Dashboard>}></Route>
+        <Route
+          path="/ordershistory"
+          element={<OrdersHistory></OrdersHistory>}
+        ></Route>
       </Routes>
     </BrowserRouter>
   );
