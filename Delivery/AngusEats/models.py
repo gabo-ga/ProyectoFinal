@@ -11,6 +11,7 @@ class Usuario(models.Model):
     ]
     
     nombre = models.CharField(max_length=100)
+    usuario = models.CharField(max_length=150, unique=True, null=True)
     correo = models.EmailField(unique=True)
     contrasena_hash = models.CharField(max_length=64)
     rol = models.CharField(max_length=50, choices=ROL_CHOICES)
