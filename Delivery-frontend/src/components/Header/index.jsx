@@ -3,6 +3,7 @@ import UserProfile from "../../assets/user.png";
 import styles from "./header.module.css";
 import Container from "react-bootstrap/esm/Container";
 import Col from "react-bootstrap/esm/Col";
+import { Person, PersonCircle } from "react-bootstrap-icons";
 
 function Header() {
   return (
@@ -15,11 +16,7 @@ function Header() {
             md={6}
             className={`${styles.ProfileContainer} d-flex justify-content-end`}
           >
-            <img
-              src={UserProfile}
-              alt="user-picture"
-              className={`${styles.Profile} img-fluid`}
-            />
+            <PersonCircle></PersonCircle>
           </Col>
         </Row>
       </Container>
