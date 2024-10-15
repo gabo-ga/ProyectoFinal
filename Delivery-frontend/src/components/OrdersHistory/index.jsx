@@ -5,6 +5,7 @@ import Col from "react-bootstrap/esm/Col";
 import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
 import AddButton from "./AddButton/button";
+import ActionBar from "./ActionsBar/Actions";
 
 function OrdersHistory() {
   return (
@@ -20,9 +21,7 @@ function OrdersHistory() {
           </Col>
         </Row>
         <Row>
-          <Col xs={12}>
-            <h3>PEDIDOS</h3>
-          </Col>
+          <ActionBar></ActionBar>
         </Row>
       </Container>
       <Footer></Footer>
