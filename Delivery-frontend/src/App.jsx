@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginCard from "./components/LoginCard";
 import Dashboard from "./components/DashboardCard";
 import OrdersHistory from "./components/OrdersHistory";
+import PrivateRoute from "./PrivateRoute";
 
 function App() {
   return (
@@ -11,7 +12,14 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login"></Navigate>}></Route>
         <Route path="/login" element={<LoginCard></LoginCard>}></Route>
-        <Route path="/dashboard" element={<Dashboard></Dashboard>}></Route>
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard></Dashboard>
+            </PrivateRoute>
+          }
+        ></Route>
         <Route
           path="/ordershistory"
           element={<OrdersHistory></OrdersHistory>}

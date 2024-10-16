@@ -11,20 +11,27 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function LoginCard() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    const response = await axios.post("http://localhost:8000/api/login/", {
-      email,
-      password,
-    });
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:8000/api/login/", {
+        username,
+        password,
+      });
 
-    localStorage.setItem("access_token", response.data.access);
-    localStorage.setItem("refresh_irem", response.data.refresh);
-    axios.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${response.data.access}`;
+      localStorage.setItem("access_token", response.data.access);
+      localStorage.setItem("refresh_irem", response.data.refresh);
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${response.data.access}`;
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("error al iniciar sesion", error);
+    }
   };
 
   return (
@@ -39,7 +46,10 @@ function LoginCard() {
                     INICIAR SESION
                   </Card.Title>
                   <Form onSubmit={handleSubmit}>
-                    <EmailInput email={email} setEmail={setEmail} />
+                    <UsernameInput
+                      username={username}
+                      setUsername={setUsername}
+                    />
                     <PasswordInput
                       password={password}
                       setPassword={setPassword}
@@ -56,19 +66,20 @@ function LoginCard() {
   );
 }
 
-function EmailInput() {
+function UsernameInput({ username, setUsername }) {
   return (
     <>
       <div>
-        <Form.Group controlId="email" className="mb-3">
+        <Form.Group controlId="username" className="mb-3">
           <Form.Label className={styles.LabelStyle}>
-            Correo electrónico
+            Nombre de usuario
           </Form.Label>
           <Form.Control
             className={styles.InputStyle}
-            type="email"
-            placeholder="Ingrese su correo"
-            onChange={(e) => setEmail(e.target.value)}
+            type="username"
+            placeholder="Ingrese su nombre de usuario"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </Form.Group>
       </div>
@@ -76,7 +87,7 @@ function EmailInput() {
   );
 }
 
-function PasswordInput() {
+function PasswordInput({ password, setPassword }) {
   return (
     <>
       <div>
@@ -86,6 +97,7 @@ function PasswordInput() {
             className={styles.InputStyle}
             type="password"
             placeholder="Ingrese su contraseña"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
@@ -107,7 +119,7 @@ function LoginButton() {
           className={styles.LoginButton}
           variant="warning"
           type="submit"
-          onClick={() => navigate("/dashboard")}
+          //onClick={() => navigate("/dashboard")}
         >
           INICIAR SESIÓN
         </Button>
