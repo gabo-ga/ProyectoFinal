@@ -40,24 +40,22 @@ function LoginCard() {
         <Container className={styles.FormContainer}>
           <Row className={styles.RowStyle}>
             <Col xs={12} md={8} lg={4}>
-              <Card>
-                <Card.Body>
-                  <Card.Title className={styles.LoginTitle}>
-                    INICIAR SESION
-                  </Card.Title>
-                  <Form onSubmit={handleSubmit}>
-                    <UsernameInput
-                      username={username}
-                      setUsername={setUsername}
-                    />
-                    <PasswordInput
-                      password={password}
-                      setPassword={setPassword}
-                    />
-                    <LoginButton></LoginButton>
-                  </Form>
-                </Card.Body>
-              </Card>
+              <Card.Body>
+                <Card.Title className={styles.LoginTitle}>
+                  INICIAR SESION
+                </Card.Title>
+                <Form onSubmit={handleSubmit}>
+                  <UsernameInput
+                    username={username}
+                    setUsername={setUsername}
+                  />
+                  <PasswordInput
+                    password={password}
+                    setPassword={setPassword}
+                  />
+                  <LoginButton></LoginButton>
+                </Form>
+              </Card.Body>
             </Col>
           </Row>
         </Container>
