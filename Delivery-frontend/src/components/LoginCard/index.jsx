@@ -1,5 +1,6 @@
 import styles from "./index.module.css";
 import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
@@ -13,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 function LoginCard() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -31,6 +33,13 @@ function LoginCard() {
       navigate("/dashboard");
     } catch (error) {
       console.error("error al iniciar sesion", error);
+      if (error.response && error.response.data && error.response.data.detail) {
+        setErrorMessage(error.response.data.detail);
+      } else {
+        setErrorMessage(
+          "Error al iniciar sesión. Por favor, inténtalo de nuevo."
+        );
+      }
     }
   };
 
@@ -44,6 +53,9 @@ function LoginCard() {
                 <Card.Title className={styles.LoginTitle}>
                   INICIAR SESION
                 </Card.Title>
+                {errorMessage && (
+                  <LoginError message={errorMessage} variant="danger" />
+                )}
                 <Form onSubmit={handleSubmit}>
                   <UsernameInput
                     username={username}
@@ -124,6 +136,10 @@ function LoginButton() {
       </div>
     </>
   );
+}
+
+function LoginError({ message, variant = "danger" }) {
+  return <Alert variant={variant}>{message}</Alert>;
 }
 
 export default LoginCard;
