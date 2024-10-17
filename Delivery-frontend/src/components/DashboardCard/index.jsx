@@ -9,6 +9,7 @@ import Footer from "../Footer";
 import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
+import Map from "../MapComponent/map";
 
 function Dashboard() {
   return (
@@ -31,10 +32,6 @@ function Dashboard() {
       <Footer></Footer>
     </>
   );
-}
-
-function Map() {
-  return <div style={{ width: "100%", height: 300, color: "white" }}></div>;
 }
 
 export default Dashboard;
