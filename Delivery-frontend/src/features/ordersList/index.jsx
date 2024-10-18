@@ -4,8 +4,8 @@ import styles from "./index.module.css";
 import Col from "react-bootstrap/esm/Col";
 import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
-import AddButton from "./AddButton/button";
-import ActionBar from "./ActionsBar/Actions";
+import AddButton from "../../components/AddButton/button";
+import ActionBar from "../../components/ActionsBar/Actions";
 
 function OrdersHistory() {
   return (

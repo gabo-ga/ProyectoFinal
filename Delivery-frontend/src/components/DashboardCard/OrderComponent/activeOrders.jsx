@@ -3,6 +3,7 @@ import Col from "react-bootstrap/esm/Col";
 import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
 import Card from "react-bootstrap/Card";
+import { Link } from "react-router-dom";
 
 function ActiveOrders(props) {
   return (
@@ -10,7 +11,11 @@ function ActiveOrders(props) {
       <Container fluid>
         <Row>
           <Col xs={12}>
-            <h4 className={styles.TextStyle}>{props.tittle}</h4>
+            <h4 className={styles.TextStyle}>
+              <Link to="/ordershistory" className={styles.TextStyle}>
+                {props.title}
+              </Link>
+            </h4>
           </Col>
         </Row>
         <Row>

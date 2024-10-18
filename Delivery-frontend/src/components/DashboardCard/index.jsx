@@ -23,9 +23,9 @@ function Dashboard() {
             <ButtonsContainer></ButtonsContainer>
           </Col>
           <Col xs={12} sm={6} className={styles.OrdersContainer}>
-            <ActiveOrders tittle={"PEDIDOS EN CURSO"}></ActiveOrders>
-            <ActiveOrders tittle={"PEDIDOS COMPLETADOS"}></ActiveOrders>
-            <ActiveOrders tittle={"VEHICULOS ACTIVOS"}></ActiveOrders>
+            <ActiveOrders title={"PEDIDOS EN CURSO"}></ActiveOrders>
+            <ActiveOrders title={"PEDIDOS COMPLETADOS"}></ActiveOrders>
+            <ActiveOrders title={"VEHICULOS ACTIVOS"}></ActiveOrders>
           </Col>
         </Row>
       </Container>
