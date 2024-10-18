@@ -5,12 +5,26 @@ import styles from "./Actions.module.css";
 
 function ActionBar() {
   return (
-    <Container className={styles.container}>
-      <Row>
-        <Col xs={3}>CLIENTE</Col>
-        <Col xs={3}>ESTADO</Col>
-        <Col xs={3}>HORA</Col>
-        <Col xs={3}>ACCIONES</Col>
+    <Container fluid className={styles.container}>
+      <Row className={styles.row}>
+        <Col md={2} className={styles.hiddenOnXS}>
+          ID
+        </Col>
+        <Col xs={4} md={2}>
+          CLIENTE
+        </Col>
+        <Col xs={4} md={2}>
+          ESTADO
+        </Col>
+        <Col xs={4} md={2}>
+          HORA
+        </Col>
+        <Col md={2} className={styles.hiddenOnXS}>
+          CONDUCTOR
+        </Col>
+        <Col className={styles.hiddenOnXS} xs={3} md={2}>
+          ACCIONES
+        </Col>
       </Row>
     </Container>
   );

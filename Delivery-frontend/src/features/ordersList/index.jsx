@@ -12,7 +12,7 @@ function OrdersHistory() {
     <>
       <Header></Header>
       <Container fluid className={styles.body}>
-        <Row>
+        <Row className={styles.row}>
           <Col xs={10}>
             <h4>GESTION DE PEDIDOS</h4>
           </Col>

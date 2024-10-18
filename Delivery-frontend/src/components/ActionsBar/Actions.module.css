@@ -3,4 +3,19 @@
     border-radius: 10px;
     display: flex;
     flex-direction: row;
+    width: 100%;
 }
+
+.row{
+    width: 100%;
+}
+
+.hiddenOnXS{
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .hiddenOnXS {
+      display: block;
+    }
+  }
