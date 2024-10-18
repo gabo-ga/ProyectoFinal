@@ -1,5 +1,5 @@
-import Header from "../Header";
-import Footer from "../Footer";
+import Header from "../../layout/Header";
+import Footer from "../../layout/Footer";
 import styles from "./index.module.css";
 import Col from "react-bootstrap/esm/Col";
 import Container from "react-bootstrap/esm/Container";
