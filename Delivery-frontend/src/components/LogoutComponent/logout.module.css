@@ -3,8 +3,13 @@
     width: 20%;
     display: flex;
     flex-direction: column;
+    position: fixed;
 }
 
 .textStyle{
     color: white;
+}
+
+.closeButton{
+    cursor: pointer;
 }
