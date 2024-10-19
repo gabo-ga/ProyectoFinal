@@ -17,7 +17,7 @@ function ActionBar() {
           ESTADO
         </Col>
         <Col xs={4} md={2}>
-          HORA
+          HORA ESTIMADA
         </Col>
         <Col md={2} className={styles.hiddenOnXS}>
           CONDUCTOR

@@ -6,13 +6,14 @@ import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
 import AddButton from "../../components/AddButton/button";
 import ActionBar from "../../components/ActionsBar/Actions";
+import Order from "../../components/OrderListComponent";
 
 function OrdersHistory() {
   return (
     <>
       <Header></Header>
       <Container fluid className={styles.body}>
-        <Row className={styles.row}>
+        <Row className="w-100">
           <Col xs={10} md={11}>
             <h4>GESTION DE PEDIDOS</h4>
           </Col>
@@ -20,8 +21,9 @@ function OrdersHistory() {
             <AddButton></AddButton>
           </Col>
         </Row>
-        <Row>
+        <Row className={styles.row}>
           <ActionBar></ActionBar>
+          <Order></Order>
         </Row>
       </Container>
       <Footer></Footer>
