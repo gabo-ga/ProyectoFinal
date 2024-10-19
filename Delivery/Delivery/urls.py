@@ -20,7 +20,7 @@ from rest_framework.routers import DefaultRouter
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('AngusEats.urls')),
+    path('', include('AngusEats.urls')),
 
     
     path('tasks/', include('AngusEats.urls'))

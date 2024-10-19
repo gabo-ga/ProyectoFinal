@@ -42,6 +42,7 @@ class Pedido(models.Model):
         estado = models.CharField(max_length=50, choices=ESTADO_CHOICES)
         fecha_creacion = models.DateTimeField(auto_now_add=True)
         fecha_entrega = models.DateTimeField(null=True, blank=True)
+        precio = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
         ruta = models.ForeignKey('Ruta', null=True, blank=True, on_delete=models.SET_NULL)
         
         def __str__(self):
