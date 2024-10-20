@@ -6,10 +6,22 @@
     position: fixed;
 }
 
+.cardContainer{
+    display: flex;
+    flex-direction: column;
+}
+
 .textStyle{
     color: white;
+    margin-bottom: 0;
+    padding: 0.20rem;
 }
 
 .closeButton{
     cursor: pointer;
+}
+
+.closeContainer{
+    display: flex;
+    flex-direction: row-reverse;
 }
