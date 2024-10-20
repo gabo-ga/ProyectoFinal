@@ -7,6 +7,8 @@ import CancelButton from "../../components/CancelButton";
 import AcceptButton from "../../components/AcceptButton";
 import AddressSearch from "../../components/AddressSearch";
 import CustomerSelect from "../../components/CostumerSelect";
+import DateFormComponent from "../../components/DateFormComponent";
+import TimeFormComponent from "../../components/TimeFormComponent";
 
 
 function addOrder(){
@@ -30,10 +32,8 @@ function addOrder(){
                         <Form.Label>PRECIO:</Form.Label>
                         <Form.Control type="text"></Form.Control>
                     </Form.Group>
-                    <Form.Group>
-                        <Form.Label>FECHA DE ENTREGA</Form.Label>
-                        <Form.Control type="text"></Form.Control>
-                    </Form.Group>
+                    <DateFormComponent></DateFormComponent>
+                    <TimeFormComponent></TimeFormComponent>
                     <Form.Group>
                         <Form.Label>DESCRIPCION:</Form.Label>
                         <Form.Control type="text"></Form.Control>
