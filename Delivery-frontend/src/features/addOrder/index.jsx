@@ -19,10 +19,10 @@ function addOrder(){
             <Row>
                 <Card>
                 <Form>
-                    <AddressSearch></AddressSearch>
+                    
                     <Form.Group>
                         <Form.Label>DIRECCION:</Form.Label>
-                        <Form.Control type="text"></Form.Control>
+                        <AddressSearch></AddressSearch>
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>CLIENTE:</Form.Label>
