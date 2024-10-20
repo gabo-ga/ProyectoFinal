@@ -5,6 +5,7 @@ import LoginCard from "./components/LoginCard";
 import Dashboard from "./components/DashboardCard";
 import OrdersHistory from "./features/ordersList";
 import PrivateRoute from "./PrivateRoute";
+import AddOrder from "./features/addOrder";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login"></Navigate>}></Route>
         <Route path="/login" element={<LoginCard></LoginCard>}></Route>
+        <Route path="/addorder" element={<AddOrder></AddOrder>}></Route>
         <Route
           path="/dashboard"
           element={

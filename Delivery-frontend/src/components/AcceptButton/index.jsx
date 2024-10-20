@@ -1,7 +1,7 @@
 import Button from "react-bootstrap/Button";
 
 function AcceptButton() {
-  return <Button variant="success">Success</Button>;
+  return <Button variant="success">Aceptar</Button>;
 }
 
 export default AcceptButton;

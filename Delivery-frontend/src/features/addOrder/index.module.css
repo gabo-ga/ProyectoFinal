@@ -1,0 +1,11 @@
+.body{
+    
+        background-color: #ecf0f1;
+        height: 100vh;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        flex-shrink: 0;
+}
