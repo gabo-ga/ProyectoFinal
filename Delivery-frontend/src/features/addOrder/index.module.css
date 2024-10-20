@@ -1,11 +1,37 @@
 .body{
-    
+        box-sizing: border-box;
         background-color: #ecf0f1;
         height: 100vh;
         padding: 1rem;
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
         gap: 8px;
         flex-shrink: 0;
+}
+
+.cardContainer{
+        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 2rem;
+}
+
+.formContainer{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+}
+
+.buttonsContainer{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+}
+
+.rowContainer{
+        width: 100%;   
 }

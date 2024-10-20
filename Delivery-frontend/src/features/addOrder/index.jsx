@@ -16,13 +16,12 @@ function addOrder(){
         <>
         <Header></Header>
         <Container fluid className={styles.body}>
-            <Row>
+            <Row className={styles.rowContainer}>
         <h4>Añadir pedido</h4>
             </Row>
-            <Row>
-                <Card>
-                <Form>
-                    
+            <Row className={styles.rowContainer}>
+                <Card className={styles.cardContainer}>
+                <Form className={styles.formContainer}>
                     <Form.Group>
                         <Form.Label>DIRECCION:</Form.Label>
                         <AddressSearch></AddressSearch>
@@ -38,8 +37,10 @@ function addOrder(){
                         <Form.Label>DESCRIPCION:</Form.Label>
                         <Form.Control type="text"></Form.Control>
                     </Form.Group>
+                    <Form.Group className={styles.buttonsContainer}>
                     <CancelButton></CancelButton>
                     <AcceptButton></AcceptButton>
+                    </Form.Group>
                 </Form>
                 </Card>
             </Row>
