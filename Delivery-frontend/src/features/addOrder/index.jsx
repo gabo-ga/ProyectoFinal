@@ -6,6 +6,7 @@ import { Form } from "react-bootstrap";
 import CancelButton from "../../components/CancelButton";
 import AcceptButton from "../../components/AcceptButton";
 import AddressSearch from "../../components/AddressSearch";
+import CustomerSelect from "../../components/CostumerSelect";
 
 
 function addOrder(){
@@ -24,10 +25,7 @@ function addOrder(){
                         <Form.Label>DIRECCION:</Form.Label>
                         <AddressSearch></AddressSearch>
                     </Form.Group>
-                    <Form.Group>
-                        <Form.Label>CLIENTE:</Form.Label>
-                        <Form.Select></Form.Select>
-                    </Form.Group>
+                    <CustomerSelect></CustomerSelect>
                     <Form.Group>
                         <Form.Label>PRECIO:</Form.Label>
                         <Form.Control type="text"></Form.Control>
