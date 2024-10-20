@@ -11,6 +11,11 @@ from .serializer import UserSerializer
 from .models import Usuario
 # Create your views here.
 
+##import cliente
+from rest_framework import generics
+from .models import Cliente
+from .serializer import ClienteSerializer
+
 class ProtectedView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -27,3 +32,8 @@ class TaskView(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all() 
     serializer_class = UserSerializer
+    
+    
+class ClienteViewSet(viewsets.ModelViewSet):
+    queryset = Cliente.objects.all()
+    serializer_class = ClienteSerializer
