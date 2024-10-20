@@ -25,3 +25,10 @@
     display: flex;
     flex-direction: row-reverse;
 }
+
+.logoutPosition {
+    position: absolute;    
+    top: 55px;             
+    right: 250px;           
+    z-index: 1000;         
+  }

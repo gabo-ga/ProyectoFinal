@@ -5,6 +5,7 @@ import Col from "react-bootstrap/esm/Col";
 import { PersonCircle } from "react-bootstrap-icons";
 import React, { useState } from "react";
 import Logout from "../../components/LogoutComponent";
+import styles2 from "../../components/LogoutComponent/logout.module.css";
 
 function Header() {
   const [showProfile, setShowProfile] = useState(false);
@@ -25,7 +26,11 @@ function Header() {
           </Col>
         </Row>
       </Container>
-      {showProfile && <Logout onClose={() => setShowProfile(false)} />}
+      {showProfile && (
+        <div className={styles2.logoutPosition}>
+          <Logout onClose={() => setShowProfile(false)} />
+        </div>
+      )}
     </>
   );
 }
