@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import Usuario
 from .models import Cliente
 from django.contrib.auth.models import User
+from .models import Pedido
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,10 +13,20 @@ class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
         fields = ['id', 'nombre', 'telefono']
-        
+    
 
-
-class TaskSerializer(serializers.ModelSerializer):
+class PedidoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Usuario
-        fields = ['id', 'correo', 'contrasena_hash']
+        model = Pedido
+        fields = [
+            'id', 
+            'cliente', 
+            'direccion_origen', 
+            'direccion_destino', 
+            'estado', 
+            'fecha_creacion', 
+            'fecha_entrega', 
+            'precio', 
+            'ruta'
+        ]
+        read_only_fields = ['fecha_creacion']

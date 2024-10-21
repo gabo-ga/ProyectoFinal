@@ -1,20 +1,17 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
 from rest_framework import viewsets
-from .serializer import TaskSerializer
-from django.contrib.auth.models import User
+#serializar para usuario
 from .serializer import UserSerializer
-from .models import Usuario
-# Create your views here.
-
+from django.contrib.auth.models import User
 ##import cliente
-from rest_framework import generics
 from .models import Cliente
 from .serializer import ClienteSerializer
+#import para pedido
+from .models import Pedido
+from .serializer import PedidoSerializer
 
 class ProtectedView(APIView):
     permission_classes = [IsAuthenticated]
@@ -22,11 +19,6 @@ class ProtectedView(APIView):
     def get(self, request):
         data = {'message': 'Esta es una vista protegida'}
         return Response(data)
-
-
-class TaskView(viewsets.ModelViewSet):
-    serializer_class = TaskSerializer
-    queryset = Usuario.objects.all()
     
     
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -37,3 +29,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
+    
+class PedidoViewSet(viewsets.ModelViewSet):
+    queryset = Pedido.objects.all()
+    serializer_class = PedidoSerializer

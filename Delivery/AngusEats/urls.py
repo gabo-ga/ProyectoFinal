@@ -3,13 +3,14 @@ from rest_framework import routers
 from AngusEats import views
 from rest_framework.documentation import include_docs_urls
 from rest_framework_simplejwt.views import ( TokenObtainPairView, TokenRefreshView,)
-from .views import UserViewSet, ClienteViewSet
+from .views import UserViewSet, ClienteViewSet, PedidoViewSet
 
 
 router = routers.DefaultRouter()
 router.register(r'AngusEats', views.TaskView, 'tasks')
 router.register(r'users', UserViewSet)
 router.register(r'clientes', ClienteViewSet)
+router.register(r'pedidos', PedidoViewSet)
 
 urlpatterns = [
     #endpoint para obtener token
