@@ -29,9 +29,31 @@ function addOrder() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Lógica de envío de datos
+
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/pedidos/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert("Pedido añadido con éxito");
+        // Aquí puedes limpiar el formulario o redirigir al usuario
+      } else {
+        const errorData = await response.json();
+        console.error("Error:", errorData);
+        alert("Error al añadir el pedido");
+      }
+    } catch (error) {
+      console.error("Error de red:", error);
+      alert("Error de red");
+    }
   };
   return (
     <>
@@ -42,7 +64,7 @@ function addOrder() {
         </Row>
         <Row className={styles.rowContainer}>
           <Card className={styles.cardContainer}>
-            <Form className={styles.formContainer}>
+            <Form className={styles.formContainer} onSubmit={handleSubmit}>
               <Col xs={12} md={8}>
                 <Form.Group controlId="fromdAddress">
                   <Form.Label>DIRECCION:</Form.Label>
@@ -103,7 +125,7 @@ function addOrder() {
                 </Form.Group>
               </Col>
               <Form.Group className={styles.buttonsContainer}>
-                <CancelButton></CancelButton>
+                <CancelButton type="submit"></CancelButton>
                 <AcceptButton></AcceptButton>
               </Form.Group>
             </Form>
