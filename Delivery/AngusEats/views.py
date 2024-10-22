@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 
 # Serializadores
-from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConductorSerializer
+from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConductorSerializer, VehiculoUbicacionSerializer
 
 # Modelos
 from .models import Cliente, Pedido, Vehiculo, Conductor
@@ -44,3 +45,20 @@ class VehiculoViewSet(viewsets.ModelViewSet):
     queryset = Vehiculo.objects.all()
     serializer_class = VehiculoSerializer
     #permission_classes = [IsAuthenticated] 
+       # Acción personalizada para devolver solo la ubicación geográfica
+    @action(detail=False, methods=['get'], url_path='ubicaciones')
+    def ubicaciones(self, request):
+        vehiculos = self.get_queryset()
+        ubicaciones = []
+
+        for vehiculo in vehiculos:
+            if vehiculo.ubicacion_geografica:
+                ubicaciones.append({
+                    'placa': vehiculo.placa,
+                    'ubicacion_geografica': {
+                        'latitude': vehiculo.ubicacion_geografica.y,
+                        'longitude': vehiculo.ubicacion_geografica.x
+                    }
+                })
+
+        return Response(ubicaciones)

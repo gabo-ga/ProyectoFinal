@@ -46,6 +46,19 @@ class VehiculoSerializer(serializers.ModelSerializer):
         # Crear el registro en la base de datos con los datos validados
         return Vehiculo.objects.create(**validated_data)
     
+class VehiculoUbicacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vehiculo
+        fields = ['ubicacion_geografica']
+    def get_ubicacion_geografica(self, obj):
+        # Convertir el campo Point en un formato serializable (latitud y longitud)
+        if isinstance(obj.ubicacion_geografica, Point):
+            return {
+                "latitude": obj.ubicacion_geografica.y,
+                "longitude": obj.ubicacion_geografica.x
+            }
+        return None
+    
 class ConductorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Conductor
