@@ -1,20 +1,18 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Pedido, Vehiculo, Cliente
+from .models import Pedido, Vehiculo, Cliente, Conductor
 from django.contrib.gis.geos import Point
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_active']
-        
-  
+         
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
         fields = ['id', 'nombre', 'telefono']
     
-
 class PedidoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pedido
@@ -47,3 +45,8 @@ class VehiculoSerializer(serializers.ModelSerializer):
 
         # Crear el registro en la base de datos con los datos validados
         return Vehiculo.objects.create(**validated_data)
+    
+class ConductorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Conductor
+        fields = ['id', 'nombre', 'correo', 'contraseña', 'fecha_creacion', 'telefono']

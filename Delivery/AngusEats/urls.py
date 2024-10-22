@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework import routers
 from rest_framework.documentation import include_docs_urls
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import UserViewSet, ClienteViewSet, PedidoViewSet, VehiculoViewSet
+from .views import UserViewSet, ClienteViewSet, PedidoViewSet, VehiculoViewSet, ConductorViewSet
 
 # Configuración del router para los ViewSets
 router = routers.DefaultRouter()
@@ -11,6 +11,7 @@ router.register(r'users', UserViewSet)
 router.register(r'clientes', ClienteViewSet)
 router.register(r'pedidos', PedidoViewSet, basename="pedido")
 router.register(r'vehiculos', VehiculoViewSet)
+router.register(r'conductores', ConductorViewSet)
 
 urlpatterns = [
     # Endpoint para autenticación JWT

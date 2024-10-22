@@ -6,10 +6,10 @@ from rest_framework.views import APIView
 from django.contrib.auth.models import User
 
 # Serializadores
-from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer
+from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConductorSerializer
 
 # Modelos
-from .models import Cliente, Pedido, Vehiculo
+from .models import Cliente, Pedido, Vehiculo, Conductor
 
 
 class ProtectedView(APIView):
@@ -25,6 +25,9 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
     #permission_classes = [IsAuthenticated]  
 
+class ConductorViewSet(viewsets.ModelViewSet):
+    queryset = Conductor.objects.all()
+    serializer_class = ConductorSerializer
 
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
