@@ -20,6 +20,16 @@ class Usuario(models.Model):
     def __str__(self):
         return self.nombre
     
+class Conductor(models.Model):
+    nombre = models.CharField(max_length=100)
+    correo = models.EmailField(unique=True)
+    contraseña = models.CharField(max_length=128)  # Almacena la contraseña en texto plano
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    telefono = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.nombre
+    
 class Cliente(models.Model):
         nombre = models.CharField(max_length=100)
         telefono = models.CharField(max_length=12)

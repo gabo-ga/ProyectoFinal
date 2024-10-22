@@ -34,7 +34,7 @@ class PedidoSerializer(serializers.ModelSerializer):
 class VehiculoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vehiculo
-        fields = ['id', 'vehiculo_nombre', 'tipo', 'ubicacion_geografica', 'conductor', 'disponible']
+        fields = ['id', 'vehiculo_nombre', 'tipo', 'ubicacion_geografica', 'conductor', 'disponible', 'placa']
 
     def create(self, validated_data):
         # Obtener las coordenadas de 'ubicacion_geografica' desde el diccionario de datos iniciales
