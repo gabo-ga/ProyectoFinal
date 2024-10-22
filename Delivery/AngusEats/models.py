@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.gis.db import models as gis_models
 from django.contrib.postgres.operations import CreateExtension
-
+from django.core.validators import RegexValidator
 # Create your models here.
 class Usuario(models.Model):
     ROL_CHOICES = [
@@ -54,7 +54,18 @@ class Vehiculo(models.Model):
         ('van','Van'),
         ('motocicleta', 'Motocicleta')
     ]
-    
+        
+    placa = models.CharField(
+        max_length=7, 
+        unique=True, 
+        null=False,
+        validators=[
+            RegexValidator(
+                regex='^[A-Za-z0-9]{7}$',
+                message='La placa debe tener exactamente 7 caracteres alfanuméricos.'
+            )
+        ]
+    )
     vehiculo_nombre = models.CharField(max_length=100)
     tipo = models.CharField(max_length=50, choices=TIPO_CHOICES)
     ubicacion_geografica = gis_models.PointField(srid=4326)
