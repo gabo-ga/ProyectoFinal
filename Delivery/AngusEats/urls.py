@@ -3,7 +3,7 @@ from rest_framework import routers
 from rest_framework.documentation import include_docs_urls
 from rest_framework_simplejwt.views import ( TokenObtainPairView, TokenRefreshView,)
 from .views import UserViewSet, ClienteViewSet, PedidoViewSet
-
+from .views import PedidoCreateView
 
 router = routers.DefaultRouter()
 
@@ -17,7 +17,8 @@ urlpatterns = [
     #endpoint para refrescar tokens
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     #endpoint para 
-    
     path("api/v1/", include(router.urls)),
-    path('docs/', include_docs_urls(title="prueba"))
+    path('docs/', include_docs_urls(title="prueba")),
+    path("pedido/", PedidoCreateView.as_view(), name="pedido-create"),
+    
 ]

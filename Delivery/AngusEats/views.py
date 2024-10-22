@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -33,3 +34,14 @@ class ClienteViewSet(viewsets.ModelViewSet):
 class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.all()
     serializer_class = PedidoSerializer
+    
+class PedidoCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = PedidoSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            # Guardar el nuevo pedido en la base de datos
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
