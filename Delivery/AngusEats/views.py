@@ -39,7 +39,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.all()
     serializer_class = PedidoSerializer
     #permission_classes = [IsAuthenticated] 
-    #accion personalizada para hacer un JOIN
+    #action para pedidos en curso
     @action(detail=False, methods=['get'], url_path='en-curso')
     def pedidos_en_curso(self, request):
         with connection.cursor() as cursor:
@@ -58,6 +58,41 @@ class PedidoViewSet(viewsets.ModelViewSet):
                     c.id = p.cliente_id
                 WHERE 
                     p.estado IN ('pendiente', 'en_ruta');
+            """)
+            
+            rows = cursor.fetchall()
+            
+            result = [
+                {
+                    'cliente_nombre': row[0],
+                    'cliente_telefono': row[1],
+                    'pedido_fecha': row[2],
+                    'pedido_estado': row[3],
+                    'pedido_direccion_destino': row[4]
+                }
+                for row in rows
+            ]
+        return Response(result)
+    
+    # action para pedidos "entregados"
+    @action(detail=False, methods=['get'], url_path='entregados')
+    def pedidos_entregados(self, request):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT 
+                    c.nombre AS cliente_nombre,
+                    c.telefono AS cliente_telefono,
+                    p.fecha_creacion AS pedido_fecha,
+                    p.estado AS pedido_estado,
+                    p.direccion_destino AS pedido_direccion_destino
+                FROM 
+                    "AngusEats_cliente" c
+                JOIN 
+                    "AngusEats_pedido" p
+                ON 
+                    c.id = p.cliente_id
+                WHERE 
+                    p.estado = 'entregado';
             """)
             
             rows = cursor.fetchall()
