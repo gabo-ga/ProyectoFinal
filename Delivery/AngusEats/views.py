@@ -57,7 +57,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
                 ON 
                     c.id = p.cliente_id
                 WHERE 
-                    p.estado IN ('pendiente', 'en ruta');
+                    p.estado IN ('pendiente', 'en_ruta');
             """)
             
             rows = cursor.fetchall()
