@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
+from django.db import connection
 
 # Serializadores
 from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConductorSerializer, VehiculoUbicacionSerializer
@@ -20,7 +21,6 @@ class ProtectedView(APIView):
         data = {'message': 'Esta es una vista protegida'}
         return Response(data)
 
-
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -35,11 +35,45 @@ class ClienteViewSet(viewsets.ModelViewSet):
     serializer_class = ClienteSerializer
     #permission_classes = [IsAuthenticated]  
 
-
 class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.all()
     serializer_class = PedidoSerializer
     #permission_classes = [IsAuthenticated] 
+    #accion personalizada para hacer un JOIN
+    @action(detail=False, methods=['get'], url_path='en-curso')
+    def pedidos_en_curso(self, request):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT 
+                    c.nombre AS cliente_nombre,
+                    c.telefono AS cliente_telefono,
+                    p.fecha_creacion AS pedido_fecha,
+                    p.estado AS pedido_estado,
+                    p.direccion_destino AS pedido_direccion_destino
+                FROM 
+                    "AngusEats_cliente" c
+                JOIN 
+                    "AngusEats_pedido" p
+                ON 
+                    c.id = p.cliente_id
+                WHERE 
+                    p.estado IN ('pendiente', 'en ruta');
+            """)
+            
+            rows = cursor.fetchall()
+            
+            result = [
+                {
+                    'cliente_nombre': row[0],
+                    'cliente_telefono': row[1],
+                    'pedido_fecha': row[2],
+                    'pedido_estado': row[3],
+                    'pedido_direccion_destino': row[4]
+                }
+                for row in rows
+            ]
+        return Response(result)
+
 
 class VehiculoViewSet(viewsets.ModelViewSet):
     queryset = Vehiculo.objects.all()
