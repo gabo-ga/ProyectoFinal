@@ -1,15 +1,17 @@
 import styles from "./index.module.css";
-import ActiveOrders from "./OrderComponent/activeOrders";
-import ButtonsContainer from "./ButtonsComponent/buttons";
-import Metrics from "./MetricsComponent/";
-import CompletedOrders from "./OrderComponent/completedOrders";
-import ActiveVehicles from "./OrderComponent/activeVehicles";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
+import Map from "../../components/MapComponent/map";
+
+import ActiveOrders from "../../components/OrderComponent/activeOrders";
+import ButtonsContainer from "../../components/ButtonsComponent/buttons";
+import Metrics from "../../components/MetricsComponent";
+import CompletedOrders from "../../components/OrderComponent/completedOrders";
+import ActiveVehicles from "../../components/OrderComponent/activeVehicles";
+
 import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
-import Map from "../MapComponent/map";
 
 function Dashboard() {
   return (
