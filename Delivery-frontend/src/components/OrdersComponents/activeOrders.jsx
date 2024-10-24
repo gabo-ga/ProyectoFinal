@@ -8,11 +8,10 @@ import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 
 function ActiveOrders(props) {
-  const [orders, setOrders] = useState([]); // Estado para almacenar los pedidos
-  const [loading, setLoading] = useState(true); // Estado para el indicador de carga
-  const [error, setError] = useState(null); // Estado para manejar errores
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Efecto para hacer la solicitud GET cuando el componente se monta
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -28,14 +27,12 @@ function ActiveOrders(props) {
     };
 
     fetchOrders();
-  }, []); // Ejecutar el efecto solo una vez cuando el componente se monta
+  }, []);
 
-  // Mostrar un indicador de carga mientras los datos se están obteniendo
   if (loading) {
     return <p>Cargando pedidos...</p>;
   }
 
-  // Mostrar mensaje de error si ocurre algún problema
   if (error) {
     return <p>{error}</p>;
   }
@@ -53,17 +50,21 @@ function ActiveOrders(props) {
           </Col>
         </Row>
         <Row>
-          {orders.map((order, index) => (
-            <Col key={index}>
-              <OrderCard
-                cliente={order.cliente_nombre}
-                telefono={order.cliente_telefono}
-                fecha={order.pedido_fecha}
-                estado={order.pedido_estado}
-                destino={order.pedido_direccion_destino}
-              />
-            </Col>
-          ))}
+          <div className={styles.scrollWrapper}>
+            <div className={styles.scrollContainer}>
+              {orders.map((order, index) => (
+                <Col xs={12} md={5} key={index}>
+                  <OrderCard
+                    cliente={order.cliente_nombre}
+                    telefono={order.cliente_telefono}
+                    fecha={order.pedido_fecha}
+                    estado={order.pedido_estado}
+                    destino={order.pedido_direccion_destino}
+                  />
+                </Col>
+              ))}
+            </div>
+          </div>
         </Row>
       </Container>
     </>
@@ -72,17 +73,21 @@ function ActiveOrders(props) {
 
 function OrderCard({ cliente, telefono, fecha, estado, destino }) {
   return (
-    <Card className={styles.CardStyle}>
-      <Card.Body className={styles.textContainer}>
-        <Card.Text className={styles.TextStyle}>Cliente: {cliente}</Card.Text>
-        <Card.Text className={styles.TextStyle}>Teléfono: {telefono}</Card.Text>
-        <Card.Text className={styles.TextStyle}>
-          Fecha del pedido: {fecha}
-        </Card.Text>
-        <Card.Text className={styles.TextStyle}>Estado: {estado}</Card.Text>
-        <Card.Text className={styles.TextStyle}>Destino: {destino}</Card.Text>
-      </Card.Body>
-    </Card>
+    <div className={styles.scrollItem}>
+      <Card className={styles.CardStyle}>
+        <Card.Body className={styles.textContainer}>
+          <Card.Text className={styles.TextStyle}>Cliente: {cliente}</Card.Text>
+          <Card.Text className={styles.TextStyle}>
+            Teléfono: {telefono}
+          </Card.Text>
+          <Card.Text className={styles.TextStyle}>
+            Fecha del pedido: {fecha}
+          </Card.Text>
+          <Card.Text className={styles.TextStyle}>Estado: {estado}</Card.Text>
+          <Card.Text className={styles.TextStyle}>Destino: {destino}</Card.Text>
+        </Card.Body>
+      </Card>
+    </div>
   );
 }
 
