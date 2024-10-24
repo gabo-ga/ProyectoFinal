@@ -33,8 +33,9 @@ function OrderCard() {
         <Card.Body className={styles.textContainer}>
           <Card.Text className={styles.TextStyle}>Vehiculo:</Card.Text>
           <Card.Text className={styles.TextStyle}>Tipo: </Card.Text>
-          <Card.Text className={styles.TextStyle}>Conductor:</Card.Text>
           <Card.Text className={styles.TextStyle}>Placa: </Card.Text>
+          <Card.Text className={styles.TextStyle}>Conductor:</Card.Text>
+          <Card.Text className={styles.TextStyle}>Telefono:</Card.Text>
         </Card.Body>
       </Card>
     </>
