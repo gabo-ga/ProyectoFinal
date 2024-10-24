@@ -109,7 +109,6 @@ class PedidoViewSet(viewsets.ModelViewSet):
             ]
         return Response(result)
 
-
 class VehiculoViewSet(viewsets.ModelViewSet):
     queryset = Vehiculo.objects.all()
     serializer_class = VehiculoSerializer
@@ -131,3 +130,42 @@ class VehiculoViewSet(viewsets.ModelViewSet):
                 })
 
         return Response(ubicaciones)
+    #action para vehiculos disponibles
+    @action(detail=False, methods=['get'], url_path='vehiculos-disponibles')
+    def vehiculos_disponibles(self, request):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT 
+                    v.placa AS vehiculo_placa,
+                    v.vehiculo_nombre AS vehiculo_nombre,
+                    v.tipo AS vehiculo_tipo,
+                    v.disponible AS vehiculo_disponible,
+                    c.nombre AS conductor_nombre,
+                    c.telefono AS conductor_telefono
+                FROM 
+                    "AngusEats_vehiculo" v
+                JOIN 
+                    "AngusEats_conductor" c
+                ON 
+                    v.conductor_id = c.id
+                WHERE 
+                    v.disponible = TRUE;
+            """)
+
+            rows = cursor.fetchall()
+
+            # Estructurar los datos en formato JSON
+            vehiculos_disponibles = [
+                {
+                    'placa': row[0],
+                    'vehiculo_nombre': row[1],
+                    'vehiculo_tipo': row[2],
+                    'disponible': row[3],
+                    'conductor_nombre': row[4],
+                    'conductor_telefono': row[5]
+                }
+                for row in rows
+            ]
+
+        return Response(vehiculos_disponibles)
+    
