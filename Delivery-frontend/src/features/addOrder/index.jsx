@@ -14,7 +14,9 @@ import { useState } from "react";
 function addOrder() {
   const [formData, setFormData] = useState({
     address: "",
+    searchAddress: "",
     customer: "",
+    estado: "pendiente",
     price: "",
     date: "",
     time: "",
@@ -55,6 +57,7 @@ function addOrder() {
       alert("Error de red");
     }
   };
+
   return (
     <>
       <Header />
@@ -66,8 +69,23 @@ function addOrder() {
           <Card className={styles.cardContainer}>
             <Form className={styles.formContainer} onSubmit={handleSubmit}>
               <Col xs={12} md={8}>
+                <Form.Group controlId="formSearchAddress">
+                  <Form.Label>BÚSQUEDA DE DIRECCIÓN:</Form.Label>
+                  <AddressSearch
+                    value={formData.searchAddress}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        searchAddress: e.target.value,
+                      })
+                    }
+                    name="searchAddress"
+                  />
+                </Form.Group>
+              </Col>
+              <Col xs={12} md={8}>
                 <Form.Group controlId="fromdAddress">
-                  <Form.Label>DIRECCION:</Form.Label>
+                  <Form.Label>DIRECCIÓN:</Form.Label>
                   <AddressSearch
                     value={formData.address}
                     onChange={handleInputChange}
@@ -114,7 +132,7 @@ function addOrder() {
               </Col>
               <Col xs={12} md={8}>
                 <Form.Group>
-                  <Form.Label>DESCRIPCION:</Form.Label>
+                  <Form.Label>DESCRIPCIÓN:</Form.Label>
                   <Form.Control
                     as="textarea"
                     value={formData.description}

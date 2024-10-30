@@ -7,7 +7,6 @@ function AddressSearch({ onPlaceSelected }) {
   const [address, setAddress] = useState("");
   const searchBoxRef = useRef(null);
 
-  // Cargar la API de Google Maps
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
     libraries,
@@ -18,8 +17,9 @@ function AddressSearch({ onPlaceSelected }) {
     const place = searchBoxRef.current?.getPlaces();
     if (place && place.length > 0) {
       const selectedPlace = place[0];
-      setAddress(selectedPlace.formatted_address);
-      onPlaceSelected(selectedPlace); // Enviar los detalles del lugar seleccionado al componente padre
+      const formattedAddress = selectedPlace.formatted_address;
+      setAddress(formattedAddress);
+      onPlaceSelected(formattedAddress); // Enviar solo la dirección al componente padre
     }
   }, [onPlaceSelected]);
 

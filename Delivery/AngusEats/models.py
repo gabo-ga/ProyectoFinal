@@ -48,7 +48,9 @@ class Pedido(models.Model):
         
         cliente = models.ForeignKey('Cliente', null=True, on_delete=models.SET_NULL)
         direccion_origen = models.CharField(max_length=255)
+        coordenadas_origen = gis_models.PointField(srid=4326, null=True, blank=True)
         direccion_destino = models.CharField(max_length=255)
+        coordenadas_destino = gis_models.PointField(srid=4326, null=True, blank=True)
         estado = models.CharField(max_length=50, choices=ESTADO_CHOICES)
         fecha_creacion = models.DateTimeField(auto_now_add=True)
         fecha_entrega = models.DateTimeField(null=True, blank=True)
@@ -92,8 +94,9 @@ class Ruta(models.Model):
         ('completada', 'Completada'),
         ('cancelada', 'Cancelada')
     ]
-    
+
     vehiculo = models.ForeignKey('Vehiculo', on_delete=models.CASCADE)
+    ruta_geom = gis_models.LineStringField(srid=4326, null=True, blank=True)
     paradas = gis_models.LineStringField(srid=4326)
     distancia_total_km = models.DecimalField(max_digits=10, decimal_places=2)
     tiempo_estimado_minutos = models.IntegerField()
