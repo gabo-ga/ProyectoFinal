@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from .models import Pedido, Vehiculo, Cliente, Conductor
 from django.contrib.gis.geos import Point
 
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -13,21 +15,62 @@ class ClienteSerializer(serializers.ModelSerializer):
         model = Cliente
         fields = ['id', 'nombre', 'telefono']
     
+from django.contrib.gis.geos import Point
+from rest_framework import serializers
+from .models import Pedido, Cliente
+
 class PedidoSerializer(serializers.ModelSerializer):
+    coordenadas_origen = serializers.DictField(write_only=True, required=False)
+    coordenadas_destino = serializers.DictField(write_only=True, required=False)
+
     class Meta:
         model = Pedido
         fields = [
-            'id', 
-            'cliente', 
-            'direccion_origen', 
-            'direccion_destino', 
-            'estado', 
-            'fecha_creacion', 
-            'fecha_entrega', 
-            'precio', 
-            'ruta'
+            'id',
+            'cliente',
+            'direccion_origen',
+            'coordenadas_origen',
+            'direccion_destino',
+            'coordenadas_destino',
+            'estado',
+            'fecha_creacion',
+            'fecha_entrega',
+            'precio',
+            'detalle',
+            'ruta',
         ]
         read_only_fields = ['fecha_creacion']
+
+    def create(self, validated_data):
+        coordenadas_origen_data = validated_data.pop('coordenadas_origen', None)
+        coordenadas_destino_data = validated_data.pop('coordenadas_destino', None)
+
+
+        date = self.initial_data.get('date')
+        time = self.initial_data.get('time')
+        if date and time:
+            fecha_entrega = f"{date}T{time}:00Z"
+            validated_data['fecha_entrega'] = fecha_entrega
+
+        
+        pedido = Pedido.objects.create(**validated_data)
+
+        
+        if coordenadas_origen_data:
+            lat = float(coordenadas_origen_data.get('lat'))
+            lng = float(coordenadas_origen_data.get('lng'))
+            pedido.coordenadas_origen = Point(lng, lat)
+            pedido.save()
+
+        
+        if coordenadas_destino_data:
+            lat = float(coordenadas_destino_data.get('lat'))
+            lng = float(coordenadas_destino_data.get('lng'))
+            pedido.coordenadas_destino = Point(lng, lat)
+            pedido.save()
+
+        return pedido
+
         
 class VehiculoSerializer(serializers.ModelSerializer):
     class Meta:

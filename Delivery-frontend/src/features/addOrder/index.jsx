@@ -19,12 +19,12 @@ function addOrder() {
     direccion_destino: "",
     coordenadas_destino_lat: null,
     coordenadas_destino_lng: null,
-    customer: "",
+    cliente: "",
     estado: "pendiente",
-    price: "",
+    precio: "",
     date: "",
     time: "",
-    description: "",
+    detalle: "",
   });
 
   useEffect(() => {
@@ -123,7 +123,7 @@ function addOrder() {
                 <CustomerSelect
                   value={formData.customer}
                   onChange={handleInputChange}
-                  name="customer"
+                  name="cliente"
                 />
               </Col>
               <Col xs={12} md={8}>
@@ -135,7 +135,7 @@ function addOrder() {
                         type="text"
                         value={formData.price}
                         onChange={handleInputChange}
-                        name="price"
+                        name="precio"
                         required
                       />
                     </Form.Group>
