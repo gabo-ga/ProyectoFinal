@@ -108,6 +108,34 @@ class PedidoViewSet(viewsets.ModelViewSet):
                 for row in rows
             ]
         return Response(result)
+    
+    #CONSULTA SQL PARA ORDERLIST
+    @action(detail=False, methods=['get'], url_path='detalle-pedidos')
+    def detalle_pedidos(self, request):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT
+                  "AngusEats_pedido"."id" AS "ID",
+                  "AngusEats_cliente"."nombre" AS "CLIENTE",
+                  "AngusEats_pedido"."estado" AS "ESTADO",
+                  TO_CHAR("AngusEats_pedido"."fecha_entrega", 'HH24:MI:SS') AS "HORA_ESTIMADA",
+                  "AngusEats_pedido"."direccion_destino" AS "DIRECCION_DESTINO"
+                FROM
+                  "AngusEats_pedido"
+                INNER JOIN
+                  "AngusEats_cliente" ON "AngusEats_pedido"."cliente_id" = "AngusEats_cliente"."id";
+            """)
+
+            rows = cursor.fetchall()
+            columnas = [col[0] for col in cursor.description]
+
+            result = [
+                dict(zip(columnas, row))
+                for row in rows
+            ]
+
+        return Response(result)
+
 
 class VehiculoViewSet(viewsets.ModelViewSet):
     queryset = Vehiculo.objects.all()
