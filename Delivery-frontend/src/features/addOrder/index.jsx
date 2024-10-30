@@ -27,9 +27,9 @@ function addOrder() {
     detalle: "",
   });
 
-  useEffect(() => {
+  /* useEffect(() => {
     console.log("formData ha cambiado:", formData);
-  }, [formData]);
+  }, [formData]); */
 
   const handleOrigenSelect = (place) => {
     setFormData((prevData) => ({
@@ -107,26 +107,26 @@ function addOrder() {
         <Row className={styles.rowContainer}>
           <Card className={styles.cardContainer}>
             <Form className={styles.formContainer} onSubmit={handleSubmit}>
-              <Col xs={12} md={8}>
+              <Col xs={12} md={10}>
                 <Form.Group controlId="formOrigin">
                   <Form.Label>DIRECCIÓN DE ORIGEN:</Form.Label>
                   <AddressSearch onPlaceSelected={handleOrigenSelect} />
                 </Form.Group>
               </Col>
-              <Col xs={12} md={8}>
+              <Col xs={12} md={10}>
                 <Form.Group controlId="fromDestiny">
                   <Form.Label>DIRECCIÓN DESTINO:</Form.Label>
                   <AddressSearch onPlaceSelected={handleDestinoSelect} />
                 </Form.Group>
               </Col>
-              <Col xs={12} md={8}>
+              <Col xs={12} md={10}>
                 <CustomerSelect
                   value={formData.customer}
                   onChange={handleInputChange}
                   name="cliente"
                 />
               </Col>
-              <Col xs={12} md={8}>
+              <Col xs={12} md={10}>
                 <Row>
                   <Col xs={12} md={3}>
                     <Form.Group controlId="formPrice">
@@ -156,7 +156,7 @@ function addOrder() {
                   </Col>
                 </Row>
               </Col>
-              <Col xs={12} md={8}>
+              <Col xs={12} md={10}>
                 <Form.Group>
                   <Form.Label>DESCRIPCIÓN:</Form.Label>
                   <Form.Control
