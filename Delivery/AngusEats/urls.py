@@ -22,5 +22,5 @@ urlpatterns = [
     path("api/v1/", include(router.urls)),
     
     # Documentación de la API
-    path('docs/', include_docs_urls(title="prueba")),
+    path('docs/', include_docs_urls(title="documentacion")),
 ]

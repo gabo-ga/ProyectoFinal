@@ -22,6 +22,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('AngusEats.urls')),
 
-    
-    path('tasks/', include('AngusEats.urls'))
 ]
