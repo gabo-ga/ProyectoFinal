@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
 import { useLoadScript, StandaloneSearchBox } from "@react-google-maps/api";
+import styles from "./index.module.css";
 
 const libraries = ["places"]; // Necesitamos 'places' para usar Autocomplete
 
@@ -46,22 +47,8 @@ const SearchInput = ({ value, onChange }) => (
     placeholder="Buscar dirección..."
     value={value}
     onChange={(e) => onChange(e.target.value)}
-    style={inputStyles}
+    className={styles.inputStyles}
   />
 );
-
-// Estilos del input
-const inputStyles = {
-  boxSizing: "border-box",
-  border: "1px solid transparent",
-  width: "100%",
-  height: "40px",
-  padding: "0 12px",
-  borderRadius: "3px",
-  boxShadow: "0 2px 6px rgba(0, 0, 0, 0.3)",
-  fontSize: "16px",
-  outline: "none",
-  textOverflow: "ellipses",
-};
 
 export default AddressSearch;
