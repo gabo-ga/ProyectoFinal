@@ -20,7 +20,7 @@ function ActionBar() {
           HORA ESTIMADA
         </Col>
         <Col md={2} className={styles.hiddenOnXS}>
-          CONDUCTOR
+          DIRECCION
         </Col>
         <Col className={styles.hiddenOnXS} xs={3} md={2}>
           ACCIONES

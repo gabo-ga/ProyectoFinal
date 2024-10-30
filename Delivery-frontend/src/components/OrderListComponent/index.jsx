@@ -19,7 +19,7 @@ function Order() {
           hora
         </Col>
         <Col md={2} className={styles.hideOnXS}>
-          CONDUCTOR
+          DIRECCION
         </Col>
         <Col xs={3} md={2}>
           <PencilSquare className={styles.icons}></PencilSquare>
