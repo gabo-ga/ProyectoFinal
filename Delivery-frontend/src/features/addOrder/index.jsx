@@ -9,12 +9,16 @@ import AddressSearch from "../../components/AddressSearch";
 import CustomerSelect from "../../components/CostumerSelect";
 import DateFormComponent from "../../components/DateFormComponent";
 import TimeFormComponent from "../../components/TimeFormComponent";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function addOrder() {
   const [formData, setFormData] = useState({
-    address: "",
-    searchAddress: "",
+    direccion_origen: "",
+    coordenadas_origen_lat: null,
+    coordenadas_origen_lng: null,
+    direccion_destino: "",
+    coordenadas_destino_lat: null,
+    coordenadas_destino_lng: null,
     customer: "",
     estado: "pendiente",
     price: "",
@@ -22,6 +26,28 @@ function addOrder() {
     time: "",
     description: "",
   });
+
+  useEffect(() => {
+    console.log("formData ha cambiado:", formData);
+  }, [formData]);
+
+  const handleOrigenSelect = (place) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      direccion_origen: place.address,
+      coordenadas_origen_lat: place.lat,
+      coordenadas_origen_lng: place.lng,
+    }));
+  };
+
+  const handleDestinoSelect = (place) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      direccion_destino: place.address,
+      coordenadas_destino_lat: place.lat,
+      coordenadas_destino_lng: place.lng,
+    }));
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -34,13 +60,26 @@ function addOrder() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const dataToSend = {
+      ...formData,
+      // Puedes combinar las coordenadas en un solo objeto si lo prefieres
+      coordenadas_origen: {
+        lat: formData.coordenadas_origen_lat,
+        lng: formData.coordenadas_origen_lng,
+      },
+      coordenadas_destino: {
+        lat: formData.coordenadas_destino_lat,
+        lng: formData.coordenadas_destino_lng,
+      },
+    };
+
     try {
       const response = await fetch("http://localhost:8000/api/v1/pedidos/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataToSend),
       });
 
       if (response.ok) {
@@ -69,28 +108,15 @@ function addOrder() {
           <Card className={styles.cardContainer}>
             <Form className={styles.formContainer} onSubmit={handleSubmit}>
               <Col xs={12} md={8}>
-                <Form.Group controlId="formSearchAddress">
-                  <Form.Label>BÚSQUEDA DE DIRECCIÓN:</Form.Label>
-                  <AddressSearch
-                    value={formData.searchAddress}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        searchAddress: e.target.value,
-                      })
-                    }
-                    name="searchAddress"
-                  />
+                <Form.Group controlId="formOrigin">
+                  <Form.Label>DIRECCIÓN DE ORIGEN:</Form.Label>
+                  <AddressSearch onPlaceSelected={handleOrigenSelect} />
                 </Form.Group>
               </Col>
               <Col xs={12} md={8}>
-                <Form.Group controlId="fromdAddress">
-                  <Form.Label>DIRECCIÓN:</Form.Label>
-                  <AddressSearch
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    name="address"
-                  />
+                <Form.Group controlId="fromDestiny">
+                  <Form.Label>DIRECCIÓN DESTINO:</Form.Label>
+                  <AddressSearch onPlaceSelected={handleDestinoSelect} />
                 </Form.Group>
               </Col>
               <Col xs={12} md={8}>

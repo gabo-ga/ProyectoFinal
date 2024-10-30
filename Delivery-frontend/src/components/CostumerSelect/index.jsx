@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Form } from 'react-bootstrap';
+import React, { useState, useEffect } from "react";
+import { Form } from "react-bootstrap";
+import PropTypes from "prop-types";
 
-const CustomerSelect = () => {
-  const [clientes, setClientes] = useState([]); 
-  const [selectedCliente, setSelectedCliente] = useState(''); 
+const CustomerSelect = ({ value, onChange, name }) => {
+  const [clientes, setClientes] = useState([]);
 
   // Función para obtener los clientes desde el backend
   const fetchClientes = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/clientes/');
-      const data = await response.json(); // Parsear los datos a JSON
-      setClientes(data);  // Guardar los datos en el estado
+      const response = await fetch("http://localhost:8000/api/v1/clientes/");
+      const data = await response.json();
+      setClientes(data);
     } catch (error) {
-      console.error('Error fetching clientes:', error);
+      console.error("Error fetching clientes:", error);
     }
   };
 
@@ -24,19 +24,22 @@ const CustomerSelect = () => {
   return (
     <Form.Group>
       <Form.Label>CLIENTE:</Form.Label>
-      <Form.Select
-        value={selectedCliente}
-        onChange={(e) => setSelectedCliente(e.target.value)}  // Actualiza el cliente seleccionado
-      >
+      <Form.Select value={value} onChange={onChange} name={name} required>
         <option value="">Seleccione un cliente</option>
         {clientes.map((cliente) => (
           <option key={cliente.id} value={cliente.id}>
-            {cliente.nombre} {/* Ajusta 'cliente.nombre' al campo adecuado según los datos de tu API */}
+            {cliente.nombre}
           </option>
         ))}
       </Form.Select>
     </Form.Group>
   );
+};
+
+CustomerSelect.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 export default CustomerSelect;

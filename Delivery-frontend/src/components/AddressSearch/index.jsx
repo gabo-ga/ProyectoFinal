@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback } from "react";
 import { useLoadScript, StandaloneSearchBox } from "@react-google-maps/api";
 import styles from "./index.module.css";
 
-const libraries = ["places"]; // Necesitamos 'places' para usar Autocomplete
+const libraries = ["places"]; //libreria places
 
 function AddressSearch({ onPlaceSelected }) {
   const [address, setAddress] = useState("");
@@ -13,14 +13,20 @@ function AddressSearch({ onPlaceSelected }) {
     libraries,
   });
 
-  // Función que maneja el cambio de lugar seleccionado
+  //funcion que maneja el cambio de lugar seleccionado
   const handlePlaceChanged = useCallback(() => {
     const place = searchBoxRef.current?.getPlaces();
     if (place && place.length > 0) {
       const selectedPlace = place[0];
       const formattedAddress = selectedPlace.formatted_address;
+      const lat = selectedPlace.geometry.location.lat();
+      const lng = selectedPlace.geometry.location.lng();
       setAddress(formattedAddress);
-      onPlaceSelected(formattedAddress); // Enviar solo la dirección al componente padre
+      onPlaceSelected({
+        address: formattedAddress,
+        lat: lat,
+        lng: lng,
+      });
     }
   }, [onPlaceSelected]);
 
