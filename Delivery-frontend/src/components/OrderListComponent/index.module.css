@@ -23,6 +23,7 @@
 .icons{
     width: 45%;
     height: 45%;
+    cursor: pointer;
 }
 
 @media (min-width: 768px) {
