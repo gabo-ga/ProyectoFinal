@@ -1,12 +1,16 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { useLoadScript, StandaloneSearchBox } from "@react-google-maps/api";
 import styles from "./index.module.css";
 
 const libraries = ["places"]; //libreria places
 
-function AddressSearch({ onPlaceSelected }) {
+function AddressSearch({ onPlaceSelected, initialAddress = "" }) {
   const [address, setAddress] = useState("");
   const searchBoxRef = useRef(null);
+
+  useEffect(() => {
+    setAddress(initialAddress);
+  }, [initialAddress]);
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,

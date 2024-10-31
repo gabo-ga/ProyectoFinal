@@ -5,7 +5,7 @@ import LoginCard from "./components/LoginCard";
 import Dashboard from "./features/dashboard";
 import OrdersHistory from "./features/ordersList";
 import PrivateRoute from "./PrivateRoute";
-import AddOrder from "./features/addOrder";
+import OrderForm from "./features/OrderForm";
 
 function App() {
   return (
@@ -13,7 +13,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login"></Navigate>}></Route>
         <Route path="/login" element={<LoginCard></LoginCard>}></Route>
-        <Route path="/addorder" element={<AddOrder></AddOrder>}></Route>
+        <Route path="/addorder" element={<OrderForm></OrderForm>}></Route>
+        <Route path="/editOrder/:id" element={<OrderForm />}></Route>
         <Route
           path="/dashboard"
           element={

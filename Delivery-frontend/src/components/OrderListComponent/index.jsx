@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styles from "./index.module.css";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
+import { useNavigate } from "react-router-dom";
 
 function Order() {
   const [pedidos, setPedidos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchPedidos();
@@ -47,6 +49,10 @@ function Order() {
     }
   };
 
+  const handleEdit = (id) => {
+    navigate(`/editOrder/${id}`);
+  };
+
   if (isLoading) {
     return <div>Cargando...</div>;
   }
@@ -75,7 +81,10 @@ function Order() {
             {pedido.direccion_destino}
           </Col>
           <Col xs={3} md={2}>
-            <PencilSquare className={styles.icons} />
+            <PencilSquare
+              className={styles.icons}
+              onClick={() => handleEdit(pedido.id)}
+            />
             <Trash
               className={styles.icons}
               onClick={() => handleDelete(pedido.id)}

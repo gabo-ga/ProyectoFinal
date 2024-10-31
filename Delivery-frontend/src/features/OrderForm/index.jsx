@@ -10,8 +10,9 @@ import CustomerSelect from "../../components/CostumerSelect";
 import DateFormComponent from "../../components/DateFormComponent";
 import TimeFormComponent from "../../components/TimeFormComponent";
 import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-function addOrder() {
+function OrderForm() {
   const [formData, setFormData] = useState({
     direccion_origen: "",
     coordenadas_origen_lat: null,
@@ -27,6 +28,10 @@ function addOrder() {
     detalle: "",
   });
 
+  const [isEditMode, setIsEditMode] = useState(false);
+  const navigate = useNavigate();
+  const { id } = useParams();
+
   /* useEffect(() => {
     console.log("formData ha cambiado:", formData);
   }, [formData]); */
@@ -37,6 +42,24 @@ function addOrder() {
       direccion_origen: place.address,
       coordenadas_origen_lat: place.lat,
       coordenadas_origen_lng: place.lng,
+    }));
+  };
+
+  const handleOriginPlaceSelected = (data) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      direccion_origen: data.address,
+      coordenadas_origen_lat: data.lat,
+      coordenadas_origen_lng: data.lng,
+    }));
+  };
+
+  const handleDestinationPlaceSelected = (data) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      direccion_destino: data.address,
+      coordenadas_destino_lat: data.lat,
+      coordenadas_destino_lng: data.lng,
     }));
   };
 
@@ -57,6 +80,38 @@ function addOrder() {
     });
   };
 
+  useEffect(() => {
+    if (id) {
+      setIsEditMode(true);
+      // Obtener los datos del pedido para prellenar el formulario
+      fetch(`http://localhost:8000/api/v1/pedidos/${id}/`)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Datos del pedido:", data);
+          // Mapear los datos al estado formData
+          setFormData({
+            direccion_origen: data.direccion_origen || "",
+            coordenadas_origen_lat: data.coordenadas_origen?.lat || "",
+            coordenadas_origen_lng: data.coordenadas_origen?.lng || "",
+            direccion_destino: data.direccion_destino || "",
+            coordenadas_destino_lat: data.coordenadas_destino?.lat || "",
+            coordenadas_destino_lng: data.coordenadas_destino?.lng || "",
+            customer: data.cliente || "", // Asegúrate de que este campo existe en data
+            estado: data.estado || "",
+            price: data.precio || "",
+            date: data.fecha_entrega ? data.fecha_entrega.split("T")[0] : "",
+            time: data.fecha_entrega
+              ? data.fecha_entrega.split("T")[1].substring(0, 5)
+              : "",
+            description: data.detalle || "",
+          });
+        })
+        .catch((error) => {
+          console.error("Error al obtener el pedido:", error);
+        });
+    }
+  }, [id]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -73,9 +128,14 @@ function addOrder() {
       },
     };
 
+    const url = isEditMode
+      ? `http://localhost:8000/api/v1/pedidos/${id}/`
+      : "http://localhost:8000/api/v1/pedidos/";
+    const method = isEditMode ? "PUT" : "POST";
+
     try {
-      const response = await fetch("http://localhost:8000/api/v1/pedidos/", {
-        method: "POST",
+      const response = await fetch(url, {
+        method: method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -83,13 +143,14 @@ function addOrder() {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        alert("Pedido añadido con éxito");
-        // Aquí puedes limpiar el formulario o redirigir al usuario
+        alert(
+          isEditMode
+            ? "Pedido actualizado con éxito"
+            : "Pedido añadido con éxito"
+        );
+        navigate("/");
       } else {
-        const errorData = await response.json();
-        console.error("Error:", errorData);
-        alert("Error al añadir el pedido");
+        alert("Error al enviar el formulario");
       }
     } catch (error) {
       console.error("Error de red:", error);
@@ -110,13 +171,19 @@ function addOrder() {
               <Col xs={12} md={10}>
                 <Form.Group controlId="formOrigin">
                   <Form.Label>DIRECCIÓN DE ORIGEN:</Form.Label>
-                  <AddressSearch onPlaceSelected={handleOrigenSelect} />
+                  <AddressSearch
+                    onPlaceSelected={handleOrigenSelect}
+                    initialAddress={formData.direccion_origen}
+                  />
                 </Form.Group>
               </Col>
               <Col xs={12} md={10}>
                 <Form.Group controlId="fromDestiny">
                   <Form.Label>DIRECCIÓN DESTINO:</Form.Label>
-                  <AddressSearch onPlaceSelected={handleDestinoSelect} />
+                  <AddressSearch
+                    onPlaceSelected={handleDestinoSelect}
+                    initialAddress={formData.direccion_destino}
+                  />
                 </Form.Group>
               </Col>
               <Col xs={12} md={10}>
@@ -170,7 +237,7 @@ function addOrder() {
               </Col>
               <Form.Group className={styles.buttonsContainer}>
                 <CancelButton type="submit"></CancelButton>
-                <AcceptButton></AcceptButton>
+                <AcceptButton isEditMode={isEditMode} />
               </Form.Group>
             </Form>
           </Card>
@@ -181,4 +248,4 @@ function addOrder() {
   );
 }
 
-export default addOrder;
+export default OrderForm;
