@@ -15,7 +15,7 @@ function Order() {
   }, []);
 
   const fetchPedidos = () => {
-    fetch("http://localhost:8000/api/v1/pedidos/")
+    fetch("http://localhost:8000/api/v1/pedidos/detalle-pedidos/")
       .then((response) => response.json())
       .then((data) => {
         setPedidos(data);
@@ -64,30 +64,30 @@ function Order() {
   return (
     <Container fluid className={styles.container}>
       {pedidos.map((pedido) => (
-        <Row key={pedido.id} className="w-100">
+        <Row key={pedido.ID} className="w-100">
           <Col md={2} className={styles.hideOnXS}>
-            {pedido.id}
+            {pedido.ID}
           </Col>
           <Col xs={4} md={2}>
-            {pedido.cliente}
+            {pedido.CLIENTE}
           </Col>
           <Col xs={3} md={2}>
-            {pedido.estado}
+            {pedido.ESTADO}
           </Col>
           <Col xs={2} md={2}>
-            {pedido.fecha_entrega}
+            {pedido.HORA_ESTIMADA}
           </Col>
           <Col md={2} className={styles.hideOnXS}>
-            {pedido.direccion_destino}
+            {pedido.DIRECCION_DESTINO}
           </Col>
           <Col xs={3} md={2}>
             <PencilSquare
               className={styles.icons}
-              onClick={() => handleEdit(pedido.id)}
+              onClick={() => handleEdit(pedido.ID)}
             />
             <Trash
               className={styles.icons}
-              onClick={() => handleDelete(pedido.id)}
+              onClick={() => handleDelete(pedido.ID)}
             />
           </Col>
         </Row>
