@@ -9,7 +9,11 @@ function Order() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/v1/pedidos/detalle-pedidos/")
+    fetchPedidos();
+  }, []);
+
+  const fetchPedidos = () => {
+    fetch("http://localhost:8000/api/v1/pedidos/")
       .then((response) => response.json())
       .then((data) => {
         setPedidos(data);
@@ -20,7 +24,28 @@ function Order() {
         setError(error);
         setIsLoading(false);
       });
-  }, []);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("¿Estás seguro de que deseas eliminar este pedido?")) {
+      fetch(`http://localhost:8000/api/v1/pedidos/${id}/`, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (response.ok) {
+            alert("Pedido eliminado con éxito");
+            // Actualizar la lista de pedidos
+            fetchPedidos();
+          } else {
+            alert("Error al eliminar el pedido");
+          }
+        })
+        .catch((error) => {
+          console.error("Error de red:", error);
+          alert("Error de red");
+        });
+    }
+  };
 
   if (isLoading) {
     return <div>Cargando...</div>;
@@ -33,25 +58,28 @@ function Order() {
   return (
     <Container fluid className={styles.container}>
       {pedidos.map((pedido) => (
-        <Row key={pedido.ID} className="w-100">
+        <Row key={pedido.id} className="w-100">
           <Col md={2} className={styles.hideOnXS}>
-            {pedido.ID}
+            {pedido.id}
           </Col>
           <Col xs={4} md={2}>
-            {pedido.CLIENTE}
+            {pedido.cliente}
           </Col>
           <Col xs={3} md={2}>
-            {pedido.ESTADO}
+            {pedido.estado}
           </Col>
           <Col xs={2} md={2}>
-            {pedido.HORA_ESTIMADA}
+            {pedido.fecha_entrega}
           </Col>
           <Col md={2} className={styles.hideOnXS}>
-            {pedido.DIRECCION_DESTINO}
+            {pedido.direccion_destino}
           </Col>
           <Col xs={3} md={2}>
             <PencilSquare className={styles.icons} />
-            <Trash className={styles.icons} />
+            <Trash
+              className={styles.icons}
+              onClick={() => handleDelete(pedido.id)}
+            />
           </Col>
         </Row>
       ))}
