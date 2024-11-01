@@ -135,6 +135,33 @@ class PedidoViewSet(viewsets.ModelViewSet):
             ]
 
         return Response(result)
+    
+    # CONSULTA SQL PARA DETALLE DE COORDENADAS CON DECODIFICACIÓN SRID
+    @action(detail=False, methods=['get'], url_path='coordenadas')
+    def detalle_coordenadas(self, request):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT
+                "AngusEats_pedido"."id" AS "ID",
+                ST_X("AngusEats_pedido"."coordenadas_origen") AS "ORIGEN_LAT",
+                ST_Y("AngusEats_pedido"."coordenadas_origen") AS "ORIGEN_LNG",
+                ST_X("AngusEats_pedido"."coordenadas_destino") AS "DESTINO_LAT",
+                ST_Y("AngusEats_pedido"."coordenadas_destino") AS "DESTINO_LNG"
+                    FROM
+                "AngusEats_pedido";
+                """)
+
+            rows = cursor.fetchall()
+            columnas = [col[0] for col in cursor.description]
+
+            result = [
+                dict(zip(columnas, row))
+                for row in rows
+            ]
+
+        return Response(result)
+
+
 
 
 class VehiculoViewSet(viewsets.ModelViewSet):
