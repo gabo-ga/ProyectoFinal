@@ -17,7 +17,6 @@ function UserPage() {
     lng: null,
   });
 
-  // Cargar la dirección de origen guardada al cargar el componente
   useEffect(() => {
     const cargarConfiguracion = async () => {
       try {
@@ -37,7 +36,6 @@ function UserPage() {
     cargarConfiguracion();
   }, []);
 
-  // Callback para manejar la selección de dirección en AddressSearch
   const handlePlaceSelected = ({ address, lat, lng }) => {
     setDireccionOrigen(address);
     setCoordenadasOrigen({ lat, lng });
@@ -48,9 +46,8 @@ function UserPage() {
     });
   };
 
-  // Función para guardar la configuración en el backend
   const handleSave = async (e) => {
-    e.preventDefault(); // Evita la recarga de la página
+    e.preventDefault();
 
     console.log("Datos enviados al hacer clic en Guardar:", {
       direccion_origen: direccionOrigen,
@@ -92,15 +89,13 @@ function UserPage() {
               <EmailInput />
               <PasswordInput />
               <NameComponent />
-              {/* Campo para la dirección de origen fija */}
               <Form.Group controlId="direccionOrigen">
-                <Form.Label>Dirección de Origen Fija</Form.Label>
+                <Form.Label>Dirección de Origen</Form.Label>
                 <AddressSearch
                   onPlaceSelected={handlePlaceSelected}
                   initialAddress={direccionOrigen}
                 />
               </Form.Group>
-              {/* Botón para guardar la configuración */}
               <AcceptButton type="submit" /> {/* Cambiado a tipo submit */}
             </Form>
           </Card.Body>
