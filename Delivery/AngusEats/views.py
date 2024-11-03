@@ -8,10 +8,10 @@ from django.contrib.auth.models import User
 from django.db import connection
 
 # Serializadores
-from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConductorSerializer, VehiculoUbicacionSerializer
+from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConductorSerializer, VehiculoUbicacionSerializer, ConfiguracionSerializer
 
 # Modelos
-from .models import Cliente, Pedido, Vehiculo, Conductor
+from .models import Cliente, Pedido, Vehiculo, Conductor, Configuracion
 
 
 class ProtectedView(APIView):
@@ -161,9 +161,6 @@ class PedidoViewSet(viewsets.ModelViewSet):
 
         return Response(result)
 
-
-
-
 class VehiculoViewSet(viewsets.ModelViewSet):
     queryset = Vehiculo.objects.all()
     serializer_class = VehiculoSerializer
@@ -223,4 +220,27 @@ class VehiculoViewSet(viewsets.ModelViewSet):
             ]
 
         return Response(vehiculos_disponibles)
+    
+class ConfiguracionViewSet(viewsets.ViewSet):
+    serializer_class = ConfiguracionSerializer
+
+    def list(self, request):
+        config, created = Configuracion.objects.get_or_create(id=1)
+        serializer = self.serializer_class(config)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'], url_path='obtener-origen')
+    def obtener_origen(self, request):
+        config, created = Configuracion.objects.get_or_create(id=1)
+        serializer = self.serializer_class(config)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['post'], url_path='guardar-origen')
+    def guardar_origen(self, request):
+        config, created = Configuracion.objects.get_or_create(id=1)
+        serializer = self.serializer_class(config, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"status": "Dirección de origen guardada", "data": serializer.data})
+        return Response(serializer.errors, status=400)
     

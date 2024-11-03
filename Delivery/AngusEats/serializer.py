@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Pedido, Vehiculo, Cliente, Conductor
+from .models import Pedido, Vehiculo, Cliente, Conductor, Configuracion
 from django.contrib.gis.geos import Point
 
 
@@ -106,3 +106,28 @@ class ConductorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Conductor
         fields = ['id', 'nombre', 'correo', 'contraseña', 'fecha_creacion', 'telefono']
+        
+#serializer para la configuracion
+class ConfiguracionSerializer(serializers.ModelSerializer):
+    latitud = serializers.FloatField(write_only=True, required=False)
+    longitud = serializers.FloatField(write_only=True, required=False)
+
+    class Meta:
+        model = Configuracion
+        fields = ['direccion_origen', 'punto_origen', 'latitud', 'longitud']
+
+    def create(self, validated_data):
+        latitud = validated_data.pop('latitud', None)
+        longitud = validated_data.pop('longitud', None)
+        if latitud is not None and longitud is not None:
+            validated_data['punto_origen'] = Point(longitud, latitud, srid=4326)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        latitud = validated_data.pop('latitud', None)
+        longitud = validated_data.pop('longitud', None)
+        if latitud is not None and longitud is not None:
+            instance.punto_origen = Point(longitud, latitud, srid=4326)
+        instance.direccion_origen = validated_data.get('direccion_origen', instance.direccion_origen)
+        instance.save()
+        return instance
