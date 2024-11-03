@@ -25,8 +25,8 @@ function UserPage() {
           "http://localhost:8000/api/v1/configuracion/obtener-origen/"
         );
         const data = await response.json();
-        if (data.address) {
-          setDireccionOrigen(data.address);
+        if (data.direccion_origen) {
+          setDireccionOrigen(data.direccion_origen);
           setCoordenadasOrigen({ lat: data.lat, lng: data.lng });
         }
       } catch (error) {
@@ -41,12 +41,19 @@ function UserPage() {
   const handlePlaceSelected = ({ address, lat, lng }) => {
     setDireccionOrigen(address);
     setCoordenadasOrigen({ lat, lng });
+    console.log("Datos que se enviarán:", {
+      direccion_origen: address,
+      lat: lat,
+      lng: lng,
+    });
   };
 
   // Función para guardar la configuración en el backend
-  const handleSave = async () => {
-    console.log("Datos enviados:", {
-      address: direccionOrigen,
+  const handleSave = async (e) => {
+    e.preventDefault(); // Evita la recarga de la página
+
+    console.log("Datos enviados al hacer clic en Guardar:", {
+      direccion_origen: direccionOrigen,
       lat: coordenadasOrigen.lat,
       lng: coordenadasOrigen.lng,
     });
@@ -58,14 +65,14 @@ function UserPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            address: direccionOrigen,
+            direccion_origen: direccionOrigen,
             lat: coordenadasOrigen.lat,
             lng: coordenadasOrigen.lng,
           }),
         }
       );
       const data = await response.json();
-      console.log("Configuración guardada:", data);
+      console.log("Respuesta del servidor:", data);
     } catch (error) {
       console.error("Error al guardar la configuración:", error);
     }
@@ -79,11 +86,12 @@ function UserPage() {
           <Card.Body className="text-center">
             <PersonCircle size={50} />
             <Card.Title>Hola: usuario</Card.Title>
-            <Form>
+            <Form onSubmit={handleSave}>
+              {" "}
+              {/* Se pasa handleSave como controlador de submit */}
               <EmailInput />
               <PasswordInput />
               <NameComponent />
-
               {/* Campo para la dirección de origen fija */}
               <Form.Group controlId="direccionOrigen">
                 <Form.Label>Dirección de Origen Fija</Form.Label>
@@ -92,9 +100,8 @@ function UserPage() {
                   initialAddress={direccionOrigen}
                 />
               </Form.Group>
-
               {/* Botón para guardar la configuración */}
-              <AcceptButton onClick={handleSave} />
+              <AcceptButton type="submit" /> {/* Cambiado a tipo submit */}
             </Form>
           </Card.Body>
         </Card>
