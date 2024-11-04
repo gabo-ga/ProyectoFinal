@@ -32,27 +32,69 @@ function OrderForm() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  /* useEffect(() => {
-    console.log("formData ha cambiado:", formData);
-  }, [formData]); */
+  useEffect(() => {
+    // Obtener la dirección de origen fija al cargar el componente
+    const obtenerOrigenFijo = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8000/api/v1/configuracion/obtener-origen/"
+        );
+        const data = await response.json();
 
-  const handleOrigenSelect = (place) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      direccion_origen: place.address,
-      coordenadas_origen_lat: place.lat,
-      coordenadas_origen_lng: place.lng,
-    }));
-  };
+        if (data.direccion_origen && data.punto_origen) {
+          // Extraer lat y lng de punto_origen
+          const [lng, lat] = data.punto_origen
+            .replace("SRID=4326;POINT (", "")
+            .replace(")", "")
+            .split(" ")
+            .map(parseFloat);
 
-  const handleOriginPlaceSelected = (data) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      direccion_origen: data.address,
-      coordenadas_origen_lat: data.lat,
-      coordenadas_origen_lng: data.lng,
-    }));
-  };
+          setFormData((prevData) => ({
+            ...prevData,
+            direccion_origen: data.direccion_origen,
+            coordenadas_origen_lat: lat,
+            coordenadas_origen_lng: lng,
+          }));
+        } else {
+          console.error("Error: Dirección de origen incompleta", data);
+        }
+      } catch (error) {
+        console.error("Error al obtener la dirección de origen:", error);
+      }
+    };
+
+    obtenerOrigenFijo();
+  }, []);
+
+  useEffect(() => {
+    if (id) {
+      setIsEditMode(true);
+      fetch(`http://localhost:8000/api/v1/pedidos/${id}/`)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Datos del pedido:", data);
+          setFormData({
+            direccion_origen: data.direccion_origen || "",
+            coordenadas_origen_lat: data.coordenadas_origen?.lat || "",
+            coordenadas_origen_lng: data.coordenadas_origen?.lng || "",
+            direccion_destino: data.direccion_destino || "",
+            coordenadas_destino_lat: data.coordenadas_destino?.lat || "",
+            coordenadas_destino_lng: data.coordenadas_destino?.lng || "",
+            cliente: data.cliente || "",
+            estado: data.estado || "",
+            precio: data.precio || "",
+            date: data.fecha_entrega ? data.fecha_entrega.split("T")[0] : "",
+            time: data.fecha_entrega
+              ? data.fecha_entrega.split("T")[1].substring(0, 5)
+              : "",
+            detalle: data.detalle || "",
+          });
+        })
+        .catch((error) => {
+          console.error("Error al obtener el pedido:", error);
+        });
+    }
+  }, [id]);
 
   const handleDestinationPlaceSelected = (data) => {
     setFormData((prevData) => ({
@@ -60,15 +102,6 @@ function OrderForm() {
       direccion_destino: data.address,
       coordenadas_destino_lat: data.lat,
       coordenadas_destino_lng: data.lng,
-    }));
-  };
-
-  const handleDestinoSelect = (place) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      direccion_destino: place.address,
-      coordenadas_destino_lat: place.lat,
-      coordenadas_destino_lng: place.lng,
     }));
   };
 
@@ -80,44 +113,11 @@ function OrderForm() {
     });
   };
 
-  useEffect(() => {
-    if (id) {
-      setIsEditMode(true);
-      // Obtener los datos del pedido para prellenar el formulario
-      fetch(`http://localhost:8000/api/v1/pedidos/${id}/`)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Datos del pedido:", data);
-          // Mapear los datos al estado formData
-          setFormData({
-            direccion_origen: data.direccion_origen || "",
-            coordenadas_origen_lat: data.coordenadas_origen?.lat || "",
-            coordenadas_origen_lng: data.coordenadas_origen?.lng || "",
-            direccion_destino: data.direccion_destino || "",
-            coordenadas_destino_lat: data.coordenadas_destino?.lat || "",
-            coordenadas_destino_lng: data.coordenadas_destino?.lng || "",
-            customer: data.cliente || "", // Asegúrate de que este campo existe en data
-            estado: data.estado || "",
-            price: data.precio || "",
-            date: data.fecha_entrega ? data.fecha_entrega.split("T")[0] : "",
-            time: data.fecha_entrega
-              ? data.fecha_entrega.split("T")[1].substring(0, 5)
-              : "",
-            description: data.detalle || "",
-          });
-        })
-        .catch((error) => {
-          console.error("Error al obtener el pedido:", error);
-        });
-    }
-  }, [id]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const dataToSend = {
       ...formData,
-      // Puedes combinar las coordenadas en un solo objeto si lo prefieres
       coordenadas_origen: {
         lat: formData.coordenadas_origen_lat,
         lng: formData.coordenadas_origen_lng,
@@ -163,7 +163,7 @@ function OrderForm() {
       <Header />
       <Container fluid className={styles.body}>
         <Row className={styles.rowContainer}>
-          <h4>Añadir pedido</h4>
+          <h4>{isEditMode ? "Editar pedido" : "Añadir pedido"}</h4>
         </Row>
         <Row className={styles.rowContainer}>
           <Card className={styles.cardContainer}>
@@ -171,9 +171,10 @@ function OrderForm() {
               <Col xs={12} md={10}>
                 <Form.Group controlId="formOrigin">
                   <Form.Label>DIRECCIÓN DE ORIGEN:</Form.Label>
-                  <AddressSearch
-                    onPlaceSelected={handleOrigenSelect}
-                    initialAddress={formData.direccion_origen}
+                  <Form.Control
+                    type="text"
+                    value={formData.direccion_origen}
+                    readOnly // Hace que el campo no sea editable
                   />
                 </Form.Group>
               </Col>
@@ -181,14 +182,14 @@ function OrderForm() {
                 <Form.Group controlId="fromDestiny">
                   <Form.Label>DIRECCIÓN DESTINO:</Form.Label>
                   <AddressSearch
-                    onPlaceSelected={handleDestinoSelect}
+                    onPlaceSelected={handleDestinationPlaceSelected}
                     initialAddress={formData.direccion_destino}
                   />
                 </Form.Group>
               </Col>
               <Col xs={12} md={10}>
                 <CustomerSelect
-                  value={formData.customer}
+                  value={formData.cliente}
                   onChange={handleInputChange}
                   name="cliente"
                 />
@@ -200,7 +201,7 @@ function OrderForm() {
                       <Form.Label>PRECIO:</Form.Label>
                       <Form.Control
                         type="text"
-                        value={formData.price}
+                        value={formData.precio}
                         onChange={handleInputChange}
                         name="precio"
                         required
@@ -228,16 +229,16 @@ function OrderForm() {
                   <Form.Label>DESCRIPCIÓN:</Form.Label>
                   <Form.Control
                     as="textarea"
-                    value={formData.description}
+                    value={formData.detalle}
                     onChange={handleInputChange}
-                    name="description"
+                    name="detalle"
                     rows={3}
                   ></Form.Control>
                 </Form.Group>
               </Col>
               <Form.Group className={styles.buttonsContainer}>
-                <CancelButton type="submit"></CancelButton>
-                <AcceptButton isEditMode={isEditMode} />
+                <CancelButton type="button" />
+                <AcceptButton type="submit" />
               </Form.Group>
             </Form>
           </Card>

@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.gis.geos import Point
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -6,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from django.db import connection
+
 
 # Serializadores
 from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConductorSerializer, VehiculoUbicacionSerializer, ConfiguracionSerializer
@@ -237,10 +239,42 @@ class ConfiguracionViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['post'], url_path='guardar-origen')
     def guardar_origen(self, request):
-        config, created = Configuracion.objects.get_or_create(id=1)
-        serializer = self.serializer_class(config, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"status": "Dirección de origen guardada", "data": serializer.data})
-        return Response(serializer.errors, status=400)
+        direccion_origen = request.data.get("direccion_origen")
+        lat = request.data.get("lat")
+        lng = request.data.get("lng")
+
+        print("Datos recibidos - Dirección:", direccion_origen, "Lat:", lat, "Lng:", lng)
+
+        # Verificar que lat y lng sean válidos
+        try:
+            lat = float(lat)
+            lng = float(lng)
+            print("Latitud y longitud convertidas a float:", lat, lng)
+        except (TypeError, ValueError) as e:
+            print("Error al convertir lat y lng a float:", e)
+            return Response({"error": "Coordenadas inválidas. Asegúrate de enviar lat y lng como números válidos."}, status=400)
+
+        # Intentar crear el Point
+        try:
+            punto_origen = Point(lng, lat, srid=4326)  # Crear el punto geográfico
+            print("Punto de origen creado correctamente:", punto_origen)
+
+            # Crear o actualizar la configuración
+            configuracion, created = Configuracion.objects.update_or_create(
+                id=1,
+                defaults={
+                    "direccion_origen": direccion_origen,
+                    "punto_origen": punto_origen
+                }
+            )
+
+            # Confirmar que el punto se haya guardado correctamente en la base de datos
+            serializer = self.serializer_class(configuracion)
+            return Response({
+                "status": "Dirección de origen guardada",
+                "data": serializer.data
+            }, status=200)
+        except Exception as e:
+            print("Error al crear el punto de origen:", e)
+            return Response({"error": "Error al crear el punto de origen"}, status=400)
     

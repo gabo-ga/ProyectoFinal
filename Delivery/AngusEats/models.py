@@ -128,7 +128,8 @@ class AnalisisPedido(models.Model):
 # models.py
 class Configuracion(models.Model):
     direccion_origen = models.CharField(max_length=255, blank=True, null=True) 
-    punto_origen = gis_models.PointField(geography=True, blank=True, null=True) 
+    punto_origen = gis_models.PointField(srid=4326, null=True, blank=True)
+
 
     def __str__(self):
         return f"Configuración (Dirección de origen: {self.direccion_origen})"
