@@ -14,6 +14,7 @@ import {
   saveOrUpdatePedido,
 } from "../../api/apiService";
 import styles from "./index.module.css";
+import MapWithMarker from "../../components/MapWithMarkerComponent";
 
 function OrderForm() {
   const [formData, setFormData] = useState({
@@ -91,11 +92,21 @@ function OrderForm() {
   }, [id]);
 
   const handleDestinationPlaceSelected = (data) => {
-    setFormData((prevData) => ({
-      ...prevData,
+    console.log("Dirección seleccionada:", data); // Verificar datos de dirección
+    setFormData({
+      ...formData,
       direccion_destino: data.address,
       coordenadas_destino_lat: data.lat,
       coordenadas_destino_lng: data.lng,
+    });
+  };
+
+  const handleMarkerPositionChanged = (position) => {
+    console.log("Nueva posición del marcador:", position); // Verificar datos de marcador ajustado
+    setFormData((prevData) => ({
+      ...prevData,
+      coordenadas_destino_lat: position.lat,
+      coordenadas_destino_lng: position.lng,
     }));
   };
 
@@ -109,7 +120,7 @@ function OrderForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log("Datos a enviar:", formData);
     const dataToSend = {
       ...formData,
       coordenadas_origen: {
@@ -123,15 +134,18 @@ function OrderForm() {
     };
 
     try {
-      const response = await saveOrUpdatePedido(dataToSend, id);
+      const response = await fetch("http://localhost:8000/api/v1/pedidos/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
       if (response.ok) {
-        alert(
-          isEditMode
-            ? "Pedido actualizado con éxito"
-            : "Pedido añadido con éxito"
-        );
-        navigate("/");
+        alert("Pedido añadido con éxito");
       } else {
+        console.error("Error al enviar el formulario:", response.statusText);
         alert("Error al enviar el formulario");
       }
     } catch (error) {
@@ -139,7 +153,6 @@ function OrderForm() {
       alert("Error de red");
     }
   };
-
   return (
     <>
       <Header />
@@ -168,6 +181,25 @@ function OrderForm() {
                     initialAddress={formData.direccion_destino}
                   />
                 </Form.Group>
+              </Col>
+              <Col xs={12} md={10}>
+                {formData.coordenadas_destino_lat &&
+                  formData.coordenadas_destino_lng && (
+                    <MapWithMarker
+                      center={{
+                        lat: formData.coordenadas_destino_lat,
+                        lng: formData.coordenadas_destino_lng,
+                      }}
+                      onMarkerPositionChanged={handleMarkerPositionChanged}
+                    />
+                  )}
+                {formData.coordenadas_destino_lat &&
+                  formData.coordenadas_destino_lng && (
+                    <div>
+                      <p>Latitud: {formData.coordenadas_destino_lat}</p>
+                      <p>Longitud: {formData.coordenadas_destino_lng}</p>
+                    </div>
+                  )}
               </Col>
               <Col xs={12} md={10}>
                 <CustomerSelect
@@ -208,7 +240,7 @@ function OrderForm() {
           </Card>
         </Row>
       </Container>
-      <Footer />
+      {/*<Footer />*/}
     </>
   );
 }

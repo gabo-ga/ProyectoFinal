@@ -1,8 +1,7 @@
-// src/components/AddressSearch.js
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { StandaloneSearchBox } from "@react-google-maps/api";
-import SearchInput from "../../components/AddressInput/index"; // Importa el componente de entrada
-import { useGoogleMapsScript } from "../../api/mapService"; // Importa el hook de carga de Google Maps
+import SearchInput from "../../components/AddressInput/index";
+import { useGoogleMapsScript } from "../../api/mapService";
 
 function AddressSearch({ onPlaceSelected, initialAddress = "" }) {
   const [address, setAddress] = useState("");
