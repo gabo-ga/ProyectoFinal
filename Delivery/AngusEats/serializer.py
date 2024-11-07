@@ -22,6 +22,7 @@ from .models import Pedido, Cliente
 class PedidoSerializer(serializers.ModelSerializer):
     coordenadas_origen = serializers.DictField(write_only=True, required=False)
     coordenadas_destino = serializers.DictField(write_only=True, required=False)
+    fecha_entrega = serializers.DateTimeField(required=False, allow_null=True)
 
     class Meta:
         model = Pedido
@@ -45,24 +46,17 @@ class PedidoSerializer(serializers.ModelSerializer):
         coordenadas_origen_data = validated_data.pop('coordenadas_origen', None)
         coordenadas_destino_data = validated_data.pop('coordenadas_destino', None)
 
-
-        date = self.initial_data.get('date')
-        time = self.initial_data.get('time')
-        if date and time:
-            fecha_entrega = f"{date}T{time}:00Z"
-            validated_data['fecha_entrega'] = fecha_entrega
-
-        
+        # Crea el pedido utilizando el valor de fecha_entrega como timestamp, si está presente
         pedido = Pedido.objects.create(**validated_data)
 
-        
+        # Asigna las coordenadas de origen si están presentes
         if coordenadas_origen_data:
             lat = float(coordenadas_origen_data.get('lat'))
             lng = float(coordenadas_origen_data.get('lng'))
             pedido.coordenadas_origen = Point(lng, lat)
             pedido.save()
 
-        
+        # Asigna las coordenadas de destino si están presentes
         if coordenadas_destino_data:
             lat = float(coordenadas_destino_data.get('lat'))
             lng = float(coordenadas_destino_data.get('lng'))

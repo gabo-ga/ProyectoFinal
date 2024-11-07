@@ -7,8 +7,6 @@ import CancelButton from "../../components/CancelButton";
 import AcceptButton from "../../components/AcceptButton";
 import AddressSearch from "../AddressSearch";
 import CustomerSelect from "../../components/CostumerSelect";
-import DateFormComponent from "../../components/DateFormComponent";
-import TimeFormComponent from "../../components/TimeFormComponent";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -205,20 +203,6 @@ function OrderForm() {
                         onChange={handleInputChange}
                         name="precio"
                         required
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col xs={12} md={9}>
-                    <Form.Group className={styles.datetimeContainer}>
-                      <DateFormComponent
-                        value={formData.date}
-                        onChange={handleInputChange}
-                        name="date"
-                      />
-                      <TimeFormComponent
-                        value={formData.time}
-                        onChange={handleInputChange}
-                        name="time"
                       />
                     </Form.Group>
                   </Col>
