@@ -10,3 +10,24 @@ export const useGoogleMapsScript = () => {
 
   return { isLoaded, loadError };
 };
+
+export const calculateRoute = (origin, destination) => {
+    return new Promise((resolve, reject) => {
+      const directionsService = new window.google.maps.DirectionsService();
+      directionsService.route(
+        {
+          origin: origin,
+          destination: destination,
+          travelMode: window.google.maps.TravelMode.DRIVING,
+        },
+        (result, status) => {
+          if (status === window.google.maps.DirectionsStatus.OK) {
+            resolve(result);
+          } else {
+            console.error("Error al calcular la ruta:", status);
+            reject(status);
+          }
+        }
+      );
+    });
+  };

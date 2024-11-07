@@ -3,11 +3,12 @@ import {
   GoogleMap,
   LoadScript,
   Marker,
-  DirectionsService,
   DirectionsRenderer,
 } from "@react-google-maps/api";
+import { fetchVehiculos, fetchPedidosCoordenadas } from "../../api/apiService";
+import { calculateRoute } from "../../api/mapService";
 
-const Map = () => {
+function Map() {
   const containerStyle = {
     width: "100%",
     height: "100%",
@@ -21,34 +22,26 @@ const Map = () => {
   const [vehiculos, setVehiculos] = useState([]);
   const [rutas, setRutas] = useState([]);
 
+  // Obtener ubicaciones de vehículos
   useEffect(() => {
-    // Petición GET para obtener las ubicaciones de los vehículos
     const obtenerUbicaciones = async () => {
       try {
-        const respuesta = await fetch(
-          "http://localhost:8000/api/v1/vehiculos/ubicaciones"
-        );
-        const datos = await respuesta.json();
-        setVehiculos(datos);
+        const data = await fetchVehiculos(); // Usar fetchVehiculos de apiService
+        setVehiculos(data);
       } catch (error) {
-        console.error("Error al obtener ubicaciones:", error);
+        console.error(error);
       }
     };
 
     obtenerUbicaciones();
   }, []);
 
+  // Obtener coordenadas de pedidos y calcular rutas
   useEffect(() => {
-    // Petición GET para obtener las coordenadas de origen y destino de los pedidos
     const obtenerCoordenadas = async () => {
       try {
-        const respuesta = await fetch(
-          "http://localhost:8000/api/v1/pedidos/coordenadas"
-        );
-        const datos = await respuesta.json();
-
-        // Para cada pedido, calcular la ruta
-        datos.forEach((pedido) => {
+        const data = await fetchPedidosCoordenadas(); // Usar fetchPedidosCoordenadas de apiService
+        data.forEach(async (pedido) => {
           const origen = {
             lat: parseFloat(pedido.ORIGEN_LNG),
             lng: parseFloat(pedido.ORIGEN_LAT),
@@ -57,33 +50,20 @@ const Map = () => {
             lat: parseFloat(pedido.DESTINO_LNG),
             lng: parseFloat(pedido.DESTINO_LAT),
           };
-          calculateRoute(origen, destino);
+          try {
+            const result = await calculateRoute(origen, destino); // Usar calculateRoute de mapService
+            setRutas((prevRutas) => [...prevRutas, result]);
+          } catch (status) {
+            console.error("Error al calcular la ruta:", status);
+          }
         });
       } catch (error) {
-        console.error("Error al obtener coordenadas:", error);
+        console.error(error);
       }
     };
 
     obtenerCoordenadas();
   }, []);
-
-  const calculateRoute = (origin, destination) => {
-    const directionsService = new window.google.maps.DirectionsService();
-    directionsService.route(
-      {
-        origin: origin,
-        destination: destination,
-        travelMode: window.google.maps.TravelMode.DRIVING,
-      },
-      (result, status) => {
-        if (status === window.google.maps.DirectionsStatus.OK) {
-          setRutas((prevRutas) => [...prevRutas, result]);
-        } else {
-          console.error("Error al calcular la ruta:", status);
-        }
-      }
-    );
-  };
 
   return (
     <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
@@ -112,6 +92,6 @@ const Map = () => {
       </GoogleMap>
     </LoadScript>
   );
-};
+}
 
 export default Map;

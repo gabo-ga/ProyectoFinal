@@ -68,4 +68,26 @@ export const fetchActiveVehicles = async () => {
     }
   };
 
+  // Obtener ubicaciones de vehículos
+export const fetchVehiculos = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/vehiculos/ubicaciones`);
+      return response.data;
+    } catch (error) {
+      console.error("Error al obtener ubicaciones:", error);
+      throw error;
+    }
+  };
+  
+  // Obtener coordenadas de pedidos
+  export const fetchPedidosCoordenadas = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/pedidos/coordenadas`);
+      return response.data;
+    } catch (error) {
+      console.error("Error al obtener coordenadas:", error);
+      throw error;
+    }
+  };
+
 
