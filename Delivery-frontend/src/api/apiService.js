@@ -90,4 +90,42 @@ export const fetchVehiculos = async () => {
     }
   };
 
+  ///order form services
+  export const fetchOrigenFijo = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/configuracion/obtener-origen/`);
+      return response.data;
+    } catch (error) {
+      console.error("Error al obtener la dirección de origen:", error);
+      throw error;
+    }
+  };
+  
+  export const fetchPedidoById = async (id) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/pedidos/${id}/`);
+      return response.data;
+    } catch (error) {
+      console.error("Error al obtener el pedido:", error);
+      throw error;
+    }
+  };
+  
+  export const saveOrUpdatePedido = async (data, id = null) => {
+    const url = id ? `${API_BASE_URL}/pedidos/${id}/` : `${API_BASE_URL}/pedidos/`;
+    const method = id ? "PUT" : "POST";
+    try {
+      const response = await axios({
+        url,
+        method,
+        headers: { "Content-Type": "application/json" },
+        data,
+      });
+      return response;
+    } catch (error) {
+      console.error("Error al enviar el formulario:", error);
+      throw error;
+    }
+  };
+
 

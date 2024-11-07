@@ -1,14 +1,19 @@
+// src/pages/OrderForm.js
+import React, { useState, useEffect } from "react";
+import { Card, Col, Container, Row, Form } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
-import { Card, Col, Container, Row } from "react-bootstrap";
-import styles from "./index.module.css";
-import { Form } from "react-bootstrap";
 import CancelButton from "../../components/CancelButton";
 import AcceptButton from "../../components/AcceptButton";
 import AddressSearch from "../AddressSearch";
 import CustomerSelect from "../../components/CostumerSelect";
-import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+  fetchOrigenFijo,
+  fetchPedidoById,
+  saveOrUpdatePedido,
+} from "../../api/apiService";
+import styles from "./index.module.css";
 
 function OrderForm() {
   const [formData, setFormData] = useState({
@@ -31,33 +36,24 @@ function OrderForm() {
   const { id } = useParams();
 
   useEffect(() => {
-    // Obtener la dirección de origen fija al cargar el componente
     const obtenerOrigenFijo = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8000/api/v1/configuracion/obtener-origen/"
-        );
-        const data = await response.json();
-
+        const data = await fetchOrigenFijo();
         if (data.direccion_origen && data.punto_origen) {
-          // Extraer lat y lng de punto_origen
           const [lng, lat] = data.punto_origen
             .replace("SRID=4326;POINT (", "")
             .replace(")", "")
             .split(" ")
             .map(parseFloat);
-
           setFormData((prevData) => ({
             ...prevData,
             direccion_origen: data.direccion_origen,
             coordenadas_origen_lat: lat,
             coordenadas_origen_lng: lng,
           }));
-        } else {
-          console.error("Error: Dirección de origen incompleta", data);
         }
       } catch (error) {
-        console.error("Error al obtener la dirección de origen:", error);
+        console.error(error.message);
       }
     };
 
@@ -67,10 +63,9 @@ function OrderForm() {
   useEffect(() => {
     if (id) {
       setIsEditMode(true);
-      fetch(`http://localhost:8000/api/v1/pedidos/${id}/`)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Datos del pedido:", data);
+      const cargarPedido = async () => {
+        try {
+          const data = await fetchPedidoById(id);
           setFormData({
             direccion_origen: data.direccion_origen || "",
             coordenadas_origen_lat: data.coordenadas_origen?.lat || "",
@@ -87,10 +82,11 @@ function OrderForm() {
               : "",
             detalle: data.detalle || "",
           });
-        })
-        .catch((error) => {
-          console.error("Error al obtener el pedido:", error);
-        });
+        } catch (error) {
+          console.error(error.message);
+        }
+      };
+      cargarPedido();
     }
   }, [id]);
 
@@ -126,20 +122,8 @@ function OrderForm() {
       },
     };
 
-    const url = isEditMode
-      ? `http://localhost:8000/api/v1/pedidos/${id}/`
-      : "http://localhost:8000/api/v1/pedidos/";
-    const method = isEditMode ? "PUT" : "POST";
-
     try {
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToSend),
-      });
-
+      const response = await saveOrUpdatePedido(dataToSend, id);
       if (response.ok) {
         alert(
           isEditMode
@@ -172,7 +156,7 @@ function OrderForm() {
                   <Form.Control
                     type="text"
                     value={formData.direccion_origen}
-                    readOnly // Hace que el campo no sea editable
+                    readOnly
                   />
                 </Form.Group>
               </Col>
@@ -193,20 +177,16 @@ function OrderForm() {
                 />
               </Col>
               <Col xs={12} md={10}>
-                <Row>
-                  <Col xs={12} md={3}>
-                    <Form.Group controlId="formPrice">
-                      <Form.Label>PRECIO:</Form.Label>
-                      <Form.Control
-                        type="text"
-                        value={formData.precio}
-                        onChange={handleInputChange}
-                        name="precio"
-                        required
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
+                <Form.Group controlId="formPrice">
+                  <Form.Label>PRECIO:</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={formData.precio}
+                    onChange={handleInputChange}
+                    name="precio"
+                    required
+                  />
+                </Form.Group>
               </Col>
               <Col xs={12} md={10}>
                 <Form.Group>
@@ -217,7 +197,7 @@ function OrderForm() {
                     onChange={handleInputChange}
                     name="detalle"
                     rows={3}
-                  ></Form.Control>
+                  />
                 </Form.Group>
               </Col>
               <Form.Group className={styles.buttonsContainer}>
