@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import styles from "./orders.module.css";
 import Col from "react-bootstrap/esm/Col";
 import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
+import { fetchActiveOrders } from "../../api/apiService";
 
 function ActiveOrders(props) {
   const [orders, setOrders] = useState([]);
@@ -13,20 +13,17 @@ function ActiveOrders(props) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    const getOrders = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/v1/pedidos/en-curso/"
-        );
-        setOrders(response.data); // Asignar la respuesta al estado
-        setLoading(false); // Detener el indicador de carga
+        const data = await fetchActiveOrders();
+        setOrders(data);
+        setLoading(false);
       } catch (error) {
-        setError("Error al cargar los pedidos");
+        setError(error.message);
         setLoading(false);
       }
     };
-
-    fetchOrders();
+    getOrders();
   }, []);
 
   if (loading) {

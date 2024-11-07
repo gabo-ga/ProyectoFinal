@@ -1,8 +1,8 @@
+// src/components/AddressSearch.js
 import React, { useState, useRef, useCallback, useEffect } from "react";
-import { useLoadScript, StandaloneSearchBox } from "@react-google-maps/api";
-import styles from "./index.module.css";
-
-const libraries = ["places"]; //libreria places
+import { StandaloneSearchBox } from "@react-google-maps/api";
+import SearchInput from "../../components/AddressInput/index"; // Importa el componente de entrada
+import { useGoogleMapsScript } from "../../api/mapService"; // Importa el hook de carga de Google Maps
 
 function AddressSearch({ onPlaceSelected, initialAddress = "" }) {
   const [address, setAddress] = useState("");
@@ -12,12 +12,8 @@ function AddressSearch({ onPlaceSelected, initialAddress = "" }) {
     setAddress(initialAddress);
   }, [initialAddress]);
 
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    libraries,
-  });
+  const { isLoaded, loadError } = useGoogleMapsScript();
 
-  //funcion que maneja el cambio de lugar seleccionado
   const handlePlaceChanged = useCallback(() => {
     const place = searchBoxRef.current?.getPlaces();
     if (place && place.length > 0) {
@@ -34,7 +30,6 @@ function AddressSearch({ onPlaceSelected, initialAddress = "" }) {
     }
   }, [onPlaceSelected]);
 
-  // Renderizado condicional de la carga y errores
   if (loadError) return <div>Error al cargar Google Maps</div>;
   if (!isLoaded) return <div>Cargando...</div>;
 
@@ -49,16 +44,5 @@ function AddressSearch({ onPlaceSelected, initialAddress = "" }) {
     </div>
   );
 }
-
-// Componente separado para el input
-const SearchInput = ({ value, onChange }) => (
-  <input
-    type="text"
-    placeholder="Buscar dirección..."
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    className={styles.inputStyles}
-  />
-);
 
 export default AddressSearch;

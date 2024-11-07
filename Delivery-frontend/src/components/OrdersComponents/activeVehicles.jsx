@@ -1,8 +1,9 @@
+// src/components/ActiveVehicles.js
 import React, { useEffect, useState } from "react";
 import { Col, Row, Container, Card } from "react-bootstrap";
 import styles from "./orders.module.css";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import { fetchActiveVehicles } from "../../api/apiService.js";
 
 function ActiveVehicles(props) {
   const [vehicles, setVehicles] = useState([]);
@@ -10,20 +11,18 @@ function ActiveVehicles(props) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchVehicles = async () => {
+    const getVehicles = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/v1/vehiculos/vehiculos-disponibles/"
-        );
-        setVehicles(response.data);
+        const data = await fetchActiveVehicles(); // Llama a la función desde apiService
+        setVehicles(data);
         setLoading(false);
       } catch (error) {
-        setError("Error al cargar los vehículos disponibles");
+        setError(error.message);
         setLoading(false);
       }
     };
 
-    fetchVehicles();
+    getVehicles();
   }, []);
 
   if (loading) {
@@ -35,36 +34,34 @@ function ActiveVehicles(props) {
   }
 
   return (
-    <>
-      <Container fluid>
-        <Row>
-          <Col xs={12}>
-            <h4 className={styles.TextStyle}>
-              <Link to="/ordershistory" className={styles.TextStyle}>
-                {props.title}
-              </Link>
-            </h4>
-          </Col>
-        </Row>
-        <Row>
-          <div className={styles.scrollWrapper}>
-            <div className={styles.scrollContainer}>
-              {vehicles.map((vehicle, index) => (
-                <Col key={index}>
-                  <OrderCard
-                    vehiculoNombre={vehicle.vehiculo_nombre}
-                    tipo={vehicle.vehiculo_tipo}
-                    placa={vehicle.placa}
-                    conductorNombre={vehicle.conductor_nombre}
-                    conductorTelefono={vehicle.conductor_telefono}
-                  />
-                </Col>
-              ))}
-            </div>
+    <Container fluid>
+      <Row>
+        <Col xs={12}>
+          <h4 className={styles.TextStyle}>
+            <Link to="/ordershistory" className={styles.TextStyle}>
+              {props.title}
+            </Link>
+          </h4>
+        </Col>
+      </Row>
+      <Row>
+        <div className={styles.scrollWrapper}>
+          <div className={styles.scrollContainer}>
+            {vehicles.map((vehicle, index) => (
+              <Col key={index}>
+                <OrderCard
+                  vehiculoNombre={vehicle.vehiculo_nombre}
+                  tipo={vehicle.vehiculo_tipo}
+                  placa={vehicle.placa}
+                  conductorNombre={vehicle.conductor_nombre}
+                  conductorTelefono={vehicle.conductor_telefono}
+                />
+              </Col>
+            ))}
           </div>
-        </Row>
-      </Container>
-    </>
+        </div>
+      </Row>
+    </Container>
   );
 }
 

@@ -1,3 +1,4 @@
+// src/pages/UserPage.js
 import React, { useState, useEffect } from "react";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
@@ -7,8 +8,12 @@ import styles from "./index.module.css";
 import EmailInput from "../../components/UserConfigurationComponents/EmailInputComponent";
 import PasswordInput from "../../components/UserConfigurationComponents/PasswordComponent";
 import NameComponent from "../../components/UserConfigurationComponents/NameComponent";
-import AddressSearch from "../../components/AddressSearch";
+import AddressSearch from "../AddressSearch/index.jsx";
 import AcceptButton from "../../components/AcceptButton";
+import {
+  fetchDireccionOrigen,
+  saveDireccionOrigen,
+} from "../../api/apiService.js";
 
 function UserPage() {
   const [direccionOrigen, setDireccionOrigen] = useState("");
@@ -20,16 +25,13 @@ function UserPage() {
   useEffect(() => {
     const cargarConfiguracion = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8000/api/v1/configuracion/obtener-origen/"
-        );
-        const data = await response.json();
+        const data = await fetchDireccionOrigen(); // Usa fetchDireccionOrigen
         if (data.direccion_origen) {
           setDireccionOrigen(data.direccion_origen);
           setCoordenadasOrigen({ lat: data.lat, lng: data.lng });
         }
       } catch (error) {
-        console.error("Error al cargar la configuración:", error);
+        console.error(error.message);
       }
     };
 
@@ -41,8 +43,8 @@ function UserPage() {
     setCoordenadasOrigen({ lat, lng });
     console.log("Datos que se enviarán:", {
       direccion_origen: address,
-      lat: lat,
-      lng: lng,
+      lat,
+      lng,
     });
   };
 
@@ -56,22 +58,14 @@ function UserPage() {
     });
 
     try {
-      const response = await fetch(
-        "http://localhost:8000/api/v1/configuracion/guardar-origen/",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            direccion_origen: direccionOrigen,
-            lat: coordenadasOrigen.lat,
-            lng: coordenadasOrigen.lng,
-          }),
-        }
-      );
-      const data = await response.json();
+      const data = await saveDireccionOrigen({
+        direccion_origen: direccionOrigen,
+        lat: coordenadasOrigen.lat,
+        lng: coordenadasOrigen.lng,
+      }); // Usa saveDireccionOrigen
       console.log("Respuesta del servidor:", data);
     } catch (error) {
-      console.error("Error al guardar la configuración:", error);
+      console.error(error.message);
     }
   };
 
@@ -84,8 +78,6 @@ function UserPage() {
             <PersonCircle size={50} />
             <Card.Title>Hola: usuario</Card.Title>
             <Form onSubmit={handleSave}>
-              {" "}
-              {/* Se pasa handleSave como controlador de submit */}
               <EmailInput />
               <PasswordInput />
               <NameComponent />
@@ -96,7 +88,7 @@ function UserPage() {
                   initialAddress={direccionOrigen}
                 />
               </Form.Group>
-              <AcceptButton type="submit" /> {/* Cambiado a tipo submit */}
+              <AcceptButton type="submit" />
             </Form>
           </Card.Body>
         </Card>

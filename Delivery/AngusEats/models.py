@@ -41,7 +41,6 @@ class Cliente(models.Model):
 class Pedido(models.Model):
         ESTADO_CHOICES = [
             ('pendiente','Pendiente'),
-            ('en_ruta','En Ruta'),
             ('entregado', 'Entregado'),
             ('cancelado', 'Cancelado')
         ]

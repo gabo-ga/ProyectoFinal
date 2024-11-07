@@ -5,7 +5,7 @@ import styles from "./index.module.css";
 import { Form } from "react-bootstrap";
 import CancelButton from "../../components/CancelButton";
 import AcceptButton from "../../components/AcceptButton";
-import AddressSearch from "../../components/AddressSearch";
+import AddressSearch from "../AddressSearch";
 import CustomerSelect from "../../components/CostumerSelect";
 import DateFormComponent from "../../components/DateFormComponent";
 import TimeFormComponent from "../../components/TimeFormComponent";

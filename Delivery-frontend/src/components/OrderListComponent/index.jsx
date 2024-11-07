@@ -1,8 +1,10 @@
+// src/components/Order.js
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styles from "./index.module.css";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
+import { fetchPedidos, deletePedido } from "../../api/apiService.js";
 
 function Order() {
   const [pedidos, setPedidos] = useState([]);
@@ -11,41 +13,35 @@ function Order() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchPedidos();
+    loadPedidos();
   }, []);
 
-  const fetchPedidos = () => {
-    fetch("http://localhost:8000/api/v1/pedidos/detalle-pedidos/")
-      .then((response) => response.json())
-      .then((data) => {
-        setPedidos(data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error al obtener los pedidos:", error);
-        setError(error);
-        setIsLoading(false);
-      });
+  const loadPedidos = async () => {
+    try {
+      const data = await fetchPedidos();
+      setPedidos(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error.message);
+      setError(error);
+      setIsLoading(false);
+    }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm("¿Estás seguro de que deseas eliminar este pedido?")) {
-      fetch(`http://localhost:8000/api/v1/pedidos/${id}/`, {
-        method: "DELETE",
-      })
-        .then((response) => {
-          if (response.ok) {
-            alert("Pedido eliminado con éxito");
-            // Actualizar la lista de pedidos
-            fetchPedidos();
-          } else {
-            alert("Error al eliminar el pedido");
-          }
-        })
-        .catch((error) => {
-          console.error("Error de red:", error);
-          alert("Error de red");
-        });
+      try {
+        const success = await deletePedido(id);
+        if (success) {
+          alert("Pedido eliminado con éxito");
+          loadPedidos(); // Actualizar la lista de pedidos
+        } else {
+          alert("Error al eliminar el pedido");
+        }
+      } catch (error) {
+        console.error(error.message);
+        alert("Error de red");
+      }
     }
   };
 

@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.gis.geos import Point
+from django.contrib.gis.db.models.functions import Distance
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -162,6 +163,43 @@ class PedidoViewSet(viewsets.ModelViewSet):
             ]
 
         return Response(result)
+    
+    @action(detail=False, methods=['post'], url_path='calcular-ruta-con-parada')
+    def calcular_ruta_con_parada(self, request):
+        origen_lat = request.data.get("origen_lat")
+        origen_lng = request.data.get("origen_lng")
+        destino_final_lat = request.data.get("destino_final_lat")
+        destino_final_lng = request.data.get("destino_final_lng")
+
+        # Verificar que todos los datos están presentes
+        if None in (origen_lat, origen_lng, destino_final_lat, destino_final_lng):
+            return Response({"error": "Datos incompletos"}, status=400)
+
+        # Crear los puntos geográficos
+        origen = Point(float(origen_lng), float(origen_lat), srid=4326)
+        destino_final = Point(float(destino_final_lng), float(destino_final_lat), srid=4326)
+
+        # Filtrar los pedidos pendientes y calcular la distancia al origen
+        destino_mas_cercano = Pedido.objects.filter(estado='pendiente').annotate(
+            distancia=Distance("coordenadas_destino", origen)
+        ).order_by("distancia").first()
+
+        if not destino_mas_cercano:
+            return Response({"error": "No hay destinos disponibles"}, status=404)
+
+        # Preparar la respuesta con el destino más cercano y el destino final
+        data = {
+            "origen": {"lat": origen.y, "lng": origen.x},
+            "destino_mas_cercano": {
+                "lat": destino_mas_cercano.coordenadas_destino.y,
+                "lng": destino_mas_cercano.coordenadas_destino.x,
+            },
+            "destino_final": {"lat": destino_final.y, "lng": destino_final.x},
+        }
+
+        return Response(data, status=200)
+    
+    
 
 class VehiculoViewSet(viewsets.ModelViewSet):
     queryset = Vehiculo.objects.all()
