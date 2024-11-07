@@ -1,24 +1,25 @@
+// src/components/CustomerSelect.js
 import React, { useState, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import PropTypes from "prop-types";
+import { fetchClientes } from "../../api/apiService"; // Importa la función desde apiService
 
-const CustomerSelect = ({ value, onChange, name }) => {
+// Función declarada para el componente CustomerSelect
+function CustomerSelect({ value, onChange, name }) {
   const [clientes, setClientes] = useState([]);
-
-  // Función para obtener los clientes desde el backend
-  const fetchClientes = async () => {
-    try {
-      const response = await fetch("http://localhost:8000/api/v1/clientes/");
-      const data = await response.json();
-      setClientes(data);
-    } catch (error) {
-      console.error("Error fetching clientes:", error);
-    }
-  };
 
   // Ejecuta la función fetchClientes cuando el componente se monta
   useEffect(() => {
-    fetchClientes();
+    const getClientes = async () => {
+      try {
+        const data = await fetchClientes(); // Usa fetchClientes de apiService
+        setClientes(data);
+      } catch (error) {
+        console.error("Error fetching clientes:", error);
+      }
+    };
+
+    getClientes();
   }, []);
 
   return (
@@ -34,7 +35,7 @@ const CustomerSelect = ({ value, onChange, name }) => {
       </Form.Select>
     </Form.Group>
   );
-};
+}
 
 CustomerSelect.propTypes = {
   value: PropTypes.string.isRequired,

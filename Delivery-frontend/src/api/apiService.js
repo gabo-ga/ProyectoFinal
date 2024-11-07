@@ -57,3 +57,15 @@ export const fetchActiveVehicles = async () => {
       throw new Error('Error al guardar la configuración');
     }
   };
+
+  export const fetchClientes = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/clientes/`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching clientes:", error);
+      throw error;
+    }
+  };
+
+
