@@ -28,6 +28,17 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     #permission_classes = [IsAuthenticated]  
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        # Modificar los datos serializados para agregar el campo nombre_completo
+        data = []
+        for user_data in serializer.data:
+            user_data["nombre_completo"] = f"{user_data['first_name']} {user_data['last_name']}"
+            data.append(user_data)
+        
+        return Response(data)
 
 class ConductorViewSet(viewsets.ModelViewSet):
     queryset = Conductor.objects.all()
@@ -315,4 +326,5 @@ class ConfiguracionViewSet(viewsets.ViewSet):
         except Exception as e:
             print("Error al crear el punto de origen:", e)
             return Response({"error": "Error al crear el punto de origen"}, status=400)
-    
+  
+  

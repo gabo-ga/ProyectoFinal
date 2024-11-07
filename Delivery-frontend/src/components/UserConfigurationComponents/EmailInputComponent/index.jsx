@@ -1,11 +1,18 @@
+// EmailInput.js
 import { Form } from "react-bootstrap";
 import React from "react";
 
-function EmailInput() {
+function EmailInput({ value }) {
   return (
     <Form.Group>
-      <Form.Label>Correo electronico</Form.Label>
-      <Form.Control placeholder="corre@gmail.com" disabled></Form.Control>
+      <Form.Label>Correo electrónico</Form.Label>
+      <Form.Control
+        type="email"
+        value={value}
+        placeholder="correo@gmail.com"
+        disabled
+        readOnly
+      />
     </Form.Group>
   );
 }

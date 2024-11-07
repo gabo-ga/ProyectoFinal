@@ -6,16 +6,20 @@ import { Card, Container, Form } from "react-bootstrap";
 import { PersonCircle } from "react-bootstrap-icons";
 import styles from "./index.module.css";
 import EmailInput from "../../components/UserConfigurationComponents/EmailInputComponent";
-import PasswordInput from "../../components/UserConfigurationComponents/PasswordComponent";
 import NameComponent from "../../components/UserConfigurationComponents/NameComponent";
 import AddressSearch from "../AddressSearch/index.jsx";
 import AcceptButton from "../../components/AcceptButton";
 import {
   fetchDireccionOrigen,
   saveDireccionOrigen,
+  fetchUserById,
 } from "../../api/apiService.js";
+import { useParams } from "react-router-dom";
 
 function UserPage() {
+  const { userId } = useParams;
+  const [userEmail, setUserEmail] = useState("");
+  const [userName, setUserName] = useState("");
   const [direccionOrigen, setDireccionOrigen] = useState("");
   const [coordenadasOrigen, setCoordenadasOrigen] = useState({
     lat: null,
@@ -23,9 +27,19 @@ function UserPage() {
   });
 
   useEffect(() => {
+    const cargarDatosUsuario = async () => {
+      try {
+        const userData = await fetchUserById();
+        setUserEmail(userData.email);
+        setUserName(`${userData.first_name} ${userData.last_name}`);
+      } catch (error) {
+        console.error("Error al cargar datos del usuario:", error.message);
+      }
+    };
+
     const cargarConfiguracion = async () => {
       try {
-        const data = await fetchDireccionOrigen(); // Usa fetchDireccionOrigen
+        const data = await fetchDireccionOrigen();
         if (data.direccion_origen) {
           setDireccionOrigen(data.direccion_origen);
           setCoordenadasOrigen({ lat: data.lat, lng: data.lng });
@@ -35,6 +49,7 @@ function UserPage() {
       }
     };
 
+    cargarDatosUsuario();
     cargarConfiguracion();
   }, []);
 
@@ -62,7 +77,7 @@ function UserPage() {
         direccion_origen: direccionOrigen,
         lat: coordenadasOrigen.lat,
         lng: coordenadasOrigen.lng,
-      }); // Usa saveDireccionOrigen
+      });
       console.log("Respuesta del servidor:", data);
     } catch (error) {
       console.error(error.message);
@@ -76,11 +91,10 @@ function UserPage() {
         <Card>
           <Card.Body className="text-center">
             <PersonCircle size={50} />
-            <Card.Title>Hola: usuario</Card.Title>
+            <Card.Title>Hola: {userName}</Card.Title>
             <Form onSubmit={handleSave}>
-              <EmailInput />
-              <PasswordInput />
-              <NameComponent />
+              <EmailInput value={userEmail} />
+              <NameComponent value={userName} />
               <Form.Group controlId="direccionOrigen">
                 <Form.Label>Dirección de Origen</Form.Label>
                 <AddressSearch

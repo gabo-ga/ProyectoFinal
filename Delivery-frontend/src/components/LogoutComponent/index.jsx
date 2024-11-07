@@ -23,6 +23,7 @@ function Logout({ onClose }) {
     fetchUserData();
   }, []);
 
+  const userId = 1;
   return (
     <Card className={styles.cardStyle}>
       <Card.Body className={styles.cardContainer}>

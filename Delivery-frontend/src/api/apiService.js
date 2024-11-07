@@ -128,4 +128,12 @@ export const fetchVehiculos = async () => {
     }
   };
 
-
+  export const fetchUserById = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/users/1/`);
+      return response.data;
+    } catch (error) {
+      console.error("Error al obtener los datos del usuario:", error);
+      throw error;
+    }
+  };
