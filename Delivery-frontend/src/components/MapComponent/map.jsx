@@ -40,7 +40,7 @@ function Map() {
     obtenerUbicaciones();
   }, []);
 
-  // Obtener pedidos y calcular ruta con waypoints
+  // Obtener pedidos y calcular ruta con waypoints optimizados
   useEffect(() => {
     const fetchAndCalculateRoute = async () => {
       try {
@@ -51,7 +51,7 @@ function Map() {
           return;
         }
 
-        // Extraer origen, destino y waypoints
+        // Extraer origen y destino
         const origin = {
           lat: parseFloat(data[0].ORIGEN_LNG),
           lng: parseFloat(data[0].ORIGEN_LAT),
@@ -62,6 +62,7 @@ function Map() {
           lng: parseFloat(data[data.length - 1].DESTINO_LAT),
         };
 
+        // Extraer los waypoints
         const waypoints = data.slice(1, -1).map((pedido) => ({
           location: {
             lat: parseFloat(pedido.DESTINO_LNG),
@@ -70,11 +71,15 @@ function Map() {
           stopover: true,
         }));
 
-        // Calcular la ruta
+        // Calcular la ruta con waypoints optimizados
         const routeResult = await calculateRoute(
           origin,
           destination,
           waypoints
+        );
+        console.log(
+          "Orden optimizado de waypoints:",
+          routeResult.routes[0].waypoint_order
         );
         setRoute(routeResult);
       } catch (error) {
