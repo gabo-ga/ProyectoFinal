@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
-import { Card, Container, Form } from "react-bootstrap";
+import { Card, Col, Container, Form } from "react-bootstrap";
 import { PersonCircle } from "react-bootstrap-icons";
 import styles from "./index.module.css";
 import EmailInput from "../../components/UserConfigurationComponents/EmailInputComponent";
@@ -88,22 +88,24 @@ function UserPage() {
     <>
       <Header />
       <Container fluid className={styles.body}>
-        <Card>
-          <Card.Body className="text-center">
-            <PersonCircle size={50} />
-            <Card.Title>Hola: {userName}</Card.Title>
-            <Form onSubmit={handleSave}>
-              <EmailInput value={userEmail} />
-              <NameComponent value={userName} />
-              <Form.Group controlId="direccionOrigen">
-                <Form.Label>Dirección de Origen</Form.Label>
-                <AddressSearch
-                  onPlaceSelected={handlePlaceSelected}
-                  initialAddress={direccionOrigen}
-                />
-              </Form.Group>
-              <AcceptButton type="submit" />
-            </Form>
+        <Card className={styles.card}>
+          <Card.Body>
+            <Col xs={12} className={styles.container}>
+              <PersonCircle size={50} />
+              <Card.Title>Hola: {userName}</Card.Title>
+              <Form className={styles.formContainer} onSubmit={handleSave}>
+                <EmailInput value={userEmail} />
+                <NameComponent value={userName} />
+                <Form.Group controlId="direccionOrigen">
+                  <Form.Label>Dirección de Origen</Form.Label>
+                  <AddressSearch
+                    onPlaceSelected={handlePlaceSelected}
+                    initialAddress={direccionOrigen}
+                  />
+                </Form.Group>
+                <AcceptButton type="submit" />
+              </Form>
+            </Col>
           </Card.Body>
         </Card>
       </Container>
