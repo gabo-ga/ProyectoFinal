@@ -39,7 +39,7 @@ export const calculateRoute = (origin, destination, waypoints) => {
         origin,
         destination,
         waypoints,
-        optimizeWaypoints: false, // Permite que Google optimice el orden
+        optimizeWaypoints: true, // Permite que Google optimice el orden
         travelMode: window.google.maps.TravelMode.DRIVING,
       },
       (result, status) => {
