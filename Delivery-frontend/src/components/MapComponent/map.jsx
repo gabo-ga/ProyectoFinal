@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   GoogleMap,
-  LoadScript,
+  useLoadScript,
   Marker,
   DirectionsRenderer,
 } from "@react-google-maps/api";
@@ -15,82 +15,103 @@ function Map() {
   };
 
   const center = {
-    lat: -17.3895, // Centro aproximado de Cochabamba, Bolivia
+    lat: -17.3895,
     lng: -66.1568,
   };
 
   const [vehiculos, setVehiculos] = useState([]);
-  const [rutas, setRutas] = useState([]);
+  const [route, setRoute] = useState(null);
+
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+  });
 
   // Obtener ubicaciones de vehículos
   useEffect(() => {
     const obtenerUbicaciones = async () => {
       try {
-        const data = await fetchVehiculos(); // Usar fetchVehiculos de apiService
+        const data = await fetchVehiculos();
         setVehiculos(data);
       } catch (error) {
-        console.error(error);
+        console.error("Error al obtener vehículos:", error);
       }
     };
 
     obtenerUbicaciones();
   }, []);
 
-  // Obtener coordenadas de pedidos y calcular rutas
+  // Obtener pedidos y calcular ruta con waypoints
   useEffect(() => {
-    const obtenerCoordenadas = async () => {
+    const fetchAndCalculateRoute = async () => {
       try {
-        const data = await fetchPedidosCoordenadas(); // Usar fetchPedidosCoordenadas de apiService
-        data.forEach(async (pedido) => {
-          const origen = {
-            lat: parseFloat(pedido.ORIGEN_LNG),
-            lng: parseFloat(pedido.ORIGEN_LAT),
-          };
-          const destino = {
+        const data = await fetchPedidosCoordenadas();
+
+        if (data.length < 2) {
+          console.error("No hay suficientes datos para calcular la ruta");
+          return;
+        }
+
+        // Extraer origen, destino y waypoints
+        const origin = {
+          lat: parseFloat(data[0].ORIGEN_LNG),
+          lng: parseFloat(data[0].ORIGEN_LAT),
+        };
+
+        const destination = {
+          lat: parseFloat(data[data.length - 1].DESTINO_LNG),
+          lng: parseFloat(data[data.length - 1].DESTINO_LAT),
+        };
+
+        const waypoints = data.slice(1, -1).map((pedido) => ({
+          location: {
             lat: parseFloat(pedido.DESTINO_LNG),
             lng: parseFloat(pedido.DESTINO_LAT),
-          };
-          try {
-            const result = await calculateRoute(origen, destino); // Usar calculateRoute de mapService
-            setRutas((prevRutas) => [...prevRutas, result]);
-          } catch (status) {
-            console.error("Error al calcular la ruta:", status);
-          }
-        });
+          },
+          stopover: true,
+        }));
+
+        // Calcular la ruta
+        const routeResult = await calculateRoute(
+          origin,
+          destination,
+          waypoints
+        );
+        setRoute(routeResult);
       } catch (error) {
-        console.error(error);
+        console.error("Error al obtener pedidos o calcular la ruta:", error);
       }
     };
 
-    obtenerCoordenadas();
-  }, []);
+    if (isLoaded) {
+      fetchAndCalculateRoute();
+    }
+  }, [isLoaded]);
+
+  if (loadError) {
+    return <div>Error al cargar el mapa</div>;
+  }
+
+  if (!isLoaded) {
+    return <div>Cargando mapa...</div>;
+  }
 
   return (
-    <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-      <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={12}>
-        {/* Marcadores de los vehículos */}
-        {vehiculos.map((vehiculo) => (
-          <Marker
-            key={vehiculo.placa}
-            position={{
-              lat: vehiculo.ubicacion_geografica.latitude,
-              lng: vehiculo.ubicacion_geografica.longitude,
-            }}
-            title={`Vehículo: ${vehiculo.placa}`}
-          />
-        ))}
+    <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={12}>
+      {/* Marcadores de los vehículos */}
+      {vehiculos.map((vehiculo) => (
+        <Marker
+          key={vehiculo.placa}
+          position={{
+            lat: vehiculo.ubicacion_geografica.latitude,
+            lng: vehiculo.ubicacion_geografica.longitude,
+          }}
+          title={`Vehículo: ${vehiculo.placa}`}
+        />
+      ))}
 
-        {/* Renderizar múltiples rutas */}
-        {rutas.map((route, index) => (
-          <DirectionsRenderer
-            key={index}
-            options={{
-              directions: route,
-            }}
-          />
-        ))}
-      </GoogleMap>
-    </LoadScript>
+      {/* Renderizar la ruta */}
+      {route && <DirectionsRenderer directions={route} />}
+    </GoogleMap>
   );
 }
 
