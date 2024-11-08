@@ -1,18 +1,26 @@
 // src/components/MapWithMarker.jsx
 import React, { useEffect, useRef } from "react";
-import { GoogleMap } from "@react-google-maps/api";
+import { GoogleMap, useLoadScript } from "@react-google-maps/api";
 
 const containerStyle = {
   width: "100%",
   height: "400px",
 };
 
+const libraries = ["places"];
+
 function MapWithMarker({ center, onMarkerPositionChanged }) {
   const mapRef = useRef(null);
   const markerRef = useRef(null);
 
+  // Usa el hook useLoadScript para cargar el script de Google Maps
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+    libraries,
+  });
+
   useEffect(() => {
-    if (mapRef.current && window.google) {
+    if (isLoaded && mapRef.current && window.google) {
       if (markerRef.current) {
         markerRef.current.setMap(null);
       }
@@ -31,7 +39,10 @@ function MapWithMarker({ center, onMarkerPositionChanged }) {
         onMarkerPositionChanged(newPosition);
       });
     }
-  }, [center, onMarkerPositionChanged]);
+  }, [isLoaded, center, onMarkerPositionChanged]);
+
+  if (loadError) return <p>Error al cargar Google Maps</p>;
+  if (!isLoaded) return <p>Cargando mapa...</p>;
 
   return (
     <GoogleMap

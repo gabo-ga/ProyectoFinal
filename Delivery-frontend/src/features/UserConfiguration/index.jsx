@@ -15,21 +15,22 @@ import {
   fetchUserById,
 } from "../../api/apiService.js";
 import { useParams } from "react-router-dom";
+import MapWithMarker from "../../components/MapWithMarkerComponent";
 
 function UserPage() {
-  const { userId } = useParams;
+  const { userId } = useParams();
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [direccionOrigen, setDireccionOrigen] = useState("");
   const [coordenadasOrigen, setCoordenadasOrigen] = useState({
-    lat: null,
-    lng: null,
+    lat: -17.3895, // Coordenadas predeterminadas (Cochabamba, Bolivia)
+    lng: -66.1568,
   });
 
   useEffect(() => {
     const cargarDatosUsuario = async () => {
       try {
-        const userData = await fetchUserById();
+        const userData = await fetchUserById(userId);
         setUserEmail(userData.email);
         setUserName(`${userData.first_name} ${userData.last_name}`);
       } catch (error) {
@@ -51,27 +52,33 @@ function UserPage() {
 
     cargarDatosUsuario();
     cargarConfiguracion();
-  }, []);
+  }, [userId]);
 
   const handlePlaceSelected = ({ address, lat, lng }) => {
     setDireccionOrigen(address);
     setCoordenadasOrigen({ lat, lng });
-    console.log("Datos que se enviarán:", {
-      direccion_origen: address,
-      lat,
-      lng,
-    });
+  };
+
+  const handleMarkerPositionChanged = (newPosition) => {
+    setCoordenadasOrigen(newPosition);
+
+    // Actualiza la dirección en función de las nuevas coordenadas
+    fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${
+        newPosition.lat
+      },${newPosition.lng}&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.results[0]) {
+          setDireccionOrigen(data.results[0].formatted_address);
+        }
+      })
+      .catch((error) => console.error("Error al obtener la dirección:", error));
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
-
-    console.log("Datos enviados al hacer clic en Guardar:", {
-      direccion_origen: direccionOrigen,
-      lat: coordenadasOrigen.lat,
-      lng: coordenadasOrigen.lng,
-    });
-
     try {
       const data = await saveDireccionOrigen({
         direccion_origen: direccionOrigen,
@@ -103,6 +110,11 @@ function UserPage() {
                     initialAddress={direccionOrigen}
                   />
                 </Form.Group>
+                {/* Mapa interactivo con marcador reutilizable */}
+                <MapWithMarker
+                  center={coordenadasOrigen}
+                  onMarkerPositionChanged={handleMarkerPositionChanged}
+                />
                 <AcceptButton type="submit" />
               </Form>
             </Col>
