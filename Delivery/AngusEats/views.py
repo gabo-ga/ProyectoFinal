@@ -212,7 +212,22 @@ class PedidoViewSet(viewsets.ModelViewSet):
 
         return Response(data, status=200)
     
-    
+    @action(detail=True, methods=['patch'], url_path='actualizar-estado')
+    def actualizar_estado(self, request, pk=None):
+        nuevo_estado = request.data.get('estado')
+        if nuevo_estado not in ['entregado', 'cancelado']:
+            return Response({"error": "Estado inválido"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    UPDATE "AngusEats_pedido" 
+                    SET estado = %s 
+                    WHERE id = %s
+                """, [nuevo_estado, pk])
+            return Response({"mensaje": "Estado actualizado correctamente"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class VehiculoViewSet(viewsets.ModelViewSet):
     queryset = Vehiculo.objects.all()

@@ -7,6 +7,7 @@ import OrdersHistory from "./features/ordersList";
 import PrivateRoute from "./PrivateRoute";
 import OrderForm from "./features/OrderForm";
 import UserPage from "./features/UserConfiguration";
+import OrderDetails from "./features/orderDetails";
 
 function App() {
   return (
@@ -17,6 +18,10 @@ function App() {
         <Route path="/addorder" element={<OrderForm></OrderForm>}></Route>
         <Route path="/editOrder/:id" element={<OrderForm />}></Route>
         <Route path="/user" element={<UserPage></UserPage>}></Route>
+        <Route
+          path="/orderdetails/:id"
+          element={<OrderDetails></OrderDetails>}
+        ></Route>
         <Route
           path="/dashboard"
           element={
