@@ -125,13 +125,6 @@ function OrderForm() {
                       onMarkerPositionChanged={handleMarkerPositionChanged}
                     />
                   )}
-                {formData.coordenadas_destino_lat &&
-                  formData.coordenadas_destino_lng && (
-                    <div>
-                      <p>Latitud: {formData.coordenadas_destino_lat}</p>
-                      <p>Longitud: {formData.coordenadas_destino_lng}</p>
-                    </div>
-                  )}
               </Col>
               <Col xs={12} md={10}>
                 <CustomerSelect
