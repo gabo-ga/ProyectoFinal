@@ -158,13 +158,15 @@ class PedidoViewSet(viewsets.ModelViewSet):
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT
-                "AngusEats_pedido"."id" AS "ID",
-                ST_X("AngusEats_pedido"."coordenadas_origen") AS "ORIGEN_LAT",
-                ST_Y("AngusEats_pedido"."coordenadas_origen") AS "ORIGEN_LNG",
-                ST_X("AngusEats_pedido"."coordenadas_destino") AS "DESTINO_LAT",
-                ST_Y("AngusEats_pedido"."coordenadas_destino") AS "DESTINO_LNG"
-                    FROM
-                "AngusEats_pedido";
+                    p.id AS "ID",
+                    ST_X(p.coordenadas_origen) AS "ORIGEN_LAT",
+                    ST_Y(p.coordenadas_origen) AS "ORIGEN_LNG",
+                    ST_X(p.coordenadas_destino) AS "DESTINO_LAT",
+                    ST_Y(p.coordenadas_destino) AS "DESTINO_LNG"
+                FROM 
+                    "AngusEats_pedido" p
+                WHERE 
+                    p.estado IN ('pendiente', 'en_ruta');
                 """)
 
             rows = cursor.fetchall()

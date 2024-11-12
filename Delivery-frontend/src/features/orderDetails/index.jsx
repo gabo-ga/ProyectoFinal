@@ -5,12 +5,15 @@ import Footer from "../../layout/Footer";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { fetchActiveOrders } from "../../api/apiService";
+import axios from "axios"; // Importar axios para la solicitud PATCH
 
 function OrderDetails() {
   const { id } = useParams();
   const [pedido, setPedido] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const API_BASE_URL = "http://localhost:8000/api/v1";
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -34,10 +37,30 @@ function OrderDetails() {
     fetchOrderDetails();
   }, [id]);
 
+  const updateOrderStatus = async (nuevoEstado) => {
+    try {
+      await axios.patch(`${API_BASE_URL}/pedidos/${id}/actualizar-estado/`, {
+        estado: nuevoEstado,
+      });
+      setPedido({ ...pedido, pedido_estado: nuevoEstado });
+    } catch (error) {
+      console.error("Error al actualizar el estado del pedido:", error);
+      setError("Error al actualizar el estado del pedido");
+    }
+  };
+
+  const handleComplete = async () => {
+    const success = await updateOrderStatus("entregado");
+    if (success) {
+      window.alert("Pedido completado");
+      navigate("/dashboard");
+    }
+  };
+  const handleCancel = () => updateOrderStatus("cancelado");
+
   if (loading) return <p>Cargando...</p>;
   if (error) return <p>{error}</p>;
 
-  // Formatear la fecha de creación
   const formattedDate = new Date(pedido.pedido_fecha).toLocaleString("es-ES", {
     year: "numeric",
     month: "long",
@@ -71,8 +94,12 @@ function OrderDetails() {
             <Card.Text>
               <strong>Estado:</strong> {pedido.pedido_estado}
             </Card.Text>
-            {/* Agrega otros detalles según sea necesario */}
-            <Button variant="primary">Terminar</Button>
+            <Button variant="primary" className="me-2" onClick={handleComplete}>
+              Terminar
+            </Button>
+            <Button variant="secondary" onClick={handleCancel}>
+              Cancelar
+            </Button>
           </Card.Body>
         </Card>
       </div>
