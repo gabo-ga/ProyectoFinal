@@ -51,13 +51,18 @@ function ActiveOrders(props) {
             <div className={styles.scrollContainer}>
               {orders.map((order, index) => (
                 <Col xs={12} md={5} key={index}>
-                  <OrderCard
-                    cliente={order.cliente_nombre}
-                    telefono={order.cliente_telefono}
-                    fecha={order.pedido_fecha}
-                    estado={order.pedido_estado}
-                    destino={order.pedido_direccion_destino}
-                  />
+                  <Link
+                    to={`/orderdetails/${order.pedido_id}`}
+                    className={styles.linkStyle}
+                  >
+                    <OrderCard
+                      cliente={order.cliente_nombre}
+                      telefono={order.cliente_telefono}
+                      fecha={order.pedido_fecha}
+                      estado={order.pedido_estado}
+                      destino={order.pedido_direccion_destino}
+                    />
+                  </Link>
                 </Col>
               ))}
             </div>

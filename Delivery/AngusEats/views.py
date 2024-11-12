@@ -59,6 +59,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT 
+                    p.id AS pedido_id,
                     c.nombre AS cliente_nombre,
                     c.telefono AS cliente_telefono,
                     p.fecha_creacion AS pedido_fecha,
@@ -78,11 +79,12 @@ class PedidoViewSet(viewsets.ModelViewSet):
             
             result = [
                 {
-                    'cliente_nombre': row[0],
-                    'cliente_telefono': row[1],
-                    'pedido_fecha': row[2],
-                    'pedido_estado': row[3],
-                    'pedido_direccion_destino': row[4]
+                    'pedido_id': row[0],
+                    'cliente_nombre': row[1],
+                    'cliente_telefono': row[2],
+                    'pedido_fecha': row[3],
+                    'pedido_estado': row[4],
+                    'pedido_direccion_destino': row[5]
                 }
                 for row in rows
             ]
