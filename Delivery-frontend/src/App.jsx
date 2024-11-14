@@ -9,7 +9,7 @@ import OrderForm from "./features/OrderForm";
 import UserPage from "./features/UserConfiguration";
 import OrderDetails from "./features/orderDetails";
 import VehicleList from "./features/vehiclesDetail";
-import VehicleForm from "./feature/vehicleForm";
+import VehicleForm from "./features/vehicleForm";
 
 function App() {
   return (
