@@ -38,7 +38,7 @@ function ActiveVehicles(props) {
       <Row>
         <Col xs={12}>
           <h4 className={styles.TextStyle}>
-            <Link to="/ordershistory" className={styles.TextStyle}>
+            <Link to="/vehicles" className={styles.TextStyle}>
               {props.title}
             </Link>
           </h4>
