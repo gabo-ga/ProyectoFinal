@@ -9,6 +9,7 @@ import OrderForm from "./features/OrderForm";
 import UserPage from "./features/UserConfiguration";
 import OrderDetails from "./features/orderDetails";
 import VehicleList from "./features/vehiclesDetail";
+import VehicleForm from "./feature/vehicleForm";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/editOrder/:id" element={<OrderForm />}></Route>
         <Route path="/user" element={<UserPage></UserPage>}></Route>
         <Route path="/vehicles" element={<VehicleList></VehicleList>}></Route>
+        <Route path="/addvehicle" element={<VehicleForm></VehicleForm>}></Route>
         <Route
           path="/orderdetails/:id"
           element={<OrderDetails></OrderDetails>}
