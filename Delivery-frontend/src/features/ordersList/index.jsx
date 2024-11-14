@@ -22,7 +22,13 @@ function OrdersHistory() {
           </Col>
         </Row>
         <Row className={styles.row}>
-          <ActionBar></ActionBar>
+          <ActionBar
+            label1="ID"
+            label2="CLIENTE"
+            label3="ESTADO"
+            label4="DESTINO"
+            label5="ACCIONES"
+          ></ActionBar>
           <Order></Order>
         </Row>
       </Container>
