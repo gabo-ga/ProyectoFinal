@@ -64,14 +64,11 @@ function Order() {
           <Col md={2} className={styles.hideOnXS}>
             {pedido.ID}
           </Col>
-          <Col xs={4} md={2}>
+          <Col xs={4} md={3}>
             {pedido.CLIENTE}
           </Col>
           <Col xs={3} md={2}>
             {pedido.ESTADO}
-          </Col>
-          <Col xs={2} md={2}>
-            {pedido.HORA_ESTIMADA}
           </Col>
           <Col md={2} className={styles.hideOnXS}>
             {pedido.DIRECCION_DESTINO}
