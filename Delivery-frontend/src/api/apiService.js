@@ -20,6 +20,15 @@ export const fetchActiveVehicles = async () => {
     }
   };
 
+  export const deleteVehiculo = async (placa) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/v1/vehiculos/${placa}/`);
+    } catch (error) {
+      console.error('Error al eliminar el vehículo:', error);
+      throw error;
+    }
+  };
+
   export const fetchPedidos = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/pedidos/detalle-pedidos/`);

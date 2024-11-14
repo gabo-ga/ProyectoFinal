@@ -4,7 +4,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import styles from "./index.module.css";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
-import { fetchActiveVehicles } from "../../api/apiService.js";
+import { fetchActiveVehicles, deleteVehiculo } from "../../api/apiService.js";
 
 function Vehicles() {
   const [vehiculos, setVehiculos] = useState([]);
@@ -28,8 +28,19 @@ function Vehicles() {
     navigate(`/editar-vehiculo/${vehiculo.placa}`);
   };
 
-  const handleDelete = (vehiculo) => {
-    console.log("Eliminar vehículo:", vehiculo.placa);
+  const handleDelete = async (vehiculo) => {
+    if (
+      window.confirm(
+        `¿Estás seguro de que deseas eliminar el vehículo ${vehiculo.placa}?`
+      )
+    ) {
+      try {
+        await deleteVehiculo(vehiculo.placa);
+        setVehiculos(vehiculos.filter((v) => v.placa !== vehiculo.placa));
+      } catch (error) {
+        console.error("Error al eliminar el vehículo:", error);
+      }
+    }
   };
 
   return (
