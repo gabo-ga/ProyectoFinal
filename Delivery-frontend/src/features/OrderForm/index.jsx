@@ -82,7 +82,7 @@ function OrderForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const success = await handleOrderSubmit(formData);
-    if (success) navigate("/"); // Redirige a otra ruta después de enviar
+    if (success) navigate("/dashboard"); // Redirige a otra ruta después de enviar
   };
 
   return (
