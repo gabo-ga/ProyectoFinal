@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Plus } from "react-bootstrap-icons";
 import styles from "./button.module.css";
 
-function AddButton() {
+function AddButton({ redirectTo }) {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/addorder");
+    navigate(redirectTo);
   };
 
   return (

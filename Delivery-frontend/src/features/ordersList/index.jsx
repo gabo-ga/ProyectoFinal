@@ -18,7 +18,7 @@ function OrdersHistory() {
             <h4>GESTION DE PEDIDOS</h4>
           </Col>
           <Col xs={2} md={1}>
-            <AddButton></AddButton>
+            <AddButton redirectTo="/addorder"></AddButton>
           </Col>
         </Row>
         <Row className={styles.row}>
