@@ -4,6 +4,7 @@ import { Container, Col, Row } from "react-bootstrap";
 import ActionBar from "../../components/ActionsBar/Actions";
 import styles from "./index.module.css";
 import AddButton from "../../components/AddButton/button";
+import Vehicles from "../../components/VehicleListComponent";
 
 function VehicleList() {
   return (
@@ -26,6 +27,7 @@ function VehicleList() {
             label4="PLACA"
             label5="ACCIONES"
           ></ActionBar>
+          <Vehicles></Vehicles>
         </Row>
       </Container>
       <Footer></Footer>
