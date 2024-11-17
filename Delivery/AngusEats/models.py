@@ -46,6 +46,7 @@ class Pedido(models.Model):
         ]
         
         cliente = models.ForeignKey('Cliente', null=True, on_delete=models.SET_NULL)
+        conductor = models.ForeignKey('Conductor', null=True, on_delete=models.SET_NULL)
         direccion_origen = models.CharField(max_length=255)
         coordenadas_origen = gis_models.PointField(srid=4326, null=True, blank=True)
         direccion_destino = models.CharField(max_length=255)
