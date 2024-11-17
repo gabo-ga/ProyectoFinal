@@ -29,6 +29,7 @@ class PedidoSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'cliente',
+            'conductor',
             'direccion_origen',
             'coordenadas_origen',
             'direccion_destino',
