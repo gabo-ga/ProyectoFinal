@@ -79,7 +79,7 @@ class Vehiculo(models.Model):
     )
     vehiculo_nombre = models.CharField(max_length=100)
     tipo = models.CharField(max_length=50, choices=TIPO_CHOICES)
-    ubicacion_geografica = gis_models.PointField(srid=4326)
+    ubicacion_geografica = gis_models.PointField(srid=4326, null=True)
     conductor = models.ForeignKey('Usuario', null=True, blank=True ,on_delete=models.SET_NULL)
     disponible = models.BooleanField(default=True)
     
