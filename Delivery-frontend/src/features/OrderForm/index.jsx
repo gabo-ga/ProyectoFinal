@@ -12,6 +12,7 @@ import {
   fetchOrigenFijo,
   fetchPedidoById,
   saveOrUpdatePedido,
+  fetchDrivers, // Importamos fetchDrivers
 } from "../../api/apiService";
 import styles from "./index.module.css";
 import MapWithMarker from "../../components/MapWithMarkerComponent";
@@ -35,14 +36,28 @@ function OrderForm() {
     date: "",
     time: "",
     detalle: "",
+    conductor: "", // Añadido: Campo para el conductor designado
   });
 
+  const [drivers, setDrivers] = useState([]); // Añadido: Estado para los conductores
   const [isEditMode, setIsEditMode] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
 
   useEffect(() => {
     obtenerOrigenFijo(setFormData);
+
+    // Añadido: Obtener la lista de conductores
+    const obtenerConductores = async () => {
+      try {
+        const data = await fetchDrivers();
+        setDrivers(data);
+      } catch (error) {
+        console.error("Error al obtener los conductores:", error);
+      }
+    };
+
+    obtenerConductores();
   }, []);
 
   useEffect(() => {
@@ -53,7 +68,7 @@ function OrderForm() {
   }, [id]);
 
   const handleDestinationPlaceSelected = (data) => {
-    console.log("Dirección seleccionada:", data); // Verificar datos de dirección
+    console.log("Dirección seleccionada:", data);
     setFormData({
       ...formData,
       direccion_destino: data.address,
@@ -63,7 +78,7 @@ function OrderForm() {
   };
 
   const handleMarkerPositionChanged = (position) => {
-    console.log("Nueva posición del marcador:", position); // Verificar datos de marcador ajustado
+    console.log("Nueva posición del marcador:", position);
     setFormData((prevData) => ({
       ...prevData,
       coordenadas_destino_lat: position.lat,
@@ -82,7 +97,7 @@ function OrderForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const success = await handleOrderSubmit(formData);
-    if (success) navigate("/dashboard"); // Redirige a otra ruta después de enviar
+    if (success) navigate("/dashboard");
   };
 
   return (
@@ -132,6 +147,25 @@ function OrderForm() {
                   onChange={handleInputChange}
                   name="cliente"
                 />
+              </Col>
+              {/* Añadido: Campo para seleccionar el conductor designado */}
+              <Col xs={12} md={10}>
+                <Form.Group controlId="formDesignatedDriver">
+                  <Form.Label>CONDUCTOR DESIGNADO:</Form.Label>
+                  <Form.Select
+                    value={formData.conductor_designado}
+                    onChange={handleInputChange}
+                    name="conductor_designado"
+                    required
+                  >
+                    <option value="">Seleccione un conductor</option>
+                    {drivers.map((driver) => (
+                      <option key={driver.id} value={driver.id}>
+                        {driver.nombre} {driver.apellido}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
               </Col>
               <Col xs={12} md={10}>
                 <Form.Group controlId="formPrice">
