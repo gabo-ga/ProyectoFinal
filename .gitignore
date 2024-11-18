@@ -12,6 +12,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 .env
+certificados/
 
 node_modules
 dist

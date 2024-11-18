@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     'AngusEats',
     'rest_framework',
     'coreapi',
+    'sslserver',
 ]
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:5173",]
+CORS_ALLOWED_ORIGINS = ["https://localhost:5173", 'https://localhost:3000',
+    'https://127.0.0.1:8000',]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
