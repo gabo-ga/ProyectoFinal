@@ -21,7 +21,7 @@ function LoginCard() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8000/login/", {
+      const response = await axios.post("https://localhost:8000/login/", {
         username,
         password,
       });

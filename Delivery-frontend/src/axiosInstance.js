@@ -3,13 +3,18 @@
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import dayjs from 'dayjs';
+//import https from 'https';
 
-const baseURL = 'http://localhost:8000';
+const baseURL = 'https://127.0.0.1:8000';
 
 let tokens = {
   access: localStorage.getItem('access_token'),
   refresh: localStorage.getItem('refresh_token'),
 };
+
+/*const httpsAgent = new https.Agent({
+  rejectUnauthorized: false,
+});*/
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
