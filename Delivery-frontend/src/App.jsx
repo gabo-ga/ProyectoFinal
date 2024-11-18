@@ -15,28 +15,68 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login"></Navigate>}></Route>
-        <Route path="/login" element={<LoginCard></LoginCard>}></Route>
-        <Route path="/addorder" element={<OrderForm></OrderForm>}></Route>
-        <Route path="/editOrder/:id" element={<OrderForm />}></Route>
-        <Route path="/user" element={<UserPage></UserPage>}></Route>
-        <Route path="/vehicles" element={<VehicleList></VehicleList>}></Route>
-        <Route path="/addvehicle" element={<VehicleForm></VehicleForm>}></Route>
-        <Route
-          path="/orderdetails/:id"
-          element={<OrderDetails></OrderDetails>}
-        ></Route>
+        {/*rutas publicas*/}
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<LoginCard />} />
+        {/*rutas privada*/}
         <Route
           path="/dashboard"
           element={
             <PrivateRoute>
-              <Dashboard></Dashboard>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/addorder"
+          element={
+            <PrivateRoute>
+              <OrderForm />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/editOrder/:id"
+          element={
+            <PrivateRoute>
+              <OrderForm />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/user"
+          element={
+            <PrivateRoute>
+              <UserPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/vehicles"
+          element={
+            <PrivateRoute>
+              <VehicleList />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/addvehicle" element={<VehicleForm />} />
+        <Route
+          path="/orderdetails/:id"
+          element={
+            <PrivateRoute>
+              <OrderDetails />
             </PrivateRoute>
           }
         ></Route>
+
         <Route
           path="/ordershistory"
-          element={<OrdersHistory></OrdersHistory>}
+          element={
+            <PrivateRoute>
+              <OrdersHistory />
+            </PrivateRoute>
+          }
         ></Route>
       </Routes>
     </BrowserRouter>

@@ -1,17 +1,20 @@
 import Card from "react-bootstrap/esm/Card";
 import styles from "./logout.module.css";
 import { XLg } from "react-bootstrap-icons";
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import axiosInstance from "../../axiosInstance";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../AuthContext";
 
 function Logout({ onClose }) {
   const [user, setUser] = useState(null);
+  const { logoutUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(
+        const response = await axiosInstance.get(
           "http://localhost:8000/api/v1/users/1"
         );
         setUser(response.data);
@@ -22,6 +25,11 @@ function Logout({ onClose }) {
 
     fetchUserData();
   }, []);
+
+  const handleLogout = () => {
+    logoutUser();
+    navigate("/login");
+  };
 
   const userId = 1;
   return (
@@ -38,7 +46,13 @@ function Logout({ onClose }) {
         <Card.Text className={styles.textStyle}>
           <Link to="/user">Configuracion</Link>{" "}
         </Card.Text>
-        <Card.Text className={styles.textStyle}>Cerrar Sesion</Card.Text>
+        <Card.Text
+          className={styles.textStyle}
+          onClick={handleLogout}
+          style={{ cursor: "pointer" }}
+        >
+          Cerrar Sesión
+        </Card.Text>
       </Card.Body>
     </Card>
   );
