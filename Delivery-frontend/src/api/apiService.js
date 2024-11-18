@@ -1,19 +1,20 @@
-import axios from 'axios';
+// Asegúrate de importar axiosInstance desde la ruta correcta
+import axiosInstance from '../axiosInstance';
 
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+
 
 export const fetchActiveOrders = async () => {
-    try{
-        const response = await axios.get(`${API_BASE_URL}/pedidos/en-curso/`);
-        return response.data;
-    } catch(error){
-        throw new Error('Error al cargar los pedidos');
-    }
+  try {
+    const response = await axiosInstance.get('/api/v1/pedidos/en-curso/');
+    return response.data;
+  } catch (error) {
+    throw new Error('Error al cargar los pedidos');
+  }
 };
 
 export const fetchDrivers = async () => {
   try {
-    const response = await axios.get('http://localhost:8000/api/v1/conductores/');
+    const response = await axiosInstance.get('/api/v1/conductores/');
     return response.data;
   } catch (error) {
     console.error('Error al obtener los conductores:', error);
@@ -22,137 +23,144 @@ export const fetchDrivers = async () => {
 };
 
 export const fetchActiveVehicles = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/vehiculos/vehiculos-disponibles/`);
-      return response.data;
-    } catch (error) {
-      throw new Error('Error al cargar los vehículos disponibles');
-    }
-  };
+  try {
+    const response = await axiosInstance.get('/api/v1/vehiculos/vehiculos-disponibles/');
+    return response.data;
+  } catch (error) {
+    throw new Error('Error al cargar los vehículos disponibles');
+  }
+};
 
-  export const deleteVehiculo = async (placa) => {
-    try {
-      await axios.delete(`http://localhost:8000/api/v1/vehiculos/${placa}/`);
-    } catch (error) {
-      console.error('Error al eliminar el vehículo:', error);
-      throw error;
-    }
-  };
+export const deleteVehiculo = async (placa) => {
+  try {
+    await axiosInstance.delete(`/api/v1/vehiculos/${placa}/`);
+  } catch (error) {
+    console.error('Error al eliminar el vehículo:', error);
+    throw error;
+  }
+};
 
-  export const fetchPedidos = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/pedidos/detalle-pedidos/`);
-      return response.data;
-    } catch (error) {
-      throw new Error('Error al obtener los pedidos');
-    }
-  };
-  
-  export const deletePedido = async (id) => {
-    try {
-      const response = await axios.delete(`${API_BASE_URL}/pedidos/${id}/`);
-      return response.status === 204;
-    } catch (error) {
-      throw new Error('Error al eliminar el pedido');
-    }
-  };
-  
-  export const fetchDireccionOrigen = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/configuracion/obtener-origen/`);
-      return response.data;
-    } catch (error) {
-      throw new Error('Error al cargar la configuración');
-    }
-  };
-  
-  export const saveDireccionOrigen = async (direccionOrigenData) => {
-    try {
-      const response = await axios.post(`${API_BASE_URL}/configuracion/guardar-origen/`, direccionOrigenData, {
-        headers: { 'Content-Type': 'application/json' },
-      });
-      return response.data;
-    } catch (error) {
-      throw new Error('Error al guardar la configuración');
-    }
-  };
+export const fetchPedidos = async () => {
+  try {
+    const response = await axiosInstance.get('/api/v1/pedidos/detalle-pedidos/');
+    return response.data;
+  } catch (error) {
+    throw new Error('Error al obtener los pedidos');
+  }
+};
 
-  export const fetchClientes = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/clientes/`);
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching clientes:", error);
-      throw error;
-    }
-  };
+export const deletePedido = async (id) => {
+  try {
+    const response = await axiosInstance.delete(`/api/v1/pedidos/${id}/`);
+    return response.status === 204;
+  } catch (error) {
+    throw new Error('Error al eliminar el pedido');
+  }
+};
 
-  // Obtener ubicaciones de vehículos
+export const fetchDireccionOrigen = async () => {
+  try {
+    const response = await axiosInstance.get('/api/v1/configuracion/obtener-origen/');
+    return response.data;
+  } catch (error) {
+    throw new Error('Error al cargar la configuración');
+  }
+};
+
+export const saveDireccionOrigen = async (direccionOrigenData) => {
+  try {
+    const response = await axiosInstance.post('/api/v1/configuracion/guardar-origen/', direccionOrigenData);
+    return response.data;
+  } catch (error) {
+    throw new Error('Error al guardar la configuración');
+  }
+};
+
+export const fetchClientes = async () => {
+  try {
+    const response = await axiosInstance.get('/api/v1/clientes/');
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener los clientes:', error);
+    throw error;
+  }
+};
+
+// Obtener ubicaciones de vehículos
 export const fetchVehiculos = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/vehiculos/ubicaciones`);
-      return response.data;
-    } catch (error) {
-      console.error("Error al obtener ubicaciones:", error);
-      throw error;
-    }
-  };
-  
-  // Obtener coordenadas de pedidos
-  export const fetchPedidosCoordenadas = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/pedidos/coordenadas`);
-      return response.data;
-    } catch (error) {
-      console.error("Error al obtener coordenadas:", error);
-      throw error;
-    }
-  };
+  try {
+    const response = await axiosInstance.get('/api/v1/vehiculos/ubicaciones');
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener ubicaciones:', error);
+    throw error;
+  }
+};
 
-  ///order form services
-  export const fetchOrigenFijo = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/configuracion/obtener-origen/`);
-      return response.data;
-    } catch (error) {
-      console.error("Error al obtener la dirección de origen:", error);
-      throw error;
-    }
-  };
-  
-  export const fetchPedidoById = async (id) => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/pedidos/${id}/`);
-      return response.data;
-    } catch (error) {
-      console.error("Error al obtener el pedido:", error);
-      throw error;
-    }
-  };
-  
-  export const saveOrUpdatePedido = async (data, id = null) => {
-    const url = id ? `${API_BASE_URL}/pedidos/${id}/` : `${API_BASE_URL}/pedidos/`;
-    const method = id ? "PUT" : "POST";
-    try {
-      const response = await axios({
-        url,
-        method,
-        headers: { "Content-Type": "application/json" },
-        data,
-      });
-      return response;
-    } catch (error) {
-      console.error("Error al enviar el formulario:", error);
-      throw error;
-    }
-  };
+// Obtener coordenadas de pedidos
+export const fetchPedidosCoordenadas = async () => {
+  try {
+    const response = await axiosInstance.get('/api/v1/pedidos/coordenadas');
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener coordenadas:', error);
+    throw error;
+  }
+};
 
-  export const fetchUserById = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/users/1/`);
-      return response.data;
-    } catch (error) {
-      console.error("Error al obtener los datos del usuario:", error);
-      throw error;
-    }
-  };
+// Servicios del formulario de pedidos
+export const fetchOrigenFijo = async () => {
+  try {
+    const response = await axiosInstance.get('/api/v1/configuracion/obtener-origen/');
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener la dirección de origen:', error);
+    throw error;
+  }
+};
+
+export const fetchPedidoById = async (id) => {
+  try {
+    const response = await axiosInstance.get(`/api/v1/pedidos/${id}/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener el pedido:', error);
+    throw error;
+  }
+};
+
+export const saveOrUpdatePedido = async (data, id = null) => {
+  const url = id ? `/pedidos/${id}/` : '/pedidos/';
+  const method = id ? 'PUT' : 'POST';
+  try {
+    const response = await axiosInstance({
+      url,
+      method,
+      data,
+    });
+    return response;
+  } catch (error) {
+    console.error('Error al enviar el formulario:', error);
+    throw error;
+  }
+};
+
+export const fetchUserById = async () => {
+  try {
+    const response = await axiosInstance.get('/api/v1/users/1/');
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener los datos del usuario:', error);
+    throw error;
+  }
+};
+
+export const fetchCompletedOrders = async () => {
+  try {
+    const response = await axiosInstance.get('/api/v1/pedidos/entregados/');
+    return response.data;
+  } catch (error) {
+    console.error('Error al cargar los pedidos completados:', error);
+    throw error;
+  }
+};

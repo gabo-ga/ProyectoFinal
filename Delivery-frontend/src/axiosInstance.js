@@ -21,6 +21,7 @@ const axiosInstance = axios.create({
   },
 });
 
+// Interceptor para refrescar el token si ha expirado
 axiosInstance.interceptors.request.use(async (request) => {
   if (tokens.access) {
     const user = jwt_decode(tokens.access);
@@ -29,7 +30,8 @@ axiosInstance.interceptors.request.use(async (request) => {
     if (!isExpired) return request;
 
     try {
-      const response = await axios.post(`${baseURL}/api/token/refresh/`, {
+      // Realizar la solicitud de refresco de token a '/token/refresh/'
+      const response = await axios.post(`${baseURL}/token/refresh/`, {
         refresh: tokens.refresh,
       });
       tokens.access = response.data.access;
@@ -37,10 +39,29 @@ axiosInstance.interceptors.request.use(async (request) => {
       request.headers.Authorization = 'Bearer ' + tokens.access;
     } catch (error) {
       console.error('Error al refrescar el token:', error);
-      // Opcional: Redirige al login si el token de refresco también ha expirado
+      // Opcional: Manejar el cierre de sesión o redirección
+      // Por ejemplo, puedes redirigir al usuario al inicio de sesión
+      // window.location.href = '/login';
     }
   }
   return request;
 });
+
+// Interceptor para manejar respuestas no autorizadas (opcional)
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      error.config &&
+      !error.config.__isRetryRequest
+    ) {
+      // Opcional: Redirigir al usuario al inicio de sesión
+      // window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default axiosInstance;

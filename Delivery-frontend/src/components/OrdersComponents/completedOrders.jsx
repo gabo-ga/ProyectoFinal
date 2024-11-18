@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import styles from "./orders.module.css";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import { fetchCompletedOrders } from "../../api/apiService";
 
 function CompletedOrders(props) {
   const [orders, setOrders] = useState([]);
@@ -10,12 +10,10 @@ function CompletedOrders(props) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchCompletedOrders = async () => {
+    const loadCompletedOrders = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/v1/pedidos/entregados/"
-        );
-        setOrders(response.data);
+        const data = await fetchCompletedOrders();
+        setOrders(data);
         setLoading(false);
       } catch (error) {
         setError("Error al cargar los pedidos completados");
@@ -23,7 +21,7 @@ function CompletedOrders(props) {
       }
     };
 
-    fetchCompletedOrders();
+    loadCompletedOrders();
   }, []);
 
   if (loading) return <p>Cargando pedidos completados...</p>;
