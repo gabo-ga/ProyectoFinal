@@ -15,7 +15,7 @@ function Logout({ onClose }) {
     const fetchUserData = async () => {
       try {
         const response = await axiosInstance.get(
-          "http://localhost:8000/api/v1/users/1"
+          "https://localhost:8000/api/v1/users/1"
         );
         setUser(response.data);
       } catch (error) {

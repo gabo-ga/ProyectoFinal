@@ -8,6 +8,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from django.db import connection
+from django.core.exceptions import ValidationError
+from django.db.models import Count, Q
+
 
 
 # Serializadores
@@ -44,6 +47,19 @@ class ConductorViewSet(viewsets.ModelViewSet):
     queryset = Conductor.objects.all()
     serializer_class = ConductorSerializer
     permission_classes = [IsAuthenticated]
+    def validate_pedido_por_conductor(conductor):
+        pedidos_activos = Pedido.objects.filter(conductor=conductor, estado__in=['pendiente', 'en_ruta']).count()
+        if pedidos_activos >= 4:
+            raise ValidationError("El conductor ya tiene el máximo de 4 pedidos activos asignados.")
+    #accion personalizada para pedidos activos
+    @action(detail=False, methods=['get'], url_path='con-activos')
+    def conductores_con_pedidos(self, request):
+        conductores = Conductor.objects.annotate(
+            pedidos_activos=Count('pedido', filter=Q(pedido__estado__in=['pendiente', 'en_ruta']))
+        )
+        serializer = ConductorSerializer(conductores, many=True)
+        return Response(serializer.data)
+    
 
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
