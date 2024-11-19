@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import styles from "./index.module.css";
 import {
   Button,
@@ -8,9 +9,12 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import UsernameInput from "../userNameInput";
+import PasswordInput from "../PasswordInput";
+import LoginButton from "../LoginButton";
+import LoginError from "../LoginError";
+import { loginUser } from "../../services/authService";
 
 function LoginCard() {
   const [username, setUsername] = useState("");
@@ -21,19 +25,12 @@ function LoginCard() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("https://localhost:8000/login/", {
-        username,
-        password,
-      });
-
-      localStorage.setItem("access_token", response.data.access);
-      localStorage.setItem("refresh_token", response.data.refresh);
-      axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${response.data.access}`;
+      const data = await loginUser(username, password);
+      localStorage.setItem("access_token", data.access);
+      localStorage.setItem("refresh_token", data.refresh);
       navigate("/dashboard");
     } catch (error) {
-      console.error("error al iniciar sesion", error);
+      console.error("Error al iniciar sesión:", error);
       if (error.response && error.response.data && error.response.data.detail) {
         setErrorMessage(error.response.data.detail);
       } else {
@@ -51,15 +48,15 @@ function LoginCard() {
           <Col xs={12} md={8} lg={4}>
             <Card.Body>
               <Card.Title className={styles.LoginTitle}>
-                INICIAR SESION
+                INICIAR SESIÓN
               </Card.Title>
               {errorMessage && (
                 <LoginError message={errorMessage} variant="danger" />
               )}
               <Form onSubmit={handleSubmit}>
-                <UsernameInput username={username} setUsername={setUsername} />
-                <PasswordInput password={password} setPassword={setPassword} />
-                <LoginButton></LoginButton>
+                <UsernameInput value={username} onChange={setUsername} />
+                <PasswordInput value={password} onChange={setPassword} />
+                <LoginButton />
               </Form>
             </Card.Body>
           </Col>
@@ -67,57 +64,6 @@ function LoginCard() {
       </Container>
     </div>
   );
-}
-
-function UsernameInput({ username, setUsername }) {
-  return (
-    <div>
-      <Form.Group controlId="username" className="mb-3">
-        <Form.Label className={styles.LabelStyle}>Nombre de usuario</Form.Label>
-        <Form.Control
-          className={styles.InputStyle}
-          type="text"
-          placeholder="Ingrese su nombre de usuario"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </Form.Group>
-    </div>
-  );
-}
-
-function PasswordInput({ password, setPassword }) {
-  return (
-    <div>
-      <Form.Group controlId="password" className="mb-3">
-        <Form.Label className={styles.LabelStyle}>Contraseña</Form.Label>
-        <Form.Control
-          className={styles.InputStyle}
-          type="password"
-          placeholder="Ingrese su contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </Form.Group>
-    </div>
-  );
-}
-
-function LoginButton() {
-  const navigate = useNavigate();
-  return (
-    <>
-      <div>
-        <Button className={styles.LoginButton} variant="warning" type="submit">
-          INICIAR SESIÓN
-        </Button>
-      </div>
-    </>
-  );
-}
-
-function LoginError({ message, variant = "danger" }) {
-  return <Alert variant={variant}>{message}</Alert>;
 }
 
 export default LoginCard;
