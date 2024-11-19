@@ -2,6 +2,15 @@
 import axiosInstance from '../axiosInstance';
 
 
+export const fetchDriversWithActiveOrders = async () => {
+  try {
+    const response = await axiosInstance.get("/api/v1/conductores/con-activos/");
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener conductores:", error);
+    throw error;
+  }
+};
 
 export const fetchActiveOrders = async () => {
   try {
