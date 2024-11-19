@@ -1,0 +1,44 @@
+.Background{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1abc9c;
+  }
+  
+  
+  .FormContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 70vw;
+    height: 80vh;
+    padding: 4vw;
+    background-color: #fff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  .LoginTitle{
+      margin-bottom: 30px;
+      font-size: 1.75rem;
+      color: #37474f;
+  }
+  
+  
+  
+  .InputStyle{
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #bdbdbd;
+      border-radius: 5px;
+      box-sizing: border-box;
+  }
+  
+  .RowStyle{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+  }

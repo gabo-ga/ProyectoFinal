@@ -6,17 +6,6 @@
   background-color: #1abc9c;
 }
 
-.LoginButton{
-    width: 100%;
-  padding: 15px;
-  background-color: #ffc107;
-  border: none;
-  color: #fff;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 40px;
-}
 
 .FormContainer{
   display: flex;
@@ -37,12 +26,7 @@
     color: #37474f;
 }
 
-.LabelStyle{
-    display: block;
-  margin-bottom: 5px;
-  color: #37474f;
-  font-weight: bold;
-}
+
 
 .InputStyle{
     width: 100%;
