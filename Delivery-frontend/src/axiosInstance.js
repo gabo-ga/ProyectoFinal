@@ -5,7 +5,7 @@ import jwt_decode from 'jwt-decode';
 import dayjs from 'dayjs';
 //import https from 'https';
 
-const baseURL = 'https://127.0.0.1:8000';
+const baseURL = 'https://localhost:8000';
 
 let tokens = {
   access: localStorage.getItem('access_token'),
