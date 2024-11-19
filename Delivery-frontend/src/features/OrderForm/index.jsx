@@ -8,6 +8,9 @@ import CancelButton from "../../components/CancelButton";
 import AcceptButton from "../../components/AcceptButton";
 import AddressSearch from "../AddressSearch";
 import CustomerSelect from "../../components/CostumerSelect";
+import DriverField from "../../components/DriverField";
+import PriceField from "../../components/PriceField";
+import DescriptionField from "../../components/DescriptionField";
 import {
   fetchOrigenFijo,
   fetchPedidoById,
@@ -44,8 +47,6 @@ function OrderForm() {
 
   useEffect(() => {
     obtenerOrigenFijo(setFormData);
-
-    // Cargar lista de conductores
     const cargarConductores = async () => {
       try {
         const data = await fetchDriversWithActiveOrders(); // Cambiado: Uso de la nueva función
@@ -150,47 +151,23 @@ function OrderForm() {
               </Col>
               {/* Campo para seleccionar conductor */}
               <Col xs={12} md={10}>
-                <Form.Group controlId="formDesignatedDriver">
-                  <Form.Label>CONDUCTOR DESIGNADO:</Form.Label>
-                  <Form.Select
-                    name="conductor_designado"
-                    value={formData.conductor_designado}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="">Seleccione un conductor</option>
-                    {drivers.map((driver) => (
-                      <option key={driver.id} value={driver.id}>
-                        {driver.nombre} (Pedidos Activos:{" "}
-                        {driver.pedidos_activos})
-                      </option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
+                <DriverField
+                  drivers={drivers}
+                  value={formData.conductor_designado}
+                  onChange={handleInputChange}
+                />
               </Col>
               <Col xs={12} md={10}>
-                <Form.Group controlId="formPrice">
-                  <Form.Label>PRECIO:</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={formData.precio}
-                    onChange={handleInputChange}
-                    name="precio"
-                    required
-                  />
-                </Form.Group>
+                <PriceField
+                  value={formData.precio}
+                  onChange={handleInputChange}
+                />
               </Col>
               <Col xs={12} md={10}>
-                <Form.Group>
-                  <Form.Label>DESCRIPCIÓN:</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    value={formData.detalle}
-                    onChange={handleInputChange}
-                    name="detalle"
-                    rows={3}
-                  />
-                </Form.Group>
+                <DescriptionField
+                  value={formData.detalle}
+                  onChange={handleInputChange}
+                />
               </Col>
               <Form.Group className={styles.buttonsContainer}>
                 <CancelButton type="button" />
@@ -200,7 +177,7 @@ function OrderForm() {
           </Card>
         </Row>
       </Container>
-      <Footer />
+      {/*<Footer />*/}
     </>
   );
 }

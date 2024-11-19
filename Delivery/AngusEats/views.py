@@ -59,6 +59,8 @@ class ConductorViewSet(viewsets.ModelViewSet):
         )
         serializer = ConductorSerializer(conductores, many=True)
         return Response(serializer.data)
+    #accion para rutas asignadas
+    
     
 
 class ClienteViewSet(viewsets.ModelViewSet):
