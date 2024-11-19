@@ -1,7 +1,7 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import LoginCard from "./components/LoginCard";
+import Login from "./features/login";
 import Dashboard from "./features/dashboard";
 import OrdersHistory from "./features/ordersList";
 import PrivateRoute from "./PrivateRoute";
@@ -17,7 +17,7 @@ function App() {
       <Routes>
         {/*rutas publicas*/}
         <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<LoginCard />} />
+        <Route path="/login" element={<Login />} />
         {/*rutas privada*/}
         <Route
           path="/dashboard"
