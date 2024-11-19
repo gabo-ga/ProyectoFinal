@@ -2,11 +2,18 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8000/api/';
 
-export const login = (username, password) => {
-  return axios.post(API_URL + 'token/', {
-    username,
-    password,
-  });
+import axiosInstance from '../axiosInstance';
+
+export const loginUser = async (username, password) => {
+  try {
+    const response = await axiosInstance.post('/login/', {
+      username,
+      password,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const register = (username, email, password) => {
