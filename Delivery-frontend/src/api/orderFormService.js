@@ -1,5 +1,6 @@
 
 import { fetchOrigenFijo, fetchPedidoById } from "../api/apiService";
+import axiosInstance from "../axiosInstance";
 
 // Obtener origen fijo
 export const obtenerOrigenFijo = async (setFormData) => {
@@ -61,15 +62,9 @@ export const handleOrderSubmit = async (formData) => {
   };
 
   try {
-    const response = await fetch("http://localhost:8000/api/v1/pedidos/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(dataToSend),
-    });
+    const response = await axiosInstance.post("api/v1/pedidos/", dataToSend);
 
-    if (response.ok) {
+    if (response.status === 201) { // Status 201: Creado con éxito
       alert("Pedido añadido con éxito");
       return true;
     } else {
@@ -78,8 +73,8 @@ export const handleOrderSubmit = async (formData) => {
       return false;
     }
   } catch (error) {
-    console.error("Error de red:", error);
-    alert("Error de red");
+    console.error("Error de red:", error.response?.data || error.message);
+    alert("Error al enviar el formulario: " + (error.response?.data?.detail || error.message));
     return false;
   }
 };
