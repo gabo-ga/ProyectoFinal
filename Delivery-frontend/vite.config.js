@@ -12,5 +12,9 @@ export default defineConfig({
       cert: fs.readFileSync(path.resolve(__dirname, 'certificados/localhost+2.pem')),
     },
   },
-  // ... otras configuraciones si las tienes
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: "./setupTests.js",
+  },
 });
