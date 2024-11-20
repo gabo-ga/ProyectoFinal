@@ -10,11 +10,11 @@ from django.contrib.auth.models import User
 from django.db import connection
 from django.core.exceptions import ValidationError
 from django.db.models import Count, Q
-
+from rest_framework.viewsets import ViewSet
 
 
 # Serializadores
-from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConductorSerializer, VehiculoUbicacionSerializer, ConfiguracionSerializer
+from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConductorSerializer, VehiculoUbicacionSerializer, ConfiguracionSerializer, ConductorRutasSerializer
 
 # Modelos
 from .models import Cliente, Pedido, Vehiculo, Conductor, Configuracion
@@ -61,6 +61,15 @@ class ConductorViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     #accion para rutas asignadas
     
+class ConductorRutasViewSet(ViewSet):
+    """
+    Endpoint que devuelve información de los conductores y sus rutas.
+    """
+
+    def list(self, request):
+        conductores = Conductor.objects.all()
+        serializer = ConductorRutasSerializer(conductores, many=True)
+        return Response(serializer.data)
     
 
 class ClienteViewSet(viewsets.ModelViewSet):
