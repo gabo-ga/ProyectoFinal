@@ -1,8 +1,6 @@
-// src/components/SearchInput.jsx
 import React from "react";
 import styles from "./index.module.css";
 
-// Función declarada para el componente SearchInput
 function SearchInput({ value, onChange }) {
   return (
     <input
