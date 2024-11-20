@@ -8,10 +8,7 @@ function ButtonsContainer() {
     <>
       <Container>
         <Row className={styles.ButtonsContainer}>
-          <Col xs={6} md={6}>
-            <Button text={"Analisis de datos"}></Button>
-          </Col>
-          <Col xs={6} md={6}>
+          <Col xs={12} md={12}>
             <Button
               text={"Analisis de datos"}
               className={styles.TextStyle}
