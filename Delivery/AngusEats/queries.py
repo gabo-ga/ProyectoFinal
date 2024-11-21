@@ -64,6 +64,27 @@ def obtener_pedidos_en_curso():
     """
     return execute_sql_query(query)
 
+def obtener_pedidos_entregados():
+    """Obtiene la lista de pedidos en estado 'entregado'."""
+    query = """
+        SELECT 
+            c.nombre AS cliente_nombre,
+            c.telefono AS cliente_telefono,
+            p.fecha_creacion AS pedido_fecha,
+            p.estado AS pedido_estado,
+            p.direccion_destino AS pedido_direccion_destino
+        FROM 
+            "AngusEats_cliente" c
+        JOIN 
+            "AngusEats_pedido" p
+        ON 
+            c.id = p.cliente_id
+        WHERE 
+            p.estado = 'entregado';
+    """
+    return execute_sql_query(query)
+
+
 def obtener_vehiculos_disponibles():
     """Devuelve los vehículos disponibles."""
     query = """
