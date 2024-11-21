@@ -3,7 +3,10 @@ import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 import styles from "./metrics.module.css";
-import axiosInstance from "../../axiosInstance";
+import {
+  fetchPedidosEnCurso,
+  fetchVehiculosDisponibles,
+} from "../../api/apiService";
 
 function Metrics() {
   return (
@@ -18,29 +21,20 @@ function MetricsBody() {
   const [vehiculosDisponibles, setVehiculosDisponibles] = useState(0);
 
   useEffect(() => {
-    // Función para obtener pedidos en curso
-    const fetchPedidosEnCurso = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axiosInstance.get("/api/v1/pedidos/count/");
-        setPedidosEnCurso(response.data.count); // Actualiza el estado con el conteo
+        const pedidosCount = await fetchPedidosEnCurso();
+        setPedidosEnCurso(pedidosCount);
+
+        const vehiculosCount = await fetchVehiculosDisponibles();
+        setVehiculosDisponibles(vehiculosCount);
       } catch (error) {
-        console.error("Error al obtener los pedidos en curso:", error);
+        console.error("Error al cargar los datos:", error);
       }
     };
 
-    // Función para obtener vehículos disponibles
-    const fetchVehiculosDisponibles = async () => {
-      try {
-        const response = await axiosInstance.get("/api/v1/vehiculos/count/");
-        setVehiculosDisponibles(response.data.count); // Actualiza el estado con el conteo
-      } catch (error) {
-        console.error("Error al obtener los vehículos disponibles:", error);
-      }
-    };
-
-    fetchPedidosEnCurso();
-    fetchVehiculosDisponibles();
-  }, []); // Ejecuta ambas llamadas solo una vez al montar el componente
+    fetchData();
+  }, []);
 
   return (
     <Row>
