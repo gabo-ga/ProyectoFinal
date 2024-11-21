@@ -11,7 +11,8 @@ from django.db import connection
 from django.core.exceptions import ValidationError
 from django.db.models import Count, Q
 from rest_framework.viewsets import ViewSet
-
+#queries
+from .queries import contar_pedidos, contar_vehiculos
 
 # Serializadores
 from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConductorSerializer, VehiculoUbicacionSerializer, ConfiguracionSerializer, ConductorRutasSerializer
@@ -258,6 +259,12 @@ class PedidoViewSet(viewsets.ModelViewSet):
             return Response({"mensaje": "Estado actualizado correctamente"}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    @action(detail=False, methods=['get'], url_path='count')
+    def count(self, request):
+        estado = request.query_params.get('estado', None)
+        pedidos_contados = contar_pedidos(estado=estado)
+        return Response({"count": pedidos_contados})
 
 class VehiculoViewSet(viewsets.ModelViewSet):
     queryset = Vehiculo.objects.all()
@@ -318,6 +325,14 @@ class VehiculoViewSet(viewsets.ModelViewSet):
             ]
 
         return Response(vehiculos_disponibles)
+    
+    @action(detail=False, methods=['get'], url_path='count')
+    def count(self, request):
+        disponible = request.query_params.get('disponible', None)
+        if disponible is not None:
+            disponible = disponible.lower() == 'true'
+        total_vehiculos = contar_vehiculos(disponible=disponible)
+        return Response({"count": total_vehiculos})
     
 class ConfiguracionViewSet(viewsets.ViewSet):
     serializer_class = ConfiguracionSerializer
