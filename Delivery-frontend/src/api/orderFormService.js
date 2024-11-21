@@ -61,10 +61,18 @@ export const handleOrderSubmit = async (formData) => {
     },
   };
 
+  // Eliminar campos redundantes si es necesario
+  delete dataToSend.coordenadas_origen_lat;
+  delete dataToSend.coordenadas_origen_lng;
+  delete dataToSend.coordenadas_destino_lat;
+  delete dataToSend.coordenadas_destino_lng;
+
+  console.log("Datos enviados al backend:", dataToSend);
+
   try {
     const response = await axiosInstance.post("api/v1/pedidos/", dataToSend);
 
-    if (response.status === 201) { // Status 201: Creado con éxito
+    if (response.status === 201) {
       alert("Pedido añadido con éxito");
       return true;
     } else {
