@@ -13,7 +13,7 @@ function OrderDetails() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const API_BASE_URL = "http://localhost:8000/api/v1";
+  const API_BASE_URL = "https://localhost:8000/api/v1";
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
