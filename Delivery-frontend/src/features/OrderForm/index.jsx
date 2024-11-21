@@ -37,7 +37,7 @@ function OrderForm() {
     estado: "pendiente",
     precio: "",
     detalle: "",
-    conductor_designado: "", // Cambiado: Campo actualizado a "conductor_designado"
+    conductor_designado: "",
   });
 
   const [drivers, setDrivers] = useState([]); // Lista de conductores con pedidos activos
@@ -89,10 +89,12 @@ function OrderForm() {
       ...formData,
       [name]: value,
     });
+    console.log(`Campo actualizado: ${name} = ${value}`);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Datos del formulario:", formData);
     try {
       const success = await handleOrderSubmit(formData);
       if (success) navigate("/dashboard");
