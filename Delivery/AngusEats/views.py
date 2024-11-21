@@ -12,7 +12,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Count, Q
 from rest_framework.viewsets import ViewSet
 #queries
-from .queries import contar_pedidos, contar_vehiculos
+from .queries import contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso
 
 # Serializadores
 from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConductorSerializer, VehiculoUbicacionSerializer, ConfiguracionSerializer, ConductorRutasSerializer
@@ -85,39 +85,11 @@ class PedidoViewSet(viewsets.ModelViewSet):
     #action para pedidos en curso
     @action(detail=False, methods=['get'], url_path='en-curso')
     def pedidos_en_curso(self, request):
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT 
-                    p.id AS pedido_id,
-                    c.nombre AS cliente_nombre,
-                    c.telefono AS cliente_telefono,
-                    p.fecha_creacion AS pedido_fecha,
-                    p.estado AS pedido_estado,
-                    p.direccion_destino AS pedido_direccion_destino
-                FROM 
-                    "AngusEats_cliente" c
-                JOIN 
-                    "AngusEats_pedido" p
-                ON 
-                    c.id = p.cliente_id
-                WHERE 
-                    p.estado IN ('pendiente', 'en_ruta');
-            """)
-            
-            rows = cursor.fetchall()
-            
-            result = [
-                {
-                    'pedido_id': row[0],
-                    'cliente_nombre': row[1],
-                    'cliente_telefono': row[2],
-                    'pedido_fecha': row[3],
-                    'pedido_estado': row[4],
-                    'pedido_direccion_destino': row[5]
-                }
-                for row in rows
-            ]
-        return Response(result)
+        try:
+            result = obtener_pedidos_en_curso()
+            return Response(result)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
     
     # action para pedidos "entregados"
     @action(detail=False, methods=['get'], url_path='entregados')

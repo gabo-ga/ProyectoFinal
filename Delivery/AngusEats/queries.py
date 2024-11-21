@@ -43,6 +43,27 @@ def contar_vehiculos(disponible=None):
     result = execute_sql_query(query, params)
     return result[0]['total_vehiculos'] if result else 0
 
+def obtener_pedidos_en_curso():
+    """Obtiene la lista de pedidos en estado 'pendiente' o 'en_ruta'."""
+    query = """
+        SELECT 
+            p.id AS pedido_id,
+            c.nombre AS cliente_nombre,
+            c.telefono AS cliente_telefono,
+            p.fecha_creacion AS pedido_fecha,
+            p.estado AS pedido_estado,
+            p.direccion_destino AS pedido_direccion_destino
+        FROM 
+            "AngusEats_cliente" c
+        JOIN 
+            "AngusEats_pedido" p
+        ON 
+            c.id = p.cliente_id
+        WHERE 
+            p.estado IN ('pendiente', 'en_ruta');
+    """
+    return execute_sql_query(query)
+
 def obtener_vehiculos_disponibles():
     """Devuelve los vehículos disponibles."""
     query = """
@@ -63,3 +84,4 @@ def obtener_vehiculos_disponibles():
             v.disponible = TRUE;
     """
     return execute_sql_query(query)
+
