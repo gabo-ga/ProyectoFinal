@@ -4,7 +4,7 @@ import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import { fetchActiveOrders } from "../../api/apiService";
+import { fetchOrderDetailsById } from "../../api/apiService";
 import axios from "axios"; // Importar axios para la solicitud PATCH
 
 function OrderDetails() {
@@ -16,25 +16,20 @@ function OrderDetails() {
   const API_BASE_URL = "https://localhost:8000/api/v1";
 
   useEffect(() => {
-    const fetchOrderDetails = async () => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const orders = await fetchActiveOrders();
-        const selectedOrder = orders.find(
-          (order) => order.pedido_id === parseInt(id)
-        );
-        if (selectedOrder) {
-          setPedido(selectedOrder);
-        } else {
-          setError("Pedido no encontrado");
-        }
-      } catch (error) {
-        setError("Error al cargar los detalles del pedido");
+        const orderDetails = await fetchOrderDetailsById(id); // Llama a la función de apiService
+        setPedido(orderDetails);
+      } catch (err) {
+        setError(err.message || "Error al cargar los detalles del pedido");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchOrderDetails();
+    fetchData();
   }, [id]);
 
   const updateOrderStatus = async (nuevoEstado) => {

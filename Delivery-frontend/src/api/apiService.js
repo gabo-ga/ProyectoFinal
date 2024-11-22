@@ -218,3 +218,18 @@ export const fetchCompletedOrders = async () => {
     throw error;
   }
 };
+
+export const fetchOrderDetailsById = async (id) => {
+  try {
+    const response = await axiosInstance.get("/api/v1/pedidos/en-curso/");
+    const orders = response.data;
+    const selectedOrder = orders.find((order) => order.pedido_id === parseInt(id));
+    if (!selectedOrder) {
+      throw new Error("Pedido no encontrado");
+    }
+    return selectedOrder;
+  } catch (error) {
+    console.error("Error al obtener los detalles del pedido:", error);
+    throw error;
+  }
+};
