@@ -4,16 +4,16 @@ import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import { fetchOrderDetailsById } from "../../api/apiService";
-import axios from "axios"; // Importar axios para la solicitud PATCH
+import {
+  fetchOrderDetailsById,
+  updateOrderStatusById,
+} from "../../api/apiService";
 
 function OrderDetails() {
   const { id } = useParams();
   const [pedido, setPedido] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const API_BASE_URL = "https://localhost:8000/api/v1";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,24 +34,31 @@ function OrderDetails() {
 
   const updateOrderStatus = async (nuevoEstado) => {
     try {
-      await axios.patch(`${API_BASE_URL}/pedidos/${id}/actualizar-estado/`, {
-        estado: nuevoEstado,
-      });
-      setPedido({ ...pedido, pedido_estado: nuevoEstado });
+      const updatedPedido = await updateOrderStatusById(id, nuevoEstado); // Llama a la función de apiService
+      setPedido((prevPedido) => ({
+        ...prevPedido,
+        pedido_estado: nuevoEstado,
+      }));
+      return true;
     } catch (error) {
-      console.error("Error al actualizar el estado del pedido:", error);
       setError("Error al actualizar el estado del pedido");
+      return false;
     }
   };
-
   const handleComplete = async () => {
     const success = await updateOrderStatus("entregado");
     if (success) {
-      window.alert("Pedido completado");
+      alert("Pedido completado");
       navigate("/dashboard");
     }
   };
-  const handleCancel = () => updateOrderStatus("cancelado");
+
+  const handleCancel = async () => {
+    const success = await updateOrderStatus("cancelado");
+    if (success) {
+      alert("Pedido cancelado");
+    }
+  };
 
   if (loading) return <p>Cargando...</p>;
   if (error) return <p>{error}</p>;
