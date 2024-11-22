@@ -12,7 +12,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Count, Q
 from rest_framework.viewsets import ViewSet
 #queries
-from .queries import contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso, obtener_pedidos_entregados
+from .queries import contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso, obtener_pedidos_entregados, contar_pedidos_cancelados, contar_pedidos_entregados
 
 # Serializadores
 from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConductorSerializer, VehiculoUbicacionSerializer, ConfiguracionSerializer, ConductorRutasSerializer
@@ -153,6 +153,22 @@ class PedidoViewSet(viewsets.ModelViewSet):
             ]
 
         return Response(result)
+    
+    @action(detail=False, methods=['get'], url_path='count-cancelados')
+    def pedidos_cancelados(self, request):
+        try:
+            count = contar_pedidos_cancelados()
+            return Response({"count": count})
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+        
+    @action(detail=False, methods=['get'], url_path='count-entregados')
+    def pedidos_entregados(self, request):
+        try:
+            count = contar_pedidos_entregados()
+            return Response({"count": count})
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
     
     @action(detail=False, methods=['post'], url_path='calcular-ruta-con-parada')
     def calcular_ruta_con_parada(self, request):

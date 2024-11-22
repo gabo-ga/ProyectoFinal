@@ -84,6 +84,27 @@ def obtener_pedidos_entregados():
     """
     return execute_sql_query(query)
 
+def contar_pedidos_cancelados():
+    """Cuenta los pedidos con estado 'cancelado'."""
+    query = """
+        SELECT COUNT(*) AS total_pedidos_cancelados
+        FROM "AngusEats_pedido"
+        WHERE estado = 'cancelado';
+    """
+    result = execute_sql_query(query)
+    return result[0]['total_pedidos_cancelados'] if result else 0
+
+def contar_pedidos_entregados():
+    """Cuenta los pedidos con estado 'entregado'."""
+    query = """
+        SELECT COUNT(*) AS total_pedidos_entregados
+        FROM "AngusEats_pedido"
+        WHERE estado = 'entregado';
+    """
+    result = execute_sql_query(query)
+    return result[0]['total_pedidos_entregados'] if result else 0
+
+
 
 def obtener_vehiculos_disponibles():
     """Devuelve los vehículos disponibles."""

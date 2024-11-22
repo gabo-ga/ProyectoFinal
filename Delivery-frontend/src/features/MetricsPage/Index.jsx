@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { fetchPedidosEnCurso } from "../../api/apiService";
+import {
+  fetchPedidosEnCurso,
+  fetchPedidosCancelados,
+  fetchPedidosEntregados,
+} from "../../api/apiService";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
 import Card from "react-bootstrap/Card";
@@ -14,10 +18,40 @@ function MetricsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const count = await fetchPedidosEnCurso(); // Llama a la función fetchPedidosEnCurso
-        setPedidosPendientes(count); // Actualiza el estado con el conteo
+        const count = await fetchPedidosEnCurso();
+        setPedidosPendientes(count);
       } catch (error) {
         console.error("Error al obtener los pedidos pendientes:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const [pedidosCancelados, setPedidosCancelados] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const count = await fetchPedidosCancelados();
+        setPedidosCancelados(count);
+      } catch (error) {
+        console.error("Error al obtener los pedidos cancelados:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const [pedidosEntregados, setPedidosEntregados] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const count = await fetchPedidosEntregados(); // Llama al endpoint
+        setPedidosEntregados(count); // Actualiza el estado con el conteo
+      } catch (error) {
+        console.error("Error al obtener los pedidos entregados:", error);
       }
     };
 
@@ -42,6 +76,7 @@ function MetricsPage() {
             <Card>
               <Card.Body>
                 <Card.Text>Pedidos cancelados:</Card.Text>
+                <Card.Title>{pedidosCancelados}</Card.Title>
               </Card.Body>
             </Card>
           </Col>
@@ -49,6 +84,7 @@ function MetricsPage() {
             <Card>
               <Card.Body>
                 <Card.Text>Pedidos entregados:</Card.Text>
+                <Card.Title>{pedidosEntregados}</Card.Title>
               </Card.Body>
             </Card>
           </Col>
