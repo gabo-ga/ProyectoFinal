@@ -10,6 +10,7 @@ import UserPage from "./features/UserConfiguration";
 import OrderDetails from "./features/orderDetails";
 import VehicleList from "./features/vehiclesDetail";
 import VehicleForm from "./features/vehicleForm";
+import MetricsPage from "./features/MetricsPage/Index";
 
 function App() {
   return (
@@ -75,6 +76,15 @@ function App() {
           element={
             <PrivateRoute>
               <OrdersHistory />
+            </PrivateRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/metrics"
+          element={
+            <PrivateRoute>
+              <MetricsPage />
             </PrivateRoute>
           }
         ></Route>
