@@ -16,10 +16,33 @@ export const fetchPedidosEnCurso = async () => {
 // Función para contar los vehículos
 export const fetchVehiculosDisponibles = async () => {
   try {
-    const response = await axiosInstance.get("/api/v1/vehiculos/count/");
+    const response = await axiosInstance.get("/api/v1/vehiculos/count-cancelados/");
     return response.data.count;
   } catch (error) {
     console.error("Error al obtener los vehículos disponibles:", error);
+    throw error;
+  }
+};
+
+export const fetchPedidosCancelados = async () => {
+  try {
+    const response = await axiosInstance.get("/api/v1/pedidos/count/", {
+      params: { estado: "cancelado" },
+    });
+    return response.data.count; // Devuelve el conteo
+  } catch (error) {
+    console.error("Error al obtener los pedidos cancelados:", error);
+    throw error;
+  }
+};
+
+// Función para obtener pedidos entregados
+export const fetchPedidosEntregados = async () => {
+  try {
+    const response = await axiosInstance.get("/api/v1/pedidos/count-entregados/");
+    return response.data.count; // Devuelve el conteo
+  } catch (error) {
+    console.error("Error al obtener los pedidos entregados:", error);
     throw error;
   }
 };
