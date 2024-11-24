@@ -7,7 +7,6 @@ from .models import (
 )
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
-from rest_framework.exceptions import ValidationError
 from .serializer import UserSerializer, ClienteSerializer, UsuarioSerializer
 
 
@@ -285,7 +284,7 @@ class ClienteSerializerTestCase(APITestCase):
         self.assertEqual(cliente.nombre, "Ana García")
         self.assertEqual(cliente.telefono, "70594333")
         
-class UsuarioSerializerTestCase(TestCase):
+class UsuarioSerializerAPITestCase(APITestCase):
     def setUp(self):
         # Crear datos iniciales
         self.usuario = Usuario.objects.create(
@@ -313,7 +312,7 @@ class UsuarioSerializerTestCase(TestCase):
         self.assertEqual(
             serializer.data["fecha_creacion"][:19],
             expected_data["fecha_creacion"][:19]
-            )
+        )
 
     def test_deserializacion_valida(self):
         """Verificar que los datos válidos se deserialicen y creen un usuario."""
