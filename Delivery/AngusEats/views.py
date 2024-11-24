@@ -15,10 +15,10 @@ from rest_framework.viewsets import ViewSet
 from .queries import contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso, obtener_pedidos_entregados, contar_pedidos_cancelados, contar_pedidos_entregados
 
 # Serializadores
-from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConductorSerializer, VehiculoUbicacionSerializer, ConfiguracionSerializer, ConductorRutasSerializer
+from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, VehiculoUbicacionSerializer, ConfiguracionSerializer
 
 # Modelos
-from .models import Cliente, Pedido, Vehiculo, Conductor, Configuracion
+from .models import Cliente, Pedido, Vehiculo, Configuracion
 
 
 class ProtectedView(APIView):
@@ -44,33 +44,24 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         
         return Response(data)
 
-class ConductorViewSet(viewsets.ModelViewSet):
-    queryset = Conductor.objects.all()
-    serializer_class = ConductorSerializer
+#class ConductorViewSet(viewsets.ModelViewSet):
+#    queryset = Conductor.objects.all()
+#    serializer_class = ConductorSerializer
     #permission_classes = [IsAuthenticated]
-    def validate_pedido_por_conductor(conductor):
-        pedidos_activos = Pedido.objects.filter(conductor=conductor, estado__in=['pendiente', 'en_ruta']).count()
-        if pedidos_activos >= 4:
-            raise ValidationError("El conductor ya tiene el máximo de 4 pedidos activos asignados.")
+#    def validate_pedido_por_conductor(conductor):
+#        pedidos_activos = Pedido.objects.filter(conductor=conductor, estado__in=['pendiente', 'en_ruta']).count()
+#        if pedidos_activos >= 4:
+#            raise ValidationError("El conductor ya tiene el máximo de 4 pedidos activos asignados.")
     #accion personalizada para pedidos activos
-    @action(detail=False, methods=['get'], url_path='con-activos')
-    def conductores_con_pedidos(self, request):
-        conductores = Conductor.objects.annotate(
-            pedidos_activos=Count('pedido', filter=Q(pedido__estado__in=['pendiente', 'en_ruta']))
-        )
-        serializer = ConductorSerializer(conductores, many=True)
-        return Response(serializer.data)
-    #accion para rutas asignadas
+#    @action(detail=False, methods=['get'], url_path='con-activos')
+#    def conductores_con_pedidos(self, request):
+#        conductores = Conductor.objects.annotate(
+#            pedidos_activos=Count('pedido', filter=Q(pedido__estado__in=['pendiente', 'en_ruta']))
+#        )
+#        serializer = ConductorSerializer(conductores, many=True)
+#        return Response(serializer.data)
+#    #accion para rutas asignadas
     
-class ConductorRutasViewSet(ViewSet):
-    """
-    Endpoint que devuelve información de los conductores y sus rutas.
-    """
-
-    def list(self, request):
-        conductores = Conductor.objects.all()
-        serializer = ConductorRutasSerializer(conductores, many=True)
-        return Response(serializer.data)
     
 
 class ClienteViewSet(viewsets.ModelViewSet):

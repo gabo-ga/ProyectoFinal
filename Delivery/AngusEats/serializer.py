@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Pedido, Vehiculo, Cliente, Conductor, Configuracion
+from .models import Pedido, Vehiculo, Cliente, Configuracion
 from django.contrib.gis.geos import Point
 
 
@@ -97,26 +97,13 @@ class VehiculoUbicacionSerializer(serializers.ModelSerializer):
             }
         return None
     
-class ConductorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Conductor
-        fields = ['id', 'nombre', 'correo', 'contraseña', 'fecha_creacion', 'telefono']
         
         
 class RutaSerializer(serializers.Serializer):
     origen = serializers.JSONField(source='coordenadas_origen')
     destino = serializers.JSONField(source='coordenadas_destino')
 
-class ConductorRutasSerializer(serializers.ModelSerializer):
-    rutas = serializers.SerializerMethodField()
 
-    class Meta:
-        model = Conductor
-        fields = ['id', 'nombre', 'correo', 'telefono', 'rutas']
-
-    def get_rutas(self, obj):
-        pedidos = Pedido.objects.filter(conductor=obj)
-        return RutaSerializer(pedidos, many=True).data
     
     
 #serializer para la configuracion

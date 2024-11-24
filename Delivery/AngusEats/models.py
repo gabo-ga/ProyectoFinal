@@ -6,7 +6,6 @@ from django.core.validators import RegexValidator
 class Usuario(models.Model):
     ROL_CHOICES = [
         ('admin', 'Admin'),
-        ('operador', 'Operador'),
         ('conductor', 'Conductor')
     ]
     
@@ -16,20 +15,11 @@ class Usuario(models.Model):
     contrasena_hash = models.CharField(max_length=64)
     rol = models.CharField(max_length=50, choices=ROL_CHOICES)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+    telefono = models.CharField(max_length=15, null=True)
     
     def __str__(self):
         return self.nombre
-    
-class Conductor(models.Model):
-    nombre = models.CharField(max_length=100)
-    correo = models.EmailField(unique=True)
-    contraseña = models.CharField(max_length=128)  # Almacena la contraseña en texto plano
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
-    telefono = models.CharField(max_length=15)
-
-    def __str__(self):
-        return self.nombre
-    
+     
 
 class Cliente(models.Model):
         nombre = models.CharField(max_length=100)
@@ -43,7 +33,7 @@ class Pedido(models.Model):
         
         
         cliente = models.ForeignKey('Cliente', null=True, on_delete=models.SET_NULL)
-        conductor = models.ForeignKey('Conductor', null=True, on_delete=models.SET_NULL)
+        conductor = models.ForeignKey('Usuario',null=True,blank=True,on_delete=models.SET_NULL,limit_choices_to={'rol': 'conductor'},related_name='pedidos') 
         origen = models.ForeignKey('Ubicacion', related_name='origen_pedidos', null=True, on_delete=models.SET_NULL)
         destino = models.ForeignKey('Ubicacion', related_name='destino_pedidos', null=True, on_delete=models.SET_NULL)
         estado = models.ForeignKey('EstadoPedido', on_delete=models.PROTECT)
@@ -76,13 +66,13 @@ class EstadoPedido(models.Model):
 
 class Vehiculo(models.Model):
     TIPO_CHOICES = [
-        ('van','Van'),
+        ('van', 'Van'),
         ('motocicleta', 'Motocicleta')
     ]
-        
+    
     placa = models.CharField(
-        max_length=7, 
-        unique=True, 
+        max_length=7,
+        unique=True,
         null=False,
         validators=[
             RegexValidator(
@@ -93,8 +83,21 @@ class Vehiculo(models.Model):
     )
     vehiculo_nombre = models.CharField(max_length=100)
     tipo = models.CharField(max_length=50, choices=TIPO_CHOICES)
-    ubicacion_geografica = gis_models.PointField(srid=4326, null=True)
-    conductor = models.ForeignKey('Usuario', null=True, blank=True ,on_delete=models.SET_NULL)
+    ubicacion = models.ForeignKey(
+        'Ubicacion',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='vehiculos'
+    ) 
+    conductor = models.ForeignKey(
+        'Usuario',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        limit_choices_to={'rol': 'conductor'},
+        related_name='vehiculos'
+    ) 
     disponible = models.BooleanField(default=True)
     
     def __str__(self):
