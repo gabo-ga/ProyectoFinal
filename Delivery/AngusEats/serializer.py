@@ -2,8 +2,9 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Pedido, Vehiculo, Cliente, Configuracion
 from django.contrib.gis.geos import Point
-
-
+from django.contrib.gis.geos import Point
+from rest_framework import serializers
+from .models import Pedido, Cliente
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,10 +16,6 @@ class ClienteSerializer(serializers.ModelSerializer):
         model = Cliente
         fields = ['id', 'nombre', 'telefono']
     
-from django.contrib.gis.geos import Point
-from rest_framework import serializers
-from .models import Pedido, Cliente
-
 class PedidoSerializer(serializers.ModelSerializer):
     coordenadas_origen = serializers.DictField(write_only=True, required=False)
     coordenadas_destino = serializers.DictField(write_only=True, required=False)

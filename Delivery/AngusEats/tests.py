@@ -1,6 +1,3 @@
-from django.test import TestCase
-from .models import Cliente
-
 #test para los models
 from django.test import TestCase
 from django.contrib.gis.geos import Point
@@ -8,6 +5,10 @@ from .models import (
     Usuario, Cliente, Pedido, Ubicacion, EstadoPedido,
     Vehiculo, HistorialGPS, AnalisisPedido
 )
+from django.contrib.auth.models import User
+from rest_framework.test import APITestCase
+from .serializer import UserSerializer, ClienteSerializer
+
 
 class ModelsTestCase(TestCase):
 
@@ -19,7 +20,7 @@ class ModelsTestCase(TestCase):
             correo="juan@example.com",
             contrasena_hash="hashedpassword",
             rol="conductor",
-            telefono="123456789"
+            telefono="70392999"
         )
 
         self.cliente = Cliente.objects.create(
@@ -129,7 +130,7 @@ class RelacionesIntegridadTestCase(TestCase):
             correo="juan@example.com",
             contrasena_hash="hashedpassword",
             rol="conductor",
-            telefono="123456789"
+            telefono="70392999"
         )
 
         self.cliente = Cliente.objects.create(
@@ -238,3 +239,48 @@ class RelacionesIntegridadTestCase(TestCase):
     def test_conductor_tiene_vehiculos(self):
         vehiculos = self.usuario.vehiculos.all()
         self.assertIn(self.vehiculo, vehiculos)
+
+#test para user serializer
+class UserSerializerTestCase(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="johndoe",
+            email="john@example.com",
+            first_name="John",
+            last_name="Doe",
+            is_active=True
+        )
+
+    def test_user_serialization(self):
+        serializer = UserSerializer(self.user)
+        expected_data = {
+            "id": self.user.id,
+            "username": "johndoe",
+            "email": "john@example.com",
+            "first_name": "John",
+            "last_name": "Doe",
+            "is_active": True
+        }
+        self.assertEqual(serializer.data, expected_data)
+        
+class ClienteSerializerTestCase(APITestCase):
+    def setUp(self):
+        self.cliente = Cliente.objects.create(nombre="Carlos López", telefono="70392999")
+
+    def test_cliente_serialization(self):
+        serializer = ClienteSerializer(self.cliente)
+        expected_data = {
+            "id": self.cliente.id,
+            "nombre": "Carlos López",
+            "telefono": "70392999"
+        }
+        self.assertEqual(serializer.data, expected_data)
+
+    def test_cliente_deserialization(self):
+        data = {"nombre": "Ana García", "telefono": "70594333"}
+        serializer = ClienteSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        cliente = serializer.save()
+        self.assertEqual(cliente.nombre, "Ana García")
+        self.assertEqual(cliente.telefono, "70594333")
+        
