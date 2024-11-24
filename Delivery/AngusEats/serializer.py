@@ -55,9 +55,10 @@ class EstadoPedidoSerializer(serializers.ModelSerializer):
         fields = ['id', 'nombre']
     
 class PedidoSerializer(serializers.ModelSerializer):
-    coordenadas_origen = serializers.DictField(write_only=True, required=False)
-    coordenadas_destino = serializers.DictField(write_only=True, required=False)
-    fecha_entrega = serializers.DateTimeField(required=False, allow_null=True)
+    # Serializadores anidados para relaciones
+    origen = UbicacionSerializer()
+    destino = UbicacionSerializer()
+    estado = EstadoPedidoSerializer()
 
     class Meta:
         model = Pedido
@@ -65,53 +66,71 @@ class PedidoSerializer(serializers.ModelSerializer):
             'id',
             'cliente',
             'conductor',
-            'direccion_origen',
-            'coordenadas_origen',
-            'direccion_destino',
-            'coordenadas_destino',
+            'origen',
+            'destino',
             'estado',
             'fecha_creacion',
             'fecha_entrega',
             'precio',
             'detalle',
-            'ruta',
         ]
         read_only_fields = ['fecha_creacion']
 
-    #validacion para coordenadas
-    def validate_coordenadas_origen(self, value):
-        if 'lat' not in value or 'lng' not in value:
-            raise serializers.ValidationError("Coordenadas de origen deben incluir 'lat' y 'lng'.")
-        return value
-    
-    def validate_coordenadas_destino(self, value):
-        if 'lat' not in value or 'lng' not in value:
-            raise serializers.ValidationError("Coordenadas de destino deben incluir 'lat' y 'lng'.")
-        return value
-    
-    
     def create(self, validated_data):
-        coordenadas_origen_data = validated_data.pop('coordenadas_origen', None)
-        coordenadas_destino_data = validated_data.pop('coordenadas_destino', None)
+        # Manejar datos anidados para origen y destino
+        origen_data = validated_data.pop('origen', None)
+        destino_data = validated_data.pop('destino', None)
+        estado_data = validated_data.pop('estado', None)
 
-        # Crea el pedido utilizando el valor de fecha_entrega como timestamp, si está presente
-        pedido = Pedido.objects.create(**validated_data)
+        # Crear o recuperar ubicaciones
+        origen = Ubicacion.objects.create(**origen_data) if origen_data else None
+        destino = Ubicacion.objects.create(**destino_data) if destino_data else None
 
-        # Asigna las coordenadas de origen si están presentes
-        if coordenadas_origen_data:
-            lat = float(coordenadas_origen_data.get('lat'))
-            lng = float(coordenadas_origen_data.get('lng'))
-            pedido.coordenadas_origen = Point(lng, lat)
-            pedido.save()
+        # Recuperar estado
+        estado = EstadoPedido.objects.get(nombre=estado_data['nombre']) if estado_data else None
 
-        # Asigna las coordenadas de destino si están presentes
-        if coordenadas_destino_data:
-            lat = float(coordenadas_destino_data.get('lat'))
-            lng = float(coordenadas_destino_data.get('lng'))
-            pedido.coordenadas_destino = Point(lng, lat)
-            pedido.save()
-
+        # Crear el pedido con las ubicaciones y estado
+        pedido = Pedido.objects.create(
+            origen=origen,
+            destino=destino,
+            estado=estado,
+            **validated_data
+        )
         return pedido
+
+    def update(self, instance, validated_data):
+        # Manejar actualización de datos anidados
+        origen_data = validated_data.pop('origen', None)
+        destino_data = validated_data.pop('destino', None)
+        estado_data = validated_data.pop('estado', None)
+
+        if origen_data:
+            # Actualizar origen si existe
+            if instance.origen:
+                for attr, value in origen_data.items():
+                    setattr(instance.origen, attr, value)
+                instance.origen.save()
+            else:
+                instance.origen = Ubicacion.objects.create(**origen_data)
+
+        if destino_data:
+            # Actualizar destino si existe
+            if instance.destino:
+                for attr, value in destino_data.items():
+                    setattr(instance.destino, attr, value)
+                instance.destino.save()
+            else:
+                instance.destino = Ubicacion.objects.create(**destino_data)
+
+        if estado_data:
+            # Actualizar estado si es válido
+            instance.estado = EstadoPedido.objects.get(nombre=estado_data['nombre'])
+
+        # Actualizar campos simples
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
 
         
 class VehiculoSerializer(serializers.ModelSerializer):
