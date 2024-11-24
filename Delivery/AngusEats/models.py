@@ -40,11 +40,7 @@ class Cliente(models.Model):
             return self.nombre
     
 class Pedido(models.Model):
-        ESTADO_CHOICES = [
-            ('pendiente','Pendiente'),
-            ('entregado', 'Entregado'),
-            ('cancelado', 'Cancelado')
-        ]
+        
         
         cliente = models.ForeignKey('Cliente', null=True, on_delete=models.SET_NULL)
         conductor = models.ForeignKey('Conductor', null=True, on_delete=models.SET_NULL)
@@ -52,7 +48,7 @@ class Pedido(models.Model):
         coordenadas_origen = gis_models.PointField(srid=4326, null=True, blank=True)
         direccion_destino = models.CharField(max_length=255)
         coordenadas_destino = gis_models.PointField(srid=4326, null=True, blank=True)
-        estado = models.CharField(max_length=50, choices=ESTADO_CHOICES)
+        estado = models.ForeignKey('EstadoPedido', on_delete=models.PROTECT)
         fecha_creacion = models.DateTimeField(auto_now_add=True)
         fecha_entrega = models.DateTimeField(null=True, blank=True)
         precio = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
@@ -61,6 +57,18 @@ class Pedido(models.Model):
         def __str__(self):
             return f"Pedido {self.id} - {self.cliente.nombre if self.cliente else 'Sin cliente'}"
      
+class EstadoPedido(models.Model):
+    ESTADO_CHOICES = [
+            ('pendiente','Pendiente'),
+            ('entregado', 'Entregado'),
+            ('cancelado', 'Cancelado')
+        ]
+    nombre =  models.CharField(max_length=50, unique=True, choices=ESTADO_CHOICES)    
+
+    def __str__(self):
+        return self.nombre
+
+
 class Vehiculo(models.Model):
     TIPO_CHOICES = [
         ('van','Van'),
