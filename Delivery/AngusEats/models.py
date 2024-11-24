@@ -30,6 +30,7 @@ class Conductor(models.Model):
     def __str__(self):
         return self.nombre
     
+
 class Cliente(models.Model):
         nombre = models.CharField(max_length=100)
         telefono = models.CharField(max_length=12)
@@ -56,7 +57,6 @@ class Pedido(models.Model):
         fecha_entrega = models.DateTimeField(null=True, blank=True)
         precio = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
         detalle = models.CharField(max_length=500, null=True, blank=True)
-        ruta = models.ForeignKey('Ruta', null=True, blank=True, on_delete=models.SET_NULL)
         
         def __str__(self):
             return f"Pedido {self.id} - {self.cliente.nombre if self.cliente else 'Sin cliente'}"
@@ -87,32 +87,15 @@ class Vehiculo(models.Model):
     def __str__(self):
         return self.vehiculo_nombre
 
-class Ruta(models.Model):
-    ESTADO_CHOICES = [
-        ('planificada', 'Planificada'),
-        ('en_curso', 'En curso'),
-        ('completada', 'Completada'),
-        ('cancelada', 'Cancelada')
-    ]
-
-    vehiculo = models.ForeignKey('Vehiculo', on_delete=models.CASCADE)
-    ruta_geom = gis_models.LineStringField(srid=4326, null=True, blank=True)
-    paradas = gis_models.LineStringField(srid=4326)
-    distancia_total_km = models.DecimalField(max_digits=10, decimal_places=2)
-    tiempo_estimado_minutos = models.IntegerField()
-    estado = models.CharField(max_length=50, choices=ESTADO_CHOICES)
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
-    
-    def __str__(self):
-        return f"Ruta {self.id} - {self.vehiculo}"
     
 class HistorialGPS(models.Model):
-    vehiculo = models.ForeignKey('Vehiculo', on_delete=models.CASCADE)
-    posicion = gis_models.PointField(srid=4326)
-    marca_tiempo = models.DateTimeField(auto_now_add=False)
+        vehiculo = models.ForeignKey('Vehiculo', on_delete=models.CASCADE)
+        posicion = gis_models.PointField(srid=4326)
+        marca_tiempo = models.DateTimeField(auto_now_add=False)
     
-    def __str__(self):
-        return f"Historial GPS {self.id} - Vehiculo {self.vehiculo}"
+        def __str__(self):
+                return f"Historial GPS {self.id} - Vehiculo {self.vehiculo}"
+
 
 class AnalisisPedido(models.Model):
     pedidos_totales = models.IntegerField()
