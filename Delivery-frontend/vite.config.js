@@ -7,10 +7,11 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
   server: {
-    https: {
+    https: false,
+    /*https: {
       key: fs.readFileSync(path.resolve(__dirname, 'certificados/localhost+2-key.pem')),
       cert: fs.readFileSync(path.resolve(__dirname, 'certificados/localhost+2.pem')),
-    },
+    }*/
   },
   test: {
     globals: true,
