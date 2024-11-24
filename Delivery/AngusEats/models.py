@@ -44,10 +44,8 @@ class Pedido(models.Model):
         
         cliente = models.ForeignKey('Cliente', null=True, on_delete=models.SET_NULL)
         conductor = models.ForeignKey('Conductor', null=True, on_delete=models.SET_NULL)
-        direccion_origen = models.CharField(max_length=255)
-        coordenadas_origen = gis_models.PointField(srid=4326, null=True, blank=True)
-        direccion_destino = models.CharField(max_length=255)
-        coordenadas_destino = gis_models.PointField(srid=4326, null=True, blank=True)
+        origen = models.ForeignKey('Ubicacion', related_name='origen_pedidos', null=True, on_delete=models.SET_NULL)
+        destino = models.ForeignKey('Ubicacion', related_name='destino_pedidos', null=True, on_delete=models.SET_NULL)
         estado = models.ForeignKey('EstadoPedido', on_delete=models.PROTECT)
         fecha_creacion = models.DateTimeField(auto_now_add=True)
         fecha_entrega = models.DateTimeField(null=True, blank=True)
@@ -56,7 +54,14 @@ class Pedido(models.Model):
         
         def __str__(self):
             return f"Pedido {self.id} - {self.cliente.nombre if self.cliente else 'Sin cliente'}"
-     
+
+class Ubicacion(models.Model):
+    direccion = models.CharField(max_length=255)
+    coordenadas = gis_models.PointField(srid=4326, null=True, blank=True)
+
+    def __str__(self):
+        return self.direccion
+
 class EstadoPedido(models.Model):
     ESTADO_CHOICES = [
             ('pendiente','Pendiente'),
