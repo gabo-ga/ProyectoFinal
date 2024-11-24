@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Pedido, Vehiculo, Cliente, Configuracion
+from .models import Pedido, Vehiculo, Cliente, Configuracion, Ubicacion
 from django.contrib.gis.geos import Point
 from django.contrib.gis.geos import Point
 from rest_framework import serializers
@@ -34,7 +34,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Este correo ya está en uso.")
         return value
 
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -44,6 +43,11 @@ class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
         fields = ['id', 'nombre', 'telefono']
+ 
+class UbicacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ubicacion
+        fields = ['id', 'direccion', 'coordenadas']
     
 class PedidoSerializer(serializers.ModelSerializer):
     coordenadas_origen = serializers.DictField(write_only=True, required=False)

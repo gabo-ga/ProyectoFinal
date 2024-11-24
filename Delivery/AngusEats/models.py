@@ -18,8 +18,7 @@ class Usuario(models.Model):
     telefono = models.CharField(max_length=15, null=True)
     
     def __str__(self):
-        return self.nombre
-     
+        return self.nombre  
 
 class Cliente(models.Model):
         nombre = models.CharField(max_length=100)
