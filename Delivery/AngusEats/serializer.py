@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Pedido, Vehiculo, Cliente, Configuracion, Ubicacion
+from .models import Pedido, Vehiculo, Cliente, Configuracion, Ubicacion, EstadoPedido
 from django.contrib.gis.geos import Point
 from django.contrib.gis.geos import Point
 from rest_framework import serializers
@@ -48,6 +48,11 @@ class UbicacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ubicacion
         fields = ['id', 'direccion', 'coordenadas']
+  
+class EstadoPedidoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EstadoPedido
+        fields = ['id', 'nombre']
     
 class PedidoSerializer(serializers.ModelSerializer):
     coordenadas_origen = serializers.DictField(write_only=True, required=False)
