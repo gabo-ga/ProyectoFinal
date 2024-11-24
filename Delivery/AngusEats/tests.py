@@ -7,7 +7,8 @@ from .models import (
 )
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
-from .serializer import UserSerializer, ClienteSerializer
+from rest_framework.exceptions import ValidationError
+from .serializer import UserSerializer, ClienteSerializer, UsuarioSerializer
 
 
 class ModelsTestCase(TestCase):
@@ -284,3 +285,76 @@ class ClienteSerializerTestCase(APITestCase):
         self.assertEqual(cliente.nombre, "Ana García")
         self.assertEqual(cliente.telefono, "70594333")
         
+class UsuarioSerializerTestCase(TestCase):
+    def setUp(self):
+        # Crear datos iniciales
+        self.usuario = Usuario.objects.create(
+            nombre="Juan Pérez",
+            usuario="juanperez",
+            correo="juan@example.com",
+            contrasena_hash="hashed_password",
+            rol="conductor",
+            telefono="123456789"
+        )
+
+    def test_serializacion(self):
+        """Verificar que los datos del modelo Usuario se serialicen correctamente."""
+        serializer = UsuarioSerializer(self.usuario)
+        expected_data = {
+            "id": self.usuario.id,
+            "nombre": "Juan Pérez",
+            "usuario": "juanperez",
+            "correo": "juan@example.com",
+            "contrasena_hash": "hashed_password",
+            "rol": "conductor",
+            "fecha_creacion": self.usuario.fecha_creacion.isoformat(),
+            "telefono": "123456789"
+        }
+        self.assertEqual(
+            serializer.data["fecha_creacion"][:19],
+            expected_data["fecha_creacion"][:19]
+            )
+
+    def test_deserializacion_valida(self):
+        """Verificar que los datos válidos se deserialicen y creen un usuario."""
+        data = {
+            "nombre": "María López",
+            "usuario": "marialopez",
+            "correo": "maria@example.com",
+            "contrasena_hash": "hashed_password",
+            "rol": "admin",
+            "telefono": "987654321"
+        }
+        serializer = UsuarioSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        usuario = serializer.save()
+        self.assertEqual(usuario.nombre, "María López")
+        self.assertEqual(usuario.rol, "admin")
+
+    def test_validacion_rol_invalido(self):
+        """Verificar que se detecte un rol inválido."""
+        data = {
+            "nombre": "Pedro Gómez",
+            "usuario": "pedrogomez",
+            "correo": "pedro@example.com",
+            "contrasena_hash": "hashed_password",
+            "rol": "invalido",  # Rol no válido
+            "telefono": "123456789"
+        }
+        serializer = UsuarioSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("rol", serializer.errors)
+
+    def test_validacion_correo_duplicado(self):
+        """Verificar que no se permita un correo duplicado."""
+        data = {
+            "nombre": "Carlos López",
+            "usuario": "carloslopez",
+            "correo": "juan@example.com",  # Correo duplicado
+            "contrasena_hash": "hashed_password",
+            "rol": "conductor",
+            "telefono": "987654321"
+        }
+        serializer = UsuarioSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("correo", serializer.errors)

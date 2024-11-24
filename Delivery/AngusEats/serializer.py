@@ -4,7 +4,36 @@ from .models import Pedido, Vehiculo, Cliente, Configuracion
 from django.contrib.gis.geos import Point
 from django.contrib.gis.geos import Point
 from rest_framework import serializers
-from .models import Pedido, Cliente
+from .models import Pedido, Cliente, Usuario
+#serializer
+from rest_framework import serializers
+from .models import Usuario
+
+class UsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = [
+            'id', 
+            'nombre', 
+            'usuario', 
+            'correo', 
+            'contrasena_hash', 
+            'rol', 
+            'fecha_creacion', 
+            'telefono'
+        ]
+        read_only_fields = ['fecha_creacion']
+
+    def validate_rol(self, value):
+        if value not in dict(Usuario.ROL_CHOICES):
+            raise serializers.ValidationError("El rol no es válido. Debe ser 'admin' o 'conductor'.")
+        return value
+
+    def validate_correo(self, value):
+        if Usuario.objects.filter(correo=value).exists():
+            raise serializers.ValidationError("Este correo ya está en uso.")
+        return value
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
