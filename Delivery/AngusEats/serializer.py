@@ -43,6 +43,18 @@ class PedidoSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['fecha_creacion']
 
+    #validacion para coordenadas
+    def validate_coordenadas_origen(self, value):
+        if 'lat' not in value or 'lng' not in value:
+            raise serializers.ValidationError("Coordenadas de origen deben incluir 'lat' y 'lng'.")
+        return value
+    
+    def validate_coordenadas_destino(self, value):
+        if 'lat' not in value or 'lng' not in value:
+            raise serializers.ValidationError("Coordenadas de destino deben incluir 'lat' y 'lng'.")
+        return value
+    
+    
     def create(self, validated_data):
         coordenadas_origen_data = validated_data.pop('coordenadas_origen', None)
         coordenadas_destino_data = validated_data.pop('coordenadas_destino', None)
@@ -68,10 +80,17 @@ class PedidoSerializer(serializers.ModelSerializer):
 
         
 class VehiculoSerializer(serializers.ModelSerializer):
+    ubicacion_geografica = serializers.DictField(write_only=True, required=False)
+
     class Meta:
         model = Vehiculo
         fields = ['id', 'vehiculo_nombre', 'tipo', 'ubicacion_geografica', 'conductor', 'disponible', 'placa']
-
+        
+    def validate_ubicacion_geografica(self, value):
+        if 'coordinates' not in value or len(value['coordinates']) != 2:
+            raise serializers.ValidationError("Las coordenadas deben contener un arreglo con 'latitude' y 'longitude'.")
+        return value
+    
     def create(self, validated_data):
         # Obtener las coordenadas de 'ubicacion_geografica' desde el diccionario de datos iniciales
         ubicacion_geografica_data = validated_data.pop('ubicacion_geografica', None)
@@ -84,7 +103,10 @@ class VehiculoSerializer(serializers.ModelSerializer):
         # Crear el registro en la base de datos con los datos validados
         return Vehiculo.objects.create(**validated_data)
     
+
 class VehiculoUbicacionSerializer(serializers.ModelSerializer):
+    ubicacion_geografica = serializers.SerializerMethodField()
+    
     class Meta:
         model = Vehiculo
         fields = ['ubicacion_geografica']
@@ -98,16 +120,12 @@ class VehiculoUbicacionSerializer(serializers.ModelSerializer):
         return None
     
         
-        
-class RutaSerializer(serializers.Serializer):
-    origen = serializers.JSONField(source='coordenadas_origen')
-    destino = serializers.JSONField(source='coordenadas_destino')
-
 
     
     
 #serializer para la configuracion
 class ConfiguracionSerializer(serializers.ModelSerializer):
+
     latitud = serializers.FloatField(write_only=True, required=False)
     longitud = serializers.FloatField(write_only=True, required=False)
 
