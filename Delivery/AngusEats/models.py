@@ -30,8 +30,6 @@ class Cliente(models.Model):
             return self.nombre
     
 class Pedido(models.Model):
-        
-        
         cliente = models.ForeignKey('Cliente', null=True, on_delete=models.SET_NULL)
         conductor = models.ForeignKey('Usuario',null=True,blank=True,on_delete=models.SET_NULL,limit_choices_to={'rol': 'conductor'},related_name='pedidos') 
         origen = models.ForeignKey('Ubicacion', related_name='origen_pedidos', null=True, on_delete=models.SET_NULL)
