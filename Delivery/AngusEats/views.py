@@ -31,7 +31,7 @@ class ProtectedView(APIView):
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]  
+    #permission_classes = [IsAuthenticated]  
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
@@ -47,7 +47,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 class ConductorViewSet(viewsets.ModelViewSet):
     queryset = Conductor.objects.all()
     serializer_class = ConductorSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     def validate_pedido_por_conductor(conductor):
         pedidos_activos = Pedido.objects.filter(conductor=conductor, estado__in=['pendiente', 'en_ruta']).count()
         if pedidos_activos >= 4:
@@ -76,12 +76,12 @@ class ConductorRutasViewSet(ViewSet):
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
-    permission_classes = [IsAuthenticated]  
+    #permission_classes = [IsAuthenticated]  
 
 class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.all()
     serializer_class = PedidoSerializer
-    permission_classes = [IsAuthenticated] 
+    #permission_classes = [IsAuthenticated] 
     #action para pedidos en curso
     @action(detail=False, methods=['get'], url_path='en-curso')
     def pedidos_en_curso(self, request):
@@ -91,7 +91,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=500)
     
-    # action para pedidos "entregados"
+        # action para pedidos "entregados"
     @action(detail=False, methods=['get'], url_path='entregados')
     def pedidos_entregados(self, request):
         try:
@@ -231,7 +231,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
 class VehiculoViewSet(viewsets.ModelViewSet):
     queryset = Vehiculo.objects.all()
     serializer_class = VehiculoSerializer
-    permission_classes = [IsAuthenticated] 
+    #permission_classes = [IsAuthenticated] 
        # Acción personalizada para devolver solo la ubicación geográfica
     @action(detail=False, methods=['get'], url_path='ubicaciones')
     def ubicaciones(self, request):
@@ -298,7 +298,7 @@ class VehiculoViewSet(viewsets.ModelViewSet):
     
 class ConfiguracionViewSet(viewsets.ViewSet):
     serializer_class = ConfiguracionSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
     def list(self, request):
         config, created = Configuracion.objects.get_or_create(id=1)
