@@ -1,13 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Pedido, Vehiculo, Cliente, Configuracion, Ubicacion, EstadoPedido, AnalisisPedido
 from django.contrib.gis.geos import Point
-from django.contrib.gis.geos import Point
-from rest_framework import serializers
-from .models import Pedido, Cliente, Usuario
-#serializer
-from rest_framework import serializers
-from .models import Usuario
+from .models import Pedido, Vehiculo, Cliente, Configuracion, Ubicacion, EstadoPedido, AnalisisPedido, Usuario
+#serializers
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -141,26 +136,7 @@ class AnalisisPedidoSerializer(serializers.ModelSerializer):
             'fecha_analisis',
         ]
         read_only_fields = ['fecha_analisis']
-    
-
-class VehiculoUbicacionSerializer(serializers.ModelSerializer):
-    ubicacion_geografica = serializers.SerializerMethodField()
-    
-    class Meta:
-        model = Vehiculo
-        fields = ['ubicacion_geografica']
-    def get_ubicacion_geografica(self, obj):
-        # Convertir el campo Point en un formato serializable (latitud y longitud)
-        if isinstance(obj.ubicacion_geografica, Point):
-            return {
-                "latitude": obj.ubicacion_geografica.y,
-                "longitude": obj.ubicacion_geografica.x
-            }
-        return None
-    
         
-
-    
     
 #serializer para la configuracion
 class ConfiguracionSerializer(serializers.ModelSerializer):
