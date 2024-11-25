@@ -516,3 +516,23 @@ class VehiculoAPITestCase(APITestCase):
         vehiculo = Vehiculo.objects.get()
         self.assertEqual(vehiculo.placa, 'ABC1234')
         self.assertEqual(vehiculo.vehiculo_nombre, 'Camioneta 1')
+
+class AnalisisPedidoAPITestCase(APITestCase):
+
+    def setUp(self):
+        self.analisis_list_url = reverse('analisispedido-list')
+        self.analisis_data = {
+            "pedidos_totales": 100,
+            "pedidos_entregados": 95,
+            "tiempo_promedio_entrega_minutos": 30,
+            "kilometros_recorridos_totales": "1500.50"
+        }
+
+    def test_create_analisis_pedido(self):
+        response = self.client.post(self.analisis_list_url, self.analisis_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(AnalisisPedido.objects.count(), 1)
+        analisis = AnalisisPedido.objects.get()
+        self.assertEqual(analisis.pedidos_totales, 100)
+        self.assertEqual(analisis.pedidos_entregados, 95)
+

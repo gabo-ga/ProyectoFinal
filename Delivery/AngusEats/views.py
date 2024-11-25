@@ -15,10 +15,10 @@ from rest_framework.viewsets import ViewSet
 from .queries import contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso, obtener_pedidos_entregados, contar_pedidos_cancelados, contar_pedidos_entregados
 
 # Serializadores
-from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, VehiculoUbicacionSerializer, ConfiguracionSerializer
+from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, VehiculoUbicacionSerializer, ConfiguracionSerializer, AnalisisPedidoSerializer
 
 # Modelos
-from .models import Cliente, Pedido, Vehiculo, Configuracion
+from .models import Cliente, Pedido, Vehiculo, Configuracion, AnalisisPedido
 
 
 class ProtectedView(APIView):
@@ -287,6 +287,13 @@ class VehiculoViewSet(viewsets.ModelViewSet):
         total_vehiculos = contar_vehiculos(disponible=disponible)
         return Response({"count": total_vehiculos})
     
+
+class AnalisisPedidoViewSet(viewsets.ModelViewSet):
+    queryset = AnalisisPedido.objects.all()
+    serializer_class = AnalisisPedidoSerializer
+    permission_classes = [AllowAny]  
+    
+
 class ConfiguracionViewSet(viewsets.ViewSet):
     serializer_class = ConfiguracionSerializer
     #permission_classes = [IsAuthenticated]
