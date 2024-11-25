@@ -15,10 +15,10 @@ from rest_framework.viewsets import ViewSet
 from .queries import contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso, obtener_pedidos_entregados, contar_pedidos_cancelados, contar_pedidos_entregados
 
 # Serializadores
-from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, VehiculoUbicacionSerializer, ConfiguracionSerializer, AnalisisPedidoSerializer
+from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConfiguracionSerializer, AnalisisPedidoSerializer, UsuarioSerializer
 
 # Modelos
-from .models import Cliente, Pedido, Vehiculo, Configuracion, AnalisisPedido
+from .models import Cliente, Pedido, Vehiculo, Configuracion, AnalisisPedido, Usuario
 
 
 class ProtectedView(APIView):
@@ -27,6 +27,16 @@ class ProtectedView(APIView):
     def get(self, request):
         data = {'message': 'Esta es una vista protegida'}
         return Response(data)
+
+class UsuarioViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para el modelo Usuario.
+    Permite realizar operaciones CRUD sobre los usuarios.
+    """
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
+    permission_classes = [AllowAny]
+
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
@@ -285,8 +295,7 @@ class VehiculoViewSet(viewsets.ModelViewSet):
         if disponible is not None:
             disponible = disponible.lower() == 'true'
         total_vehiculos = contar_vehiculos(disponible=disponible)
-        return Response({"count": total_vehiculos})
-    
+        return Response({"count": total_vehiculos})   
 
 class AnalisisPedidoViewSet(viewsets.ModelViewSet):
     queryset = AnalisisPedido.objects.all()
