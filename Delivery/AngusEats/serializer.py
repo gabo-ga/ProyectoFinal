@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Pedido, Vehiculo, Cliente, Configuracion, Ubicacion, EstadoPedido
+from .models import Pedido, Vehiculo, Cliente, Configuracion, Ubicacion, EstadoPedido, AnalisisPedido
 from django.contrib.gis.geos import Point
 from django.contrib.gis.geos import Point
 from rest_framework import serializers
@@ -95,9 +95,7 @@ class PedidoSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
         instance.save()
         return instance
-
-
-        
+     
 class VehiculoSerializer(serializers.ModelSerializer):
     ubicacion = serializers.PrimaryKeyRelatedField(
         queryset=Ubicacion.objects.all(),
@@ -130,6 +128,19 @@ class VehiculoSerializer(serializers.ModelSerializer):
         representation['ubicacion'] = UbicacionSerializer(instance.ubicacion).data if instance.ubicacion else None
         representation['conductor'] = UsuarioSerializer(instance.conductor).data if instance.conductor else None
         return representation
+
+class AnalisisPedidoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AnalisisPedido
+        fields = [
+            'id',
+            'pedidos_totales',
+            'pedidos_entregados',
+            'tiempo_promedio_entrega_minutos',
+            'kilometros_recorridos_totales',
+            'fecha_analisis',
+        ]
+        read_only_fields = ['fecha_analisis']
     
 
 class VehiculoUbicacionSerializer(serializers.ModelSerializer):
