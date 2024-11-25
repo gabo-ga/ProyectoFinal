@@ -360,11 +360,9 @@ class UsuarioSerializerAPITestCase(APITestCase):
         self.assertFalse(serializer.is_valid())
         self.assertIn("correo", serializer.errors)
         
-
 class PedidoAPITestCase(APITestCase):
 
     def setUp(self):
-        # Crear instancias necesarias para las relaciones
         self.cliente = Cliente.objects.create(nombre='Cliente Test')
         self.conductor = Usuario.objects.create(nombre='Conductor Test', rol='conductor')
         self.origen = Ubicacion.objects.create(direccion='Origen Test', coordenadas='POINT(-58.3816 -34.6037)')
@@ -374,7 +372,7 @@ class PedidoAPITestCase(APITestCase):
         # URL para la lista de pedidos
         self.pedido_list_url = reverse('pedido-list')
 
-        # Datos iniciales para crear un pedido
+        # Datos iniciales
         self.pedido_data = {
             'cliente': self.cliente.id,
             'conductor': self.conductor.id,
@@ -387,7 +385,7 @@ class PedidoAPITestCase(APITestCase):
         }
 
     def test_create_pedido(self):
-        # Probar la creación de un pedido mediante POST
+        #POST
         response = self.client.post(self.pedido_list_url, self.pedido_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         pedido = Pedido.objects.get(id=response.data['id'])
@@ -495,3 +493,26 @@ class PedidoAPITestCase(APITestCase):
         response = self.client.post(self.pedido_list_url, invalid_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('cliente', response.data)
+
+class VehiculoAPITestCase(APITestCase):
+
+    def setUp(self):
+        self.ubicacion = Ubicacion.objects.create(direccion='Calle Falsa 123')
+        self.conductor = Usuario.objects.create(nombre='Juan Pérez', rol='conductor')
+        self.vehiculo_data = {
+            'placa': 'ABC1234',
+            'vehiculo_nombre': 'Camioneta 1',
+            'tipo': 'van',
+            'ubicacion': self.ubicacion.id,
+            'conductor': self.conductor.id,
+            'disponible': True
+        }
+        self.vehiculo_list_url = reverse('vehiculos-list')
+
+    def test_create_vehiculo(self):
+        response = self.client.post(self.vehiculo_list_url, self.vehiculo_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Vehiculo.objects.count(), 1)
+        vehiculo = Vehiculo.objects.get()
+        self.assertEqual(vehiculo.placa, 'ABC1234')
+        self.assertEqual(vehiculo.vehiculo_nombre, 'Camioneta 1')

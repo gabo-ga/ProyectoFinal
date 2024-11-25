@@ -99,28 +99,37 @@ class PedidoSerializer(serializers.ModelSerializer):
 
         
 class VehiculoSerializer(serializers.ModelSerializer):
-    ubicacion_geografica = serializers.DictField(write_only=True, required=False)
+    ubicacion = serializers.PrimaryKeyRelatedField(
+        queryset=Ubicacion.objects.all(),
+        allow_null=True,
+        required=False
+    )
+    conductor = serializers.PrimaryKeyRelatedField(
+        queryset=Usuario.objects.filter(rol='conductor'),
+        allow_null=True,
+        required=False
+    )
+    tipo_display = serializers.CharField(source='get_tipo_display', read_only=True)
 
     class Meta:
         model = Vehiculo
-        fields = ['id', 'vehiculo_nombre', 'tipo', 'ubicacion_geografica', 'conductor', 'disponible', 'placa']
-        
-    def validate_ubicacion_geografica(self, value):
-        if 'coordinates' not in value or len(value['coordinates']) != 2:
-            raise serializers.ValidationError("Las coordenadas deben contener un arreglo con 'latitude' y 'longitude'.")
-        return value
-    
-    def create(self, validated_data):
-        # Obtener las coordenadas de 'ubicacion_geografica' desde el diccionario de datos iniciales
-        ubicacion_geografica_data = validated_data.pop('ubicacion_geografica', None)
-        if ubicacion_geografica_data and isinstance(ubicacion_geografica_data, dict):
-            # Extraer las coordenadas y crear un objeto Point
-            coordinates = ubicacion_geografica_data.get('coordinates', [])
-            point = Point(coordinates[0], coordinates[1], srid=4326)
-            validated_data['ubicacion_geografica'] = point
+        fields = [
+            'id',
+            'placa',
+            'vehiculo_nombre',
+            'tipo',
+            'tipo_display',
+            'ubicacion',
+            'conductor',
+            'disponible',
+        ]
 
-        # Crear el registro en la base de datos con los datos validados
-        return Vehiculo.objects.create(**validated_data)
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Añadir datos anidados para 'ubicacion' y 'conductor'
+        representation['ubicacion'] = UbicacionSerializer(instance.ubicacion).data if instance.ubicacion else None
+        representation['conductor'] = UsuarioSerializer(instance.conductor).data if instance.conductor else None
+        return representation
     
 
 class VehiculoUbicacionSerializer(serializers.ModelSerializer):
