@@ -51,16 +51,24 @@ def obtener_pedidos_en_curso():
             c.nombre AS cliente_nombre,
             c.telefono AS cliente_telefono,
             p.fecha_creacion AS pedido_fecha,
-            p.estado AS pedido_estado,
-            p.direccion_destino AS pedido_direccion_destino
+            e.nombre AS pedido_estado,
+            u_destino.direccion AS pedido_direccion_destino
         FROM 
             "AngusEats_cliente" c
         JOIN 
             "AngusEats_pedido" p
         ON 
             c.id = p.cliente_id
+        JOIN 
+            "AngusEats_estadopedido" e
+        ON 
+            p.estado_id = e.id
+        JOIN 
+            "AngusEats_ubicacion" u_destino
+        ON 
+            p.destino_id = u_destino.id
         WHERE 
-            p.estado IN ('pendiente', 'en_ruta');
+            e.nombre IN ('pendiente', 'en_ruta');
     """
     return execute_sql_query(query)
 
@@ -71,25 +79,40 @@ def obtener_pedidos_entregados():
             c.nombre AS cliente_nombre,
             c.telefono AS cliente_telefono,
             p.fecha_creacion AS pedido_fecha,
-            p.estado AS pedido_estado,
-            p.direccion_destino AS pedido_direccion_destino
+            e.nombre AS pedido_estado,
+            u_destino.direccion AS pedido_direccion_destino
         FROM 
             "AngusEats_cliente" c
         JOIN 
             "AngusEats_pedido" p
         ON 
             c.id = p.cliente_id
+        JOIN 
+            "AngusEats_estadopedido" e
+        ON 
+            p.estado_id = e.id
+        JOIN 
+            "AngusEats_ubicacion" u_destino
+        ON 
+            p.destino_id = u_destino.id
         WHERE 
-            p.estado = 'entregado';
+            e.nombre = 'entregado';
     """
     return execute_sql_query(query)
 
 def contar_pedidos_cancelados():
     """Cuenta los pedidos con estado 'cancelado'."""
     query = """
-        SELECT COUNT(*) AS total_pedidos_cancelados
-        FROM "AngusEats_pedido"
-        WHERE estado = 'cancelado';
+        SELECT 
+            COUNT(*) AS total_pedidos_cancelados
+        FROM 
+            "AngusEats_pedido" p
+        JOIN 
+            "AngusEats_estadopedido" e
+        ON 
+            p.estado_id = e.id
+        WHERE 
+            e.nombre = 'cancelado';
     """
     result = execute_sql_query(query)
     return result[0]['total_pedidos_cancelados'] if result else 0
@@ -97,9 +120,16 @@ def contar_pedidos_cancelados():
 def contar_pedidos_entregados():
     """Cuenta los pedidos con estado 'entregado'."""
     query = """
-        SELECT COUNT(*) AS total_pedidos_entregados
-        FROM "AngusEats_pedido"
-        WHERE estado = 'entregado';
+        SELECT 
+            COUNT(*) AS total_pedidos_entregados
+        FROM 
+            "AngusEats_pedido" p
+        JOIN 
+            "AngusEats_estadopedido" e
+        ON 
+            p.estado_id = e.id
+        WHERE 
+            e.nombre = 'entregado';
     """
     result = execute_sql_query(query)
     return result[0]['total_pedidos_entregados'] if result else 0
@@ -114,16 +144,17 @@ def obtener_vehiculos_disponibles():
             v.vehiculo_nombre AS vehiculo_nombre,
             v.tipo AS vehiculo_tipo,
             v.disponible AS vehiculo_disponible,
-            c.nombre AS conductor_nombre,
-            c.telefono AS conductor_telefono
+            u.nombre AS conductor_nombre,
+            u.telefono AS conductor_telefono
         FROM 
             "AngusEats_vehiculo" v
         JOIN 
-            "AngusEats_conductor" c
+            "AngusEats_usuario" u
         ON 
-            v.conductor_id = c.id
+            v.conductor_id = u.id
         WHERE 
-            v.disponible = TRUE;
+            v.disponible = TRUE
+        AND u.rol = 'conductor';
     """
     return execute_sql_query(query)
 
