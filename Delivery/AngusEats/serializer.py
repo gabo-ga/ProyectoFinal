@@ -45,20 +45,32 @@ class ClienteSerializer(serializers.ModelSerializer):
         fields = ['id', 'nombre', 'telefono']
  
 class UbicacionSerializer(serializers.ModelSerializer):
+    coordenadas = serializers.SerializerMethodField()
     class Meta:
         model = Ubicacion
         fields = ['id', 'direccion', 'coordenadas']
-  
+    #metodo para extraer las coordenadas
+    def get_coordenadas(self, obj):
+        if obj.coordenadas:
+            return f"POINT ({obj.coordenadas.x:.6f} {obj.coordenadas.y:.6f})"
+        return None
+
 class EstadoPedidoSerializer(serializers.ModelSerializer):
     class Meta:
         model = EstadoPedido
         fields = ['id', 'nombre']
     
 class PedidoSerializer(serializers.ModelSerializer):
-    # Serializadores anidados para relaciones
-    origen = UbicacionSerializer()
-    destino = UbicacionSerializer()
-    estado = EstadoPedidoSerializer()
+    cliente = serializers.PrimaryKeyRelatedField(queryset=Cliente.objects.all())
+    conductor = serializers.PrimaryKeyRelatedField(
+        queryset=Usuario.objects.filter(rol='conductor'),
+        allow_null=True,
+        required=False
+    )
+    origen = serializers.PrimaryKeyRelatedField(queryset=Ubicacion.objects.all())
+    destino = serializers.PrimaryKeyRelatedField(queryset=Ubicacion.objects.all())
+    estado = serializers.PrimaryKeyRelatedField(queryset=EstadoPedido.objects.all())
+
 
     class Meta:
         model = Pedido
@@ -74,63 +86,16 @@ class PedidoSerializer(serializers.ModelSerializer):
             'precio',
             'detalle',
         ]
-        read_only_fields = ['fecha_creacion']
 
     def create(self, validated_data):
-        # Manejar datos anidados para origen y destino
-        origen_data = validated_data.pop('origen', None)
-        destino_data = validated_data.pop('destino', None)
-        estado_data = validated_data.pop('estado', None)
-
-        # Crear o recuperar ubicaciones
-        origen = Ubicacion.objects.create(**origen_data) if origen_data else None
-        destino = Ubicacion.objects.create(**destino_data) if destino_data else None
-
-        # Recuperar estado
-        estado = EstadoPedido.objects.get(nombre=estado_data['nombre']) if estado_data else None
-
-        # Crear el pedido con las ubicaciones y estado
-        pedido = Pedido.objects.create(
-            origen=origen,
-            destino=destino,
-            estado=estado,
-            **validated_data
-        )
-        return pedido
+        return Pedido.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        # Manejar actualización de datos anidados
-        origen_data = validated_data.pop('origen', None)
-        destino_data = validated_data.pop('destino', None)
-        estado_data = validated_data.pop('estado', None)
-
-        if origen_data:
-            # Actualizar origen si existe
-            if instance.origen:
-                for attr, value in origen_data.items():
-                    setattr(instance.origen, attr, value)
-                instance.origen.save()
-            else:
-                instance.origen = Ubicacion.objects.create(**origen_data)
-
-        if destino_data:
-            # Actualizar destino si existe
-            if instance.destino:
-                for attr, value in destino_data.items():
-                    setattr(instance.destino, attr, value)
-                instance.destino.save()
-            else:
-                instance.destino = Ubicacion.objects.create(**destino_data)
-
-        if estado_data:
-            # Actualizar estado si es válido
-            instance.estado = EstadoPedido.objects.get(nombre=estado_data['nombre'])
-
-        # Actualizar campos simples
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
         return instance
+
 
         
 class VehiculoSerializer(serializers.ModelSerializer):
