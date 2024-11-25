@@ -222,7 +222,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
 class VehiculoViewSet(viewsets.ModelViewSet):
     queryset = Vehiculo.objects.all()
     serializer_class = VehiculoSerializer
-    #permission_classes = [IsAuthenticated] 
+    permission_classes = [AllowAny] 
        # Acción personalizada para devolver solo la ubicación geográfica
     @action(detail=False, methods=['get'], url_path='ubicaciones')
     def ubicaciones(self, request):
