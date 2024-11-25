@@ -3,7 +3,7 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import Distance
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
@@ -72,7 +72,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
 class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.all()
     serializer_class = PedidoSerializer
-    #permission_classes = [IsAuthenticated] 
+    permission_classes = [AllowAny] 
     #action para pedidos en curso
     @action(detail=False, methods=['get'], url_path='en-curso')
     def pedidos_en_curso(self, request):

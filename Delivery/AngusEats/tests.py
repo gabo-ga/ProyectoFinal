@@ -1,5 +1,6 @@
 #test para los models
 from django.test import TestCase
+from django.urls import reverse
 from django.contrib.gis.geos import Point
 from .models import (
     Usuario, Cliente, Pedido, Ubicacion, EstadoPedido,
@@ -7,7 +8,8 @@ from .models import (
 )
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
-from .serializer import UserSerializer, ClienteSerializer, UsuarioSerializer
+from rest_framework import status
+from .serializer import UserSerializer, ClienteSerializer, UsuarioSerializer, PedidoSerializer, EstadoPedidoSerializer, UbicacionSerializer
 
 
 class ModelsTestCase(TestCase):
@@ -357,3 +359,139 @@ class UsuarioSerializerAPITestCase(APITestCase):
         serializer = UsuarioSerializer(data=data)
         self.assertFalse(serializer.is_valid())
         self.assertIn("correo", serializer.errors)
+        
+
+class PedidoAPITestCase(APITestCase):
+
+    def setUp(self):
+        # Crear instancias necesarias para las relaciones
+        self.cliente = Cliente.objects.create(nombre='Cliente Test')
+        self.conductor = Usuario.objects.create(nombre='Conductor Test', rol='conductor')
+        self.origen = Ubicacion.objects.create(direccion='Origen Test', coordenadas='POINT(-58.3816 -34.6037)')
+        self.destino = Ubicacion.objects.create(direccion='Destino Test', coordenadas='POINT(-58.3816 -34.6037)')
+        self.estado = EstadoPedido.objects.create(nombre='pendiente')
+
+        # URL para la lista de pedidos
+        self.pedido_list_url = reverse('pedido-list')
+
+        # Datos iniciales para crear un pedido
+        self.pedido_data = {
+            'cliente': self.cliente.id,
+            'conductor': self.conductor.id,
+            'origen': self.origen.id,
+            'destino': self.destino.id,
+            'estado': self.estado.id,
+            'fecha_entrega': '2023-10-10T10:00:00Z',
+            'precio': '100.00',
+            'detalle': 'Entrega urgente'
+        }
+
+    def test_create_pedido(self):
+        # Probar la creación de un pedido mediante POST
+        response = self.client.post(self.pedido_list_url, self.pedido_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        pedido = Pedido.objects.get(id=response.data['id'])
+        self.assertEqual(pedido.cliente, self.cliente)
+        self.assertEqual(pedido.conductor, self.conductor)
+        self.assertEqual(pedido.origen, self.origen)
+        self.assertEqual(pedido.destino, self.destino)
+        self.assertEqual(pedido.estado, self.estado)
+        self.assertEqual(str(pedido.precio), '100.00')
+        self.assertEqual(pedido.detalle, 'Entrega urgente')
+
+    def test_retrieve_pedido(self):
+        # Crear un pedido para recuperar
+        pedido = Pedido.objects.create(
+            cliente=self.cliente,
+            conductor=self.conductor,
+            origen=self.origen,
+            destino=self.destino,
+            estado=self.estado,
+            precio='150.00',
+            detalle='Pedido para recuperar'
+        )
+        url = reverse('pedido-detail', args=[pedido.id])
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        expected_data = PedidoSerializer(pedido).data
+        self.assertEqual(response.data, expected_data)
+
+    def test_update_pedido(self):
+        # Crear un pedido para actualizar
+        pedido = Pedido.objects.create(
+            cliente=self.cliente,
+            conductor=None,
+            origen=self.origen,
+            destino=self.destino,
+            estado=self.estado,
+            precio='50.00',
+            detalle='Pedido original'
+        )
+        url = reverse('pedido-detail', args=[pedido.id])
+        update_data = {
+            'conductor': self.conductor.id,
+            'precio': '200.00',
+            'detalle': 'Pedido actualizado'
+        }
+        response = self.client.patch(url, update_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        pedido.refresh_from_db()
+        self.assertEqual(pedido.conductor, self.conductor)
+        self.assertEqual(str(pedido.precio), '200.00')
+        self.assertEqual(pedido.detalle, 'Pedido actualizado')
+
+    def test_delete_pedido(self):
+        # Crear un pedido para eliminar
+        pedido = Pedido.objects.create(
+            cliente=self.cliente,
+            conductor=self.conductor,
+            origen=self.origen,
+            destino=self.destino,
+            estado=self.estado,
+            precio='120.00',
+            detalle='Pedido para eliminar'
+        )
+        url = reverse('pedido-detail', args=[pedido.id])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Pedido.objects.filter(id=pedido.id).exists())
+
+    def test_list_pedidos(self):
+        # Crear varios pedidos
+        Pedido.objects.create(
+            cliente=self.cliente,
+            conductor=self.conductor,
+            origen=self.origen,
+            destino=self.destino,
+            estado=self.estado,
+            precio='100.00',
+            detalle='Pedido 1'
+        )
+        Pedido.objects.create(
+            cliente=self.cliente,
+            conductor=None,
+            origen=self.origen,
+            destino=self.destino,
+            estado=self.estado,
+            precio='150.00',
+            detalle='Pedido 2'
+        )
+        response = self.client.get(self.pedido_list_url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
+
+    def test_invalid_pedido_creation(self):
+        # Probar la creación de un pedido con datos inválidos
+        invalid_data = self.pedido_data.copy()
+        invalid_data['precio'] = 'precio_invalido'
+        response = self.client.post(self.pedido_list_url, invalid_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('precio', response.data)
+
+    def test_missing_required_field(self):
+        # Probar creación con campo obligatorio faltante
+        invalid_data = self.pedido_data.copy()
+        invalid_data.pop('cliente')
+        response = self.client.post(self.pedido_list_url, invalid_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('cliente', response.data)
