@@ -40,15 +40,32 @@ class ClienteSerializer(serializers.ModelSerializer):
         fields = ['id', 'nombre', 'telefono']
  
 class UbicacionSerializer(serializers.ModelSerializer):
-    coordenadas = serializers.SerializerMethodField()
+    coordenadas = serializers.SerializerMethodField()  # Para lectura
+    coordenadas_input = serializers.JSONField(write_only=True, required=False)  # Para escritura
+
     class Meta:
         model = Ubicacion
-        fields = ['id', 'direccion', 'coordenadas']
-    #metodo para extraer las coordenadas
+        fields = ['id', 'direccion', 'coordenadas', 'coordenadas_input']
+
+    # Método para extraer las coordenadas
     def get_coordenadas(self, obj):
         if obj.coordenadas:
             return f"POINT ({obj.coordenadas.x:.6f} {obj.coordenadas.y:.6f})"
         return None
+
+    # Sobrescribir `create` para manejar `coordenadas_input`
+    def create(self, validated_data):
+        coordenadas_input = validated_data.pop('coordenadas_input', None)
+        if coordenadas_input:
+            validated_data['coordenadas'] = Point(coordenadas_input['lng'], coordenadas_input['lat'], srid=4326)
+        return super().create(validated_data)
+
+    # Sobrescribir `update` para manejar `coordenadas_input`
+    def update(self, instance, validated_data):
+        coordenadas_input = validated_data.pop('coordenadas_input', None)
+        if coordenadas_input:
+            instance.coordenadas = Point(coordenadas_input['lng'], coordenadas_input['lat'], srid=4326)
+        return super().update(instance, validated_data)
 
 class EstadoPedidoSerializer(serializers.ModelSerializer):
     class Meta:

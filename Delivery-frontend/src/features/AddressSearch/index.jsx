@@ -15,17 +15,26 @@ function AddressSearch({ onPlaceSelected, initialAddress = "" }) {
 
   const handlePlaceChanged = useCallback(() => {
     const place = searchBoxRef.current?.getPlaces();
+    console.log("Lugares obtenidos:", place); // <-- Inspeccionar el valor de `place`
+
     if (place && place.length > 0) {
       const selectedPlace = place[0];
+      console.log("Lugar seleccionado:", selectedPlace); // <-- Inspeccionar `selectedPlace`
+
       const formattedAddress = selectedPlace.formatted_address;
-      const lat = selectedPlace.geometry.location.lat();
-      const lng = selectedPlace.geometry.location.lng();
-      setAddress(formattedAddress);
-      onPlaceSelected({
-        address: formattedAddress,
-        lat: lat,
-        lng: lng,
-      });
+      const lat = selectedPlace.geometry?.location?.lat();
+      const lng = selectedPlace.geometry?.location?.lng();
+
+      if (lat && lng) {
+        setAddress(formattedAddress);
+        onPlaceSelected({
+          address: formattedAddress,
+          lat: lat,
+          lng: lng,
+        });
+      } else {
+        console.error("Coordenadas no encontradas en el lugar seleccionado.");
+      }
     }
   }, [onPlaceSelected]);
 

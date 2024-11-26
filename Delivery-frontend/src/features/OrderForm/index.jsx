@@ -30,7 +30,7 @@ function OrderForm() {
   const [formData, setFormData] = useState({
     origen_id: null,
     destino_id: null,
-    cliente: null,
+    cliente_id: null,
     estado_id: 1,
     precio: "",
     detalle: "",
@@ -55,13 +55,41 @@ function OrderForm() {
 
   const handleDestinationPlaceSelected = async (data) => {
     try {
+      // Validación de los datos
+      if (
+        !data ||
+        typeof data.address !== "string" ||
+        typeof data.lat !== "number" ||
+        typeof data.lng !== "number"
+      ) {
+        console.error("Datos incompletos o inválidos seleccionados:", data);
+        return;
+      }
+
+      console.log("Datos seleccionados:", data);
+
+      // Llamada para crear la ubicación en el backend y obtener el ID
       const destinoId = await crearUbicacion(data.address, data.lat, data.lng);
-      setFormData({
-        ...formData,
-        destino_id: destinoId,
-      });
+
+      if (!destinoId) {
+        console.error("El backend no devolvió un ID válido para la ubicación.");
+        return;
+      }
+
+      // Actualización del estado del formulario con el ID de la ubicación
+      setFormData((prevData) => ({
+        ...prevData,
+        direccion_destino: data.address,
+        coordenadas_destino_lat: data.lat,
+        coordenadas_destino_lng: data.lng,
+        destino_id: destinoId, // Actualiza con el ID devuelto por la API
+      }));
+
+      console.log("Ubicación creada con ID:", destinoId);
     } catch (error) {
+      // Manejo de errores
       console.error("Error al crear la ubicación de destino:", error);
+      alert("No se pudo crear la ubicación. Por favor, inténtelo de nuevo.");
     }
   };
 
@@ -137,9 +165,9 @@ function OrderForm() {
               </Col>
               <Col xs={12} md={10}>
                 <CustomerSelect
-                  value={formData.cliente}
+                  value={formData.cliente_id}
                   onChange={handleInputChange}
-                  name="cliente"
+                  name="cliente_id"
                 />
               </Col>
               <Col xs={12} md={10}>

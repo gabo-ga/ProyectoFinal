@@ -247,12 +247,18 @@ export const updateOrderStatusById = async (id, nuevoEstado) => {
 };
 
 export const crearUbicacion = async (direccion, lat, lng) => {
-  const response = await axiosInstance.post('api/ubicaciones/', {
-    direccion,
-    coordenadas: {
-      type: "Point",
-      coordinates: [lng, lat],
-    },
-  });
-  return response.data.id; // Devuelve el ID de la nueva ubicación
+  try {
+    const response = await axiosInstance.post('api/ubicaciones/', {
+      direccion,
+      coordenadas_input: {
+        lat: lat,
+        lng: lng,
+      },
+    });
+    return response.data.id;
+  } catch (error) {
+    console.error("Error al crear ubicación:", error.response?.data || error.message);
+    throw error;
+  }
 };
+

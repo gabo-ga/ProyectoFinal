@@ -14,6 +14,7 @@ export const obtenerOrigenFijo = async (setFormData) => {
         .map(parseFloat);
       setFormData((prevData) => ({
         ...prevData,
+        origen_id: data.id,
         direccion_origen: data.direccion_origen,
         coordenadas_origen_lat: lat,
         coordenadas_origen_lng: lng,
@@ -51,16 +52,15 @@ export const cargarPedido = async (id, setFormData) => {
 export const handleOrderSubmit = async (formData, pedidoId = null) => {
   // Preparar datos para enviar al backend
   const dataToSend = {
-    ...formData,
-    coordenadas_origen: {
-      lat: formData.coordenadas_origen_lat,
-      lng: formData.coordenadas_origen_lng,
-    },
-    coordenadas_destino: {
-      lat: formData.coordenadas_destino_lat,
-      lng: formData.coordenadas_destino_lng,
-    },
+    cliente: formData.cliente_id, // ID del cliente
+    conductor: formData.conductor, // ID del conductor
+    origen: formData.origen_id,
+    destino: formData.destino_id,
+    estado: formData.estado_id, // ID del estado del pedido
+    precio: parseFloat(formData.precio), // Precio del pedido
+    detalle: formData.detalle, // Detalle del pedido
   };
+  
 
   // Eliminar campos redundantes
   delete dataToSend.coordenadas_origen_lat;
