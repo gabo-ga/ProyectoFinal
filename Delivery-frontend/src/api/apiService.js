@@ -68,7 +68,7 @@ export const fetchActiveOrders = async () => {
 
 export const fetchDrivers = async () => {
   try {
-    const response = await axiosInstance.get('/api/conductores/');
+    const response = await axiosInstance.get('/api/usuarios/conductores/');
     return response.data;
   } catch (error) {
     console.error('Error al obtener los conductores:', error);

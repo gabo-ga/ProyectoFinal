@@ -32,10 +32,7 @@ class ProtectedView(APIView):
         return Response(data)
 
 class UsuarioViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet para el modelo Usuario.
-    Permite realizar operaciones CRUD sobre los usuarios.
-    """
+
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
     permission_classes = [AllowAny]

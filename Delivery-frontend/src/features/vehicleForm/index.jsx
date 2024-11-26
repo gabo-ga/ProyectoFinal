@@ -40,7 +40,7 @@ function VehicleForm() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/vehiculos/",
+        "http://localhost:8000/api/vehiculos/",
         vehicleData
       );
 
