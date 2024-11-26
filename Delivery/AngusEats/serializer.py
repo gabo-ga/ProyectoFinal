@@ -146,7 +146,7 @@ class ConfiguracionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Configuracion
-        fields = ['direccion_origen', 'punto_origen', 'latitud', 'longitud']
+        fields = ['id', 'direccion_origen', 'punto_origen', 'latitud', 'longitud']
 
     def create(self, validated_data):
         latitud = validated_data.pop('latitud', None)

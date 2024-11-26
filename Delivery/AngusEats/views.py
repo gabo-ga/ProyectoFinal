@@ -17,10 +17,11 @@ from .queries import (contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso
                       obtener_vehiculos_disponibles, obtener_detalle_coordenadas, obtener_conductores)
 
 # Serializadores
-from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConfiguracionSerializer, AnalisisPedidoSerializer, UsuarioSerializer
+from .serializer import ( UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer,
+                         ConfiguracionSerializer, AnalisisPedidoSerializer, UsuarioSerializer, UbicacionSerializer)
 
 # Modelos
-from .models import Cliente, Pedido, Vehiculo, Configuracion, AnalisisPedido, Usuario
+from .models import Cliente, Pedido, Vehiculo, Configuracion, AnalisisPedido, Usuario, Ubicacion
 
 
 class ProtectedView(APIView):
@@ -237,10 +238,27 @@ class AnalisisPedidoViewSet(viewsets.ModelViewSet):
     serializer_class = AnalisisPedidoSerializer
     permission_classes = [AllowAny]  
     
+class UbicacionViewSet(viewsets.ModelViewSet):
+    queryset = Ubicacion.objects.all()
+    serializer_class = UbicacionSerializer
+    permission_classes = [AllowAny]
+
+    @action(detail=False, methods=['get'], url_path='buscar')
+    def buscar_por_direccion(self, request):
+        direccion = request.query_params.get('direccion', None)
+        if not direccion:
+            return Response(
+                {"error": "Debe proporcionar un parámetro de dirección."},
+                status=400
+            )
+
+        ubicaciones = Ubicacion.objects.filter(direccion__icontains=direccion)
+        serializer = self.get_serializer(ubicaciones, many=True)
+        return Response(serializer.data)
 
 class ConfiguracionViewSet(viewsets.ViewSet):
     serializer_class = ConfiguracionSerializer
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def list(self, request):
         config, created = Configuracion.objects.get_or_create(id=1)
