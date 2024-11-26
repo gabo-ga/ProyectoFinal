@@ -12,11 +12,10 @@ import DriverField from "../../components/DriverField";
 import PriceField from "../../components/PriceField";
 import DescriptionField from "../../components/DescriptionField";
 import {
-  fetchOrigenFijo,
   fetchPedidoById,
   saveOrUpdatePedido,
   fetchDriversWithActiveOrders,
-  crearUbicacion, // Cambiado: Uso de la nueva función para obtener conductores
+  crearUbicacion,
 } from "../../api/apiService";
 import styles from "./index.module.css";
 import MapWithMarker from "../../components/MapWithMarkerComponent";
@@ -37,7 +36,7 @@ function OrderForm() {
     conductor: null,
   });
 
-  const [drivers, setDrivers] = useState([]); // Lista de conductores con pedidos activos
+  const [drivers, setDrivers] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -55,7 +54,6 @@ function OrderForm() {
 
   const handleDestinationPlaceSelected = async (data) => {
     try {
-      // Validación de los datos
       if (
         !data ||
         typeof data.address !== "string" ||
@@ -68,7 +66,7 @@ function OrderForm() {
 
       console.log("Datos seleccionados:", data);
 
-      // Llamada para crear la ubicación en el backend y obtener el ID
+      //se crea la ubicacion y devuelve el id
       const destinoId = await crearUbicacion(data.address, data.lat, data.lng);
 
       if (!destinoId) {
@@ -76,18 +74,16 @@ function OrderForm() {
         return;
       }
 
-      // Actualización del estado del formulario con el ID de la ubicación
       setFormData((prevData) => ({
         ...prevData,
         direccion_destino: data.address,
         coordenadas_destino_lat: data.lat,
         coordenadas_destino_lng: data.lng,
-        destino_id: destinoId, // Actualiza con el ID devuelto por la API
+        destino_id: destinoId,
       }));
 
       console.log("Ubicación creada con ID:", destinoId);
     } catch (error) {
-      // Manejo de errores
       console.error("Error al crear la ubicación de destino:", error);
       alert("No se pudo crear la ubicación. Por favor, inténtelo de nuevo.");
     }
@@ -113,7 +109,7 @@ function OrderForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const success = await handleOrderSubmit(formData, id); // `id` será null para crear o tendrá valor para editar
+      const success = await handleOrderSubmit(formData, id);
       if (success) {
         navigate("/dashboard");
       }

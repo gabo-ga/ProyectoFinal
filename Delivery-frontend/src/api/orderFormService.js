@@ -50,15 +50,14 @@ export const cargarPedido = async (id, setFormData) => {
 
 // Manejar el envío de datos
 export const handleOrderSubmit = async (formData, pedidoId = null) => {
-  // Preparar datos para enviar al backend
   const dataToSend = {
-    cliente: formData.cliente_id, // ID del cliente
-    conductor: formData.conductor, // ID del conductor
+    cliente: formData.cliente_id, 
+    conductor: formData.conductor,
     origen: formData.origen_id,
     destino: formData.destino_id,
-    estado: formData.estado_id, // ID del estado del pedido
-    precio: parseFloat(formData.precio), // Precio del pedido
-    detalle: formData.detalle, // Detalle del pedido
+    estado: formData.estado_id, 
+    precio: parseFloat(formData.precio),
+    detalle: formData.detalle, 
   };
   
 
