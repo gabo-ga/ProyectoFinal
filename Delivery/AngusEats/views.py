@@ -12,7 +12,9 @@ from django.core.exceptions import ValidationError
 from django.db.models import Count, Q
 from rest_framework.viewsets import ViewSet
 #queries
-from .queries import contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso, obtener_pedidos_entregados, contar_pedidos_cancelados, contar_pedidos_entregados
+from .queries import (contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso, 
+                      obtener_pedidos_entregados, contar_pedidos_cancelados, contar_pedidos_entregados, 
+                      obtener_vehiculos_disponibles, obtener_detalle_coordenadas)
 
 # Serializadores
 from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConfiguracionSerializer, AnalisisPedidoSerializer, UsuarioSerializer
@@ -77,7 +79,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
-    #permission_classes = [IsAuthenticated]  
+    permission_classes = [AllowAny]  
 
 class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.all()
@@ -131,28 +133,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
     # CONSULTA SQL PARA DETALLE DE COORDENADAS CON DECODIFICACIÓN SRID
     @action(detail=False, methods=['get'], url_path='coordenadas')
     def detalle_coordenadas(self, request):
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT
-                    p.id AS "ID",
-                    ST_X(p.coordenadas_origen) AS "ORIGEN_LAT",
-                    ST_Y(p.coordenadas_origen) AS "ORIGEN_LNG",
-                    ST_X(p.coordenadas_destino) AS "DESTINO_LAT",
-                    ST_Y(p.coordenadas_destino) AS "DESTINO_LNG"
-                FROM 
-                    "AngusEats_pedido" p
-                WHERE 
-                    p.estado IN ('pendiente', 'en_ruta');
-                """)
-
-            rows = cursor.fetchall()
-            columnas = [col[0] for col in cursor.description]
-
-            result = [
-                dict(zip(columnas, row))
-                for row in rows
-            ]
-
+        result = obtener_detalle_coordenadas(estado_id=1)
         return Response(result)
     
     @action(detail=False, methods=['get'], url_path='count-cancelados')
@@ -223,69 +204,28 @@ class PedidoViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+    #contar pedidos dinamicamente
     @action(detail=False, methods=['get'], url_path='count')
     def count(self, request):
-        estado = request.query_params.get('estado', None)
-        pedidos_contados = contar_pedidos(estado=estado)
+        estado_ids = request.query_params.get('estado', None)
+
+        if estado_ids:
+            # Convertir el parámetro en una lista de IDs enteros
+            estado_ids = [int(id_estado) for id_estado in estado_ids.split(',')]
+        else:
+            return Response({"error": "Debe proporcionar al menos un estado."}, status=400)
+
+        pedidos_contados = contar_pedidos(estado_ids=estado_ids)
         return Response({"count": pedidos_contados})
 
 class VehiculoViewSet(viewsets.ModelViewSet):
     queryset = Vehiculo.objects.all()
     serializer_class = VehiculoSerializer
     permission_classes = [AllowAny] 
-       # Acción personalizada para devolver solo la ubicación geográfica
-    @action(detail=False, methods=['get'], url_path='ubicaciones')
-    def ubicaciones(self, request):
-        vehiculos = self.get_queryset()
-        ubicaciones = []
-
-        for vehiculo in vehiculos:
-            if vehiculo.ubicacion_geografica:
-                ubicaciones.append({
-                    'placa': vehiculo.placa,
-                    'ubicacion_geografica': {
-                        'latitude': vehiculo.ubicacion_geografica.y,
-                        'longitude': vehiculo.ubicacion_geografica.x
-                    }
-                })
-
-        return Response(ubicaciones)
     #action para vehiculos disponibles
     @action(detail=False, methods=['get'], url_path='vehiculos-disponibles')
     def vehiculos_disponibles(self, request):
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT 
-                    v.placa AS vehiculo_placa,
-                    v.vehiculo_nombre AS vehiculo_nombre,
-                    v.tipo AS vehiculo_tipo,
-                    v.disponible AS vehiculo_disponible,
-                    c.nombre AS conductor_nombre,
-                    c.telefono AS conductor_telefono
-                FROM 
-                    "AngusEats_vehiculo" v
-                JOIN 
-                    "AngusEats_conductor" c
-                ON 
-                    v.conductor_id = c.id
-                WHERE 
-                    v.disponible = TRUE;
-            """)
-
-            rows = cursor.fetchall()
-
-            # Estructurar los datos en formato JSON
-            vehiculos_disponibles = [
-                {
-                    'placa': row[0],
-                    'vehiculo_nombre': row[1],
-                    'vehiculo_tipo': row[2],
-                    'disponible': row[3],
-                    'conductor_nombre': row[4],
-                    'conductor_telefono': row[5]
-                }
-                for row in rows
-            ]
+        vehiculos_disponibles = obtener_vehiculos_disponibles()
 
         return Response(vehiculos_disponibles)
     

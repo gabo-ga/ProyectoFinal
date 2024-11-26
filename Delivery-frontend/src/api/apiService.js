@@ -5,7 +5,7 @@ import axiosInstance from '../axiosInstance';
 // Función para contar los pedidos en curso
 export const fetchPedidosEnCurso = async () => {
   try {
-    const response = await axiosInstance.get("/api/v1/pedidos/count/");
+    const response = await axiosInstance.get("/api/pedidos/count/");
     return response.data.count;
   } catch (error) {
     console.error("Error al obtener los pedidos en curso:", error);
@@ -26,7 +26,7 @@ export const fetchVehiculosDisponibles = async () => {
 
 export const fetchPedidosCancelados = async () => {
   try {
-    const response = await axiosInstance.get("/api/v1/pedidos/count/", {
+    const response = await axiosInstance.get("/api/pedidos/count/", {
       params: { estado: "cancelado" },
     });
     return response.data.count; // Devuelve el conteo
@@ -39,7 +39,7 @@ export const fetchPedidosCancelados = async () => {
 // Función para obtener pedidos entregados
 export const fetchPedidosEntregados = async () => {
   try {
-    const response = await axiosInstance.get("/api/v1/pedidos/count-entregados/");
+    const response = await axiosInstance.get("/api/pedidos/count-entregados/");
     return response.data.count; // Devuelve el conteo
   } catch (error) {
     console.error("Error al obtener los pedidos entregados:", error);
@@ -49,7 +49,7 @@ export const fetchPedidosEntregados = async () => {
 
 export const fetchDriversWithActiveOrders = async () => {
   try {
-    const response = await axiosInstance.get("/api/v1/conductores/con-activos/");
+    const response = await axiosInstance.get("/api/conductores/con-activos/");
     return response.data;
   } catch (error) {
     console.error("Error al obtener conductores:", error);
@@ -59,7 +59,7 @@ export const fetchDriversWithActiveOrders = async () => {
 
 export const fetchActiveOrders = async () => {
   try {
-    const response = await axiosInstance.get('/api/v1/pedidos/en-curso/');
+    const response = await axiosInstance.get('/api/pedidos/en-curso/');
     return response.data;
   } catch (error) {
     throw new Error('Error al cargar los pedidos');
@@ -68,7 +68,7 @@ export const fetchActiveOrders = async () => {
 
 export const fetchDrivers = async () => {
   try {
-    const response = await axiosInstance.get('/api/v1/conductores/');
+    const response = await axiosInstance.get('/api/conductores/');
     return response.data;
   } catch (error) {
     console.error('Error al obtener los conductores:', error);
@@ -78,7 +78,7 @@ export const fetchDrivers = async () => {
 
 export const fetchActiveVehicles = async () => {
   try {
-    const response = await axiosInstance.get('/api/v1/vehiculos/vehiculos-disponibles/');
+    const response = await axiosInstance.get('/api/vehiculos/vehiculos-disponibles/');
     return response.data;
   } catch (error) {
     throw new Error('Error al cargar los vehículos disponibles');
@@ -87,7 +87,7 @@ export const fetchActiveVehicles = async () => {
 
 export const deleteVehiculo = async (placa) => {
   try {
-    await axiosInstance.delete(`/api/v1/vehiculos/${placa}/`);
+    await axiosInstance.delete(`/api/vehiculos/${placa}/`);
   } catch (error) {
     console.error('Error al eliminar el vehículo:', error);
     throw error;
@@ -96,7 +96,7 @@ export const deleteVehiculo = async (placa) => {
 
 export const fetchPedidos = async () => {
   try {
-    const response = await axiosInstance.get('/api/v1/pedidos/detalle-pedidos/');
+    const response = await axiosInstance.get('/api/pedidos/detalle-pedidos/');
     return response.data;
   } catch (error) {
     throw new Error('Error al obtener los pedidos');
@@ -105,7 +105,7 @@ export const fetchPedidos = async () => {
 
 export const deletePedido = async (id) => {
   try {
-    const response = await axiosInstance.delete(`/api/v1/pedidos/${id}/`);
+    const response = await axiosInstance.delete(`/api/pedidos/${id}/`);
     return response.status === 204;
   } catch (error) {
     throw new Error('Error al eliminar el pedido');
@@ -114,7 +114,7 @@ export const deletePedido = async (id) => {
 
 export const fetchDireccionOrigen = async () => {
   try {
-    const response = await axiosInstance.get('/api/v1/configuracion/obtener-origen/');
+    const response = await axiosInstance.get('/api/configuracion/obtener-origen/');
     return response.data;
   } catch (error) {
     throw new Error('Error al cargar la configuración');
@@ -123,7 +123,7 @@ export const fetchDireccionOrigen = async () => {
 
 export const saveDireccionOrigen = async (direccionOrigenData) => {
   try {
-    const response = await axiosInstance.post('/api/v1/configuracion/guardar-origen/', direccionOrigenData);
+    const response = await axiosInstance.post('/api/configuracion/guardar-origen/', direccionOrigenData);
     return response.data;
   } catch (error) {
     throw new Error('Error al guardar la configuración');
@@ -132,7 +132,7 @@ export const saveDireccionOrigen = async (direccionOrigenData) => {
 
 export const fetchClientes = async () => {
   try {
-    const response = await axiosInstance.get('/api/v1/clientes/');
+    const response = await axiosInstance.get('/api/clientes/');
     return response.data;
   } catch (error) {
     console.error('Error al obtener los clientes:', error);
@@ -143,7 +143,7 @@ export const fetchClientes = async () => {
 // Obtener ubicaciones de vehículos
 export const fetchVehiculos = async () => {
   try {
-    const response = await axiosInstance.get('/api/v1/vehiculos/ubicaciones');
+    const response = await axiosInstance.get('/api/vehiculos/ubicaciones');
     return response.data;
   } catch (error) {
     console.error('Error al obtener ubicaciones:', error);
@@ -154,7 +154,7 @@ export const fetchVehiculos = async () => {
 // Obtener coordenadas de pedidos
 export const fetchPedidosCoordenadas = async () => {
   try {
-    const response = await axiosInstance.get('/api/v1/pedidos/coordenadas');
+    const response = await axiosInstance.get('/api/pedidos/coordenadas');
     return response.data;
   } catch (error) {
     console.error('Error al obtener coordenadas:', error);
@@ -165,7 +165,7 @@ export const fetchPedidosCoordenadas = async () => {
 // Servicios del formulario de pedidos
 export const fetchOrigenFijo = async () => {
   try {
-    const response = await axiosInstance.get('/api/v1/configuracion/obtener-origen/');
+    const response = await axiosInstance.get('/api/configuracion/obtener-origen/');
     return response.data;
   } catch (error) {
     console.error('Error al obtener la dirección de origen:', error);
@@ -175,7 +175,7 @@ export const fetchOrigenFijo = async () => {
 
 export const fetchPedidoById = async (id) => {
   try {
-    const response = await axiosInstance.get(`/api/v1/pedidos/${id}/`);
+    const response = await axiosInstance.get(`/api/pedidos/${id}/`);
     return response.data;
   } catch (error) {
     console.error('Error al obtener el pedido:', error);
@@ -201,7 +201,7 @@ export const saveOrUpdatePedido = async (data, id = null) => {
 
 export const fetchUserById = async () => {
   try {
-    const response = await axiosInstance.get('/api/v1/users/1/');
+    const response = await axiosInstance.get('/api/users/1/');
     return response.data;
   } catch (error) {
     console.error('Error al obtener los datos del usuario:', error);
@@ -211,7 +211,7 @@ export const fetchUserById = async () => {
 
 export const fetchCompletedOrders = async () => {
   try {
-    const response = await axiosInstance.get('/api/v1/pedidos/entregados/');
+    const response = await axiosInstance.get('/api/pedidos/entregados/');
     return response.data;
   } catch (error) {
     console.error('Error al cargar los pedidos completados:', error);
@@ -221,7 +221,7 @@ export const fetchCompletedOrders = async () => {
 
 export const fetchOrderDetailsById = async (id) => {
   try {
-    const response = await axiosInstance.get("/api/v1/pedidos/en-curso/");
+    const response = await axiosInstance.get("/api/pedidos/en-curso/");
     const orders = response.data;
     const selectedOrder = orders.find((order) => order.pedido_id === parseInt(id));
     if (!selectedOrder) {
@@ -236,7 +236,7 @@ export const fetchOrderDetailsById = async (id) => {
 
 export const updateOrderStatusById = async (id, nuevoEstado) => {
   try {
-    const response = await axiosInstance.patch(`/api/v1/pedidos/${id}/actualizar-estado/`, {
+    const response = await axiosInstance.patch(`/api/pedidos/${id}/actualizar-estado/`, {
       estado: nuevoEstado,
     });
     return response.data;

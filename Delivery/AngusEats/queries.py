@@ -8,25 +8,23 @@ def execute_sql_query(query, params=None):
         columnas = [col[0] for col in cursor.description]
         return [dict(zip(columnas, row)) for row in rows]
 
-def contar_pedidos(estado=None):
-    """Cuenta pedidos según su estado."""
-    if estado:
-        query = """
-            SELECT COUNT(*) AS total_pedidos
-            FROM "AngusEats_pedido"
-            WHERE estado = %s;
-        """
-        params = [estado]
-    else:
-        query = """
-            SELECT COUNT(*) AS total_pedidos
-            FROM "AngusEats_pedido"
-            WHERE estado IN ('pendiente', 'en_ruta');
-        """
-        params = []
+def contar_pedidos(estado_ids):
+    ids_placeholder = ", ".join(["%s"] * len(estado_ids))
 
-    result = execute_sql_query(query, params)
+    query = f"""
+        SELECT COUNT(*) AS total_pedidos
+        FROM "AngusEats_pedido" p
+        JOIN "AngusEats_estado" e
+        ON p.estado_id = e.id
+        WHERE e.id IN ({ids_placeholder});
+    """
+
+    # Ejecutar la consulta
+    result = execute_sql_query(query, estado_ids)
+
+    # Retornar el conteo de pedidos
     return result[0]['total_pedidos'] if result else 0
+
 
 def contar_vehiculos(disponible=None):
     """Cuenta vehículos según su estado de disponibilidad."""
@@ -134,8 +132,6 @@ def contar_pedidos_entregados():
     result = execute_sql_query(query)
     return result[0]['total_pedidos_entregados'] if result else 0
 
-
-
 def obtener_vehiculos_disponibles():
     """Devuelve los vehículos disponibles."""
     query = """
@@ -157,4 +153,31 @@ def obtener_vehiculos_disponibles():
         AND u.rol = 'conductor';
     """
     return execute_sql_query(query)
+
+def obtener_detalle_coordenadas(estado_id):
+    """
+    Obtiene las coordenadas de origen y destino de los pedidos con un estado específico.
+    """
+    query = """
+        SELECT
+            p.id AS "ID",
+            ST_X(u_origen.coordenadas) AS "ORIGEN_LAT",
+            ST_Y(u_origen.coordenadas) AS "ORIGEN_LNG",
+            ST_X(u_destino.coordenadas) AS "DESTINO_LAT",
+            ST_Y(u_destino.coordenadas) AS "DESTINO_LNG"
+        FROM 
+            "AngusEats_pedido" p
+        JOIN 
+            "AngusEats_ubicacion" u_origen
+        ON 
+            p.origen_id = u_origen.id
+        JOIN 
+            "AngusEats_ubicacion" u_destino
+        ON 
+            p.destino_id = u_destino.id
+        WHERE 
+            p.estado_id = %s;
+    """
+    return execute_sql_query(query, [estado_id])
+
 
