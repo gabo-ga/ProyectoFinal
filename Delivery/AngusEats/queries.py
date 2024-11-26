@@ -180,4 +180,21 @@ def obtener_detalle_coordenadas(estado_id):
     """
     return execute_sql_query(query, [estado_id])
 
+def obtener_conductores():
+    """
+    Obtiene todos los usuarios que tienen el rol de 'conductor'.
+    """
+    query = """
+        SELECT 
+            id, 
+            nombre, 
+            correo, 
+            telefono, 
+            rol
+        FROM 
+            "AngusEats_usuario"
+        WHERE 
+            rol = 'conductor';
+    """
+    return execute_sql_query(query)
 

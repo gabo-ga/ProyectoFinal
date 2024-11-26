@@ -14,7 +14,7 @@ from rest_framework.viewsets import ViewSet
 #queries
 from .queries import (contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso, 
                       obtener_pedidos_entregados, contar_pedidos_cancelados, contar_pedidos_entregados, 
-                      obtener_vehiculos_disponibles, obtener_detalle_coordenadas)
+                      obtener_vehiculos_disponibles, obtener_detalle_coordenadas, obtener_conductores)
 
 # Serializadores
 from .serializer import UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer, ConfiguracionSerializer, AnalisisPedidoSerializer, UsuarioSerializer
@@ -38,6 +38,11 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
     permission_classes = [AllowAny]
+    #accion personalizada para traer los conductores
+    @action(detail=False, methods=['get'], url_path='conductores')
+    def obtener_conductores(self, request):
+        conductores = obtener_conductores()
+        return Response(conductores)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -65,16 +70,6 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 #        if pedidos_activos >= 4:
 #            raise ValidationError("El conductor ya tiene el máximo de 4 pedidos activos asignados.")
     #accion personalizada para pedidos activos
-#    @action(detail=False, methods=['get'], url_path='con-activos')
-#    def conductores_con_pedidos(self, request):
-#        conductores = Conductor.objects.annotate(
-#            pedidos_activos=Count('pedido', filter=Q(pedido__estado__in=['pendiente', 'en_ruta']))
-#        )
-#        serializer = ConductorSerializer(conductores, many=True)
-#        return Response(serializer.data)
-#    #accion para rutas asignadas
-    
-    
 
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
