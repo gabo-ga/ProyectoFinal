@@ -245,3 +245,14 @@ export const updateOrderStatusById = async (id, nuevoEstado) => {
     throw error;
   }
 };
+
+export const crearUbicacion = async (direccion, lat, lng) => {
+  const response = await axiosInstance.post('api/ubicaciones/', {
+    direccion,
+    coordenadas: {
+      type: "Point",
+      coordinates: [lng, lat],
+    },
+  });
+  return response.data.id; // Devuelve el ID de la nueva ubicación
+};

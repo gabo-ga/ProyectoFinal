@@ -48,7 +48,8 @@ export const cargarPedido = async (id, setFormData) => {
 };
 
 // Manejar el envío de datos
-export const handleOrderSubmit = async (formData) => {
+export const handleOrderSubmit = async (formData, pedidoId = null) => {
+  // Preparar datos para enviar al backend
   const dataToSend = {
     ...formData,
     coordenadas_origen: {
@@ -61,7 +62,7 @@ export const handleOrderSubmit = async (formData) => {
     },
   };
 
-  // Eliminar campos redundantes si es necesario
+  // Eliminar campos redundantes
   delete dataToSend.coordenadas_origen_lat;
   delete dataToSend.coordenadas_origen_lng;
   delete dataToSend.coordenadas_destino_lat;
@@ -70,10 +71,17 @@ export const handleOrderSubmit = async (formData) => {
   console.log("Datos enviados al backend:", dataToSend);
 
   try {
-    const response = await axiosInstance.post("api/v1/pedidos/", dataToSend);
+    let response;
+    if (pedidoId) {
+      // Actualizar pedido existente
+      response = await axiosInstance.put(`api/pedidos/${pedidoId}/`, dataToSend);
+    } else {
+      // Crear nuevo pedido
+      response = await axiosInstance.post("api/pedidos/", dataToSend);
+    }
 
-    if (response.status === 201) {
-      alert("Pedido añadido con éxito");
+    if (response.status === 201 || response.status === 200) {
+      alert(`Pedido ${pedidoId ? "actualizado" : "añadido"} con éxito`);
       return true;
     } else {
       console.error("Error al enviar el formulario:", response.statusText);
@@ -86,3 +94,4 @@ export const handleOrderSubmit = async (formData) => {
     return false;
   }
 };
+

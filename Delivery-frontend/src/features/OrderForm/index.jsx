@@ -15,7 +15,8 @@ import {
   fetchOrigenFijo,
   fetchPedidoById,
   saveOrUpdatePedido,
-  fetchDriversWithActiveOrders, // Cambiado: Uso de la nueva función para obtener conductores
+  fetchDriversWithActiveOrders,
+  crearUbicacion, // Cambiado: Uso de la nueva función para obtener conductores
 } from "../../api/apiService";
 import styles from "./index.module.css";
 import MapWithMarker from "../../components/MapWithMarkerComponent";
@@ -27,17 +28,13 @@ import {
 
 function OrderForm() {
   const [formData, setFormData] = useState({
-    direccion_origen: "",
-    coordenadas_origen_lat: null,
-    coordenadas_origen_lng: null,
-    direccion_destino: "",
-    coordenadas_destino_lat: null,
-    coordenadas_destino_lng: null,
-    cliente: "",
-    estado: "pendiente",
+    origen_id: null,
+    destino_id: null,
+    cliente: null,
+    estado_id: 1,
     precio: "",
     detalle: "",
-    conductor_designado: "",
+    conductor: null,
   });
 
   const [drivers, setDrivers] = useState([]); // Lista de conductores con pedidos activos
@@ -66,13 +63,16 @@ function OrderForm() {
     }
   }, [id]);
 
-  const handleDestinationPlaceSelected = (data) => {
-    setFormData({
-      ...formData,
-      direccion_destino: data.address,
-      coordenadas_destino_lat: data.lat,
-      coordenadas_destino_lng: data.lng,
-    });
+  const handleDestinationPlaceSelected = async (data) => {
+    try {
+      const destinoId = await crearUbicacion(data.address, data.lat, data.lng);
+      setFormData({
+        ...formData,
+        destino_id: destinoId,
+      });
+    } catch (error) {
+      console.error("Error al crear la ubicación de destino:", error);
+    }
   };
 
   const handleMarkerPositionChanged = (position) => {
@@ -94,12 +94,13 @@ function OrderForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Datos del formulario:", formData);
     try {
-      const success = await handleOrderSubmit(formData);
-      if (success) navigate("/dashboard");
+      const success = await handleOrderSubmit(formData, id); // `id` será null para crear o tendrá valor para editar
+      if (success) {
+        navigate("/dashboard");
+      }
     } catch (error) {
-      console.error("Error al enviar el pedido:", error);
+      console.error("Error al enviar el formulario:", error);
     }
   };
 
@@ -155,7 +156,7 @@ function OrderForm() {
               <Col xs={12} md={10}>
                 <DriverField
                   drivers={drivers}
-                  value={formData.conductor_designado}
+                  value={formData.conductor}
                   onChange={handleInputChange}
                 />
               </Col>
