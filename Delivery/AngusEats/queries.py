@@ -14,7 +14,7 @@ def contar_pedidos(estado_ids):
     query = f"""
         SELECT COUNT(*) AS total_pedidos
         FROM "AngusEats_pedido" p
-        JOIN "AngusEats_estado" e
+        JOIN "AngusEats_estadopedido" e
         ON p.estado_id = e.id
         WHERE e.id IN ({ids_placeholder});
     """

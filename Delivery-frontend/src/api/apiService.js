@@ -5,7 +5,7 @@ import axiosInstance from '../axiosInstance';
 // Función para contar los pedidos en curso
 export const fetchPedidosEnCurso = async () => {
   try {
-    const response = await axiosInstance.get("/api/pedidos/count/");
+    const response = await axiosInstance.get("/api/pedidos/count/?estado=1");
     return response.data.count;
   } catch (error) {
     console.error("Error al obtener los pedidos en curso:", error);
