@@ -1,5 +1,4 @@
-{
-  /*import React from "react";
+import React from "react";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom"; // Importar MemoryRouter para manejar rutas
 import ButtonsContainer from "./buttons";
@@ -50,5 +49,4 @@ describe("ButtonsContainer Component", () => {
     });
     expect(linkElement).toHaveAttribute("href", "/metrics");
   });
-});*/
-}
+});
