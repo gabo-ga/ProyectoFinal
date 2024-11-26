@@ -89,8 +89,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
             return Response(result)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
-    
-        # action para pedidos "entregados"
+    # action para pedidos entregados
     @action(detail=False, methods=['get'], url_path='entregados')
     def pedidos_entregados(self, request):
         try:
