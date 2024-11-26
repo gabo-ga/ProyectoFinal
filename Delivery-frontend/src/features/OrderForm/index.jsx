@@ -44,16 +44,6 @@ function OrderForm() {
 
   useEffect(() => {
     obtenerOrigenFijo(setFormData);
-    const cargarConductores = async () => {
-      try {
-        const data = await fetchDriversWithActiveOrders(); // Cambiado: Uso de la nueva función
-        setDrivers(data);
-      } catch (error) {
-        console.error("Error al obtener los conductores:", error);
-      }
-    };
-
-    cargarConductores();
   }, []);
 
   useEffect(() => {
@@ -152,7 +142,6 @@ function OrderForm() {
                   name="cliente"
                 />
               </Col>
-              {/* Campo para seleccionar conductor */}
               <Col xs={12} md={10}>
                 <DriverField
                   drivers={drivers}

@@ -1,17 +1,43 @@
+import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
+import { fetchDriversWithActiveOrders } from "../../api/apiService";
 
-const DriverField = ({ drivers, value, onChange }) => (
-  <Form.Group controlId="formDesignatedDriver">
-    <Form.Label>CONDUCTOR DESIGNADO:</Form.Label>
-    <Form.Select name="conductor_designado" value={value} onChange={onChange}>
-      <option value="">Seleccione un conductor</option>
-      {drivers.map((driver) => (
-        <option key={driver.id} value={driver.id}>
-          {driver.nombre} (Pedidos Activos: {driver.pedidos_activos})
-        </option>
-      ))}
-    </Form.Select>
-  </Form.Group>
-);
+const DriverField = ({ value, onChange }) => {
+  const [drivers, setDrivers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const cargarConductores = async () => {
+      try {
+        const data = await fetchDriversWithActiveOrders();
+        setDrivers(data);
+      } catch (error) {
+        console.error("Error al obtener los conductores:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    cargarConductores();
+  }, []);
+
+  return (
+    <Form.Group controlId="formDesignatedDriver">
+      <Form.Label>CONDUCTOR DESIGNADO:</Form.Label>
+      {isLoading ? (
+        <Form.Text>Cargando conductores...</Form.Text>
+      ) : (
+        <Form.Select name="conductor" value={value} onChange={onChange}>
+          <option value="">Seleccione un conductor</option>
+          {drivers.map((driver) => (
+            <option key={driver.id} value={driver.id}>
+              {driver.nombre}
+            </option>
+          ))}
+        </Form.Select>
+      )}
+    </Form.Group>
+  );
+};
 
 export default DriverField;
