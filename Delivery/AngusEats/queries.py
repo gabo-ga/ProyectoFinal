@@ -98,6 +98,27 @@ def obtener_pedidos_entregados():
     """
     return execute_sql_query(query)
 
+def obtener_detalle_pedidos():
+    """
+    Obtiene el detalle de los pedidos con su cliente, estado, hora estimada y dirección de destino.
+    """
+    query = """
+        SELECT
+            "AngusEats_pedido"."id" AS "ID",
+            "AngusEats_cliente"."nombre" AS "CLIENTE",
+            "AngusEats_estadopedido"."nombre" AS "ESTADO",
+            "AngusEats_ubicacion"."direccion" AS "DIRECCION_DESTINO"
+        FROM
+            "AngusEats_pedido"
+        INNER JOIN
+            "AngusEats_cliente" ON "AngusEats_pedido"."cliente_id" = "AngusEats_cliente"."id"
+        INNER JOIN
+            "AngusEats_estadopedido" ON "AngusEats_pedido"."estado_id" = "AngusEats_estadopedido"."id"
+        INNER JOIN
+            "AngusEats_ubicacion" ON "AngusEats_pedido"."destino_id" = "AngusEats_ubicacion"."id";
+    """
+    return execute_sql_query(query)
+
 def contar_pedidos_cancelados():
     """Cuenta los pedidos con estado 'cancelado'."""
     query = """

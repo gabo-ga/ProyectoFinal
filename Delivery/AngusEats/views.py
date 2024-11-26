@@ -14,7 +14,7 @@ from rest_framework.viewsets import ViewSet
 #queries
 from .queries import (contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso, 
                       obtener_pedidos_entregados, contar_pedidos_cancelados, contar_pedidos_entregados, 
-                      obtener_vehiculos_disponibles, obtener_detalle_coordenadas, obtener_conductores)
+                      obtener_vehiculos_disponibles, obtener_detalle_coordenadas, obtener_conductores, obtener_detalle_pedidos)
 
 # Serializadores
 from .serializer import ( UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer,
@@ -101,29 +101,11 @@ class PedidoViewSet(viewsets.ModelViewSet):
     #CONSULTA SQL PARA ORDERLIST
     @action(detail=False, methods=['get'], url_path='detalle-pedidos')
     def detalle_pedidos(self, request):
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT
-                  "AngusEats_pedido"."id" AS "ID",
-                  "AngusEats_cliente"."nombre" AS "CLIENTE",
-                  "AngusEats_pedido"."estado" AS "ESTADO",
-                  TO_CHAR("AngusEats_pedido"."fecha_entrega", 'HH24:MI:SS') AS "HORA_ESTIMADA",
-                  "AngusEats_pedido"."direccion_destino" AS "DIRECCION_DESTINO"
-                FROM
-                  "AngusEats_pedido"
-                INNER JOIN
-                  "AngusEats_cliente" ON "AngusEats_pedido"."cliente_id" = "AngusEats_cliente"."id";
-            """)
-
-            rows = cursor.fetchall()
-            columnas = [col[0] for col in cursor.description]
-
-            result = [
-                dict(zip(columnas, row))
-                for row in rows
-            ]
-
-        return Response(result)
+        try:
+            result = obtener_detalle_pedidos()
+            return Response(result)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
     
     # CONSULTA SQL PARA DETALLE DE COORDENADAS CON DECODIFICACIÓN SRID
     @action(detail=False, methods=['get'], url_path='coordenadas')
