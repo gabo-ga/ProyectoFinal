@@ -37,7 +37,7 @@ function OrderDetails() {
       const updatedPedido = await updateOrderStatusById(id, nuevoEstado); // Llama a la función de apiService
       setPedido((prevPedido) => ({
         ...prevPedido,
-        pedido_estado: nuevoEstado,
+        estado: nuevoEstado,
       }));
       return true;
     } catch (error) {
@@ -46,7 +46,7 @@ function OrderDetails() {
     }
   };
   const handleComplete = async () => {
-    const success = await updateOrderStatus("entregado");
+    const success = await updateOrderStatus(2);
     if (success) {
       alert("Pedido completado");
       navigate("/dashboard");
@@ -54,7 +54,7 @@ function OrderDetails() {
   };
 
   const handleCancel = async () => {
-    const success = await updateOrderStatus("cancelado");
+    const success = await updateOrderStatus(3);
     if (success) {
       alert("Pedido cancelado");
     }

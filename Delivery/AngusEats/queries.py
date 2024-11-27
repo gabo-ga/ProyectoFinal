@@ -219,3 +219,15 @@ def obtener_conductores():
     """
     return execute_sql_query(query)
 
+def actualizar_estado_pedido(pk, nuevo_estado_id):
+    """
+    Actualiza el estado de un pedido dado su ID y el nuevo estado (por su clave foránea).
+    """
+    query = """
+        UPDATE "AngusEats_pedido"
+        SET estado_id = %s
+        WHERE id = %s
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(query, [nuevo_estado_id, pk])
+

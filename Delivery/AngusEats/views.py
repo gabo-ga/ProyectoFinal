@@ -14,14 +14,14 @@ from rest_framework.viewsets import ViewSet
 #queries
 from .queries import (contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso, 
                       obtener_pedidos_entregados, contar_pedidos_cancelados, contar_pedidos_entregados, 
-                      obtener_vehiculos_disponibles, obtener_detalle_coordenadas, obtener_conductores, obtener_detalle_pedidos)
+                      obtener_vehiculos_disponibles, obtener_detalle_coordenadas, obtener_conductores, obtener_detalle_pedidos, actualizar_estado_pedido)
 
 # Serializadores
 from .serializer import ( UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer,
                          ConfiguracionSerializer, AnalisisPedidoSerializer, UsuarioSerializer, UbicacionSerializer)
 
 # Modelos
-from .models import Cliente, Pedido, Vehiculo, Configuracion, AnalisisPedido, Usuario, Ubicacion
+from .models import Cliente, Pedido, Vehiculo, Configuracion, AnalisisPedido, Usuario, Ubicacion, EstadoPedido
 
 
 class ProtectedView(APIView):
@@ -163,17 +163,17 @@ class PedidoViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['patch'], url_path='actualizar-estado')
     def actualizar_estado(self, request, pk=None):
-        nuevo_estado = request.data.get('estado')
-        if nuevo_estado not in ['entregado', 'cancelado']:
-            return Response({"error": "Estado inválido"}, status=status.HTTP_400_BAD_REQUEST)
+        nuevo_estado_id = request.data.get('estado_id')
 
+        # Validar si el estado_id existe en la tabla EstadoPedido
         try:
-            with connection.cursor() as cursor:
-                cursor.execute("""
-                    UPDATE "AngusEats_pedido" 
-                    SET estado = %s 
-                    WHERE id = %s
-                """, [nuevo_estado, pk])
+            nuevo_estado = EstadoPedido.objects.get(id=nuevo_estado_id)
+        except EstadoPedido.DoesNotExist:
+            return Response({"error": f"Estado inválido con ID: {nuevo_estado_id}"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Intentar actualizar el estado
+        try:
+            actualizar_estado_pedido(pk, nuevo_estado.id)
             return Response({"mensaje": "Estado actualizado correctamente"}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

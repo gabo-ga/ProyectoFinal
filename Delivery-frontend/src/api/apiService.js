@@ -237,7 +237,7 @@ export const fetchOrderDetailsById = async (id) => {
 export const updateOrderStatusById = async (id, nuevoEstado) => {
   try {
     const response = await axiosInstance.patch(`/api/pedidos/${id}/actualizar-estado/`, {
-      estado: nuevoEstado,
+      estado_id: nuevoEstado,
     });
     return response.data;
   } catch (error) {

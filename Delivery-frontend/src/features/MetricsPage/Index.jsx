@@ -1,9 +1,4 @@
 import React, { useEffect, useState } from "react";
-import {
-  fetchPedidosEnCurso,
-  fetchPedidosCancelados,
-  fetchPedidosEntregados,
-} from "../../api/apiService";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
 import Card from "react-bootstrap/Card";
@@ -13,45 +8,41 @@ import Col from "react-bootstrap/Col";
 import styles from "./index.module.css";
 
 function MetricsPage() {
-  const [pedidosPendientes, setPedidosPendientes] = useState(0);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const count = await fetchPedidosEnCurso();
-        setPedidosPendientes(count);
-      } catch (error) {
-        console.error("Error al obtener los pedidos pendientes:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const [pedidosCancelados, setPedidosCancelados] = useState(0);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const count = await fetchPedidosCancelados();
-        setPedidosCancelados(count);
-      } catch (error) {
-        console.error("Error al obtener los pedidos cancelados:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
+  const [pedidosTotales, setPedidosTotales] = useState(0);
   const [pedidosEntregados, setPedidosEntregados] = useState(0);
+  const [pedidosPendientes, setPedidosPendientes] = useState(0);
+  const [tiempoPromedioEntrega, setTiempoPromedioEntrega] = useState(0);
+  const [kilometrosRecorridosTotales, setKilometrosRecorridosTotales] =
+    useState(0);
 
   useEffect(() => {
+    // Función para obtener los datos del endpoint
     const fetchData = async () => {
       try {
-        const count = await fetchPedidosEntregados(); // Llama al endpoint
-        setPedidosEntregados(count); // Actualiza el estado con el conteo
+        const response = await fetch(
+          "http://localhost:8000/api/analisis-pedido"
+        );
+        const data = await response.json();
+
+        console.log("Datos recibidos del endpoint:", data);
+
+        // Si data es un array, obtenemos el primer elemento
+        const record = Array.isArray(data) ? data[0] : data;
+
+        // Actualizar las variables de estado con los datos recibidos
+        setPedidosTotales(record.pedidos_totales || 0);
+        setPedidosEntregados(record.pedidos_entregados || 0);
+        setTiempoPromedioEntrega(record.tiempo_promedio_entrega_minutos || 0);
+        setKilometrosRecorridosTotales(
+          parseFloat(record.kilometros_recorridos_totales) || 0
+        );
+
+        // Calcular pedidos pendientes
+        const pendientes =
+          (record.pedidos_totales || 0) - (record.pedidos_entregados || 0);
+        setPedidosPendientes(pendientes);
       } catch (error) {
-        console.error("Error al obtener los pedidos entregados:", error);
+        console.error("Error al obtener los datos del endpoint:", error);
       }
     };
 
@@ -67,16 +58,8 @@ function MetricsPage() {
           <Col xs={12} md={4}>
             <Card>
               <Card.Body>
-                <Card.Text>Pedidos pendientes:</Card.Text>
-                <Card.Title>{pedidosPendientes}</Card.Title>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col xs={12} md={4}>
-            <Card>
-              <Card.Body>
-                <Card.Text>Pedidos cancelados:</Card.Text>
-                <Card.Title>{pedidosCancelados}</Card.Title>
+                <Card.Text>Pedidos totales:</Card.Text>
+                <Card.Title>{pedidosTotales}</Card.Title>
               </Card.Body>
             </Card>
           </Col>
@@ -88,28 +71,31 @@ function MetricsPage() {
               </Card.Body>
             </Card>
           </Col>
+          <Col xs={12} md={4}>
+            <Card>
+              <Card.Body>
+                <Card.Text>Pedidos pendientes:</Card.Text>
+                <Card.Title>{pedidosPendientes}</Card.Title>
+              </Card.Body>
+            </Card>
+          </Col>
         </Row>
 
         {/* Segunda fila de tarjetas */}
         <Row className={styles.row}>
-          <Col xs={12} md={4}>
+          <Col xs={12} md={6}>
             <Card>
               <Card.Body>
-                <Card.Text>Tiempo promedio de entrega:</Card.Text>
+                <Card.Text>Tiempo promedio de entrega (minutos):</Card.Text>
+                <Card.Title>{tiempoPromedioEntrega}</Card.Title>
               </Card.Body>
             </Card>
           </Col>
-          <Col xs={12} md={4}>
+          <Col xs={12} md={6}>
             <Card>
               <Card.Body>
-                <Card.Text>Distancia recorrida promedio:</Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col xs={12} md={4}>
-            <Card>
-              <Card.Body>
-                <Card.Text>Promedio de precios de pedidos:</Card.Text>
+                <Card.Text>Kilómetros recorridos totales:</Card.Text>
+                <Card.Title>{kilometrosRecorridosTotales}</Card.Title>
               </Card.Body>
             </Card>
           </Col>
