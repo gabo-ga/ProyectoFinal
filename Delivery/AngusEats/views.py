@@ -95,7 +95,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=500)
     
-    #CONSULTA SQL PARA ORDERLIST
+    #endpoint para orderlist
     @action(detail=False, methods=['get'], url_path='detalle-pedidos')
     def detalle_pedidos(self, request):
         try:
@@ -104,12 +104,12 @@ class PedidoViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=500)
     
-    # CONSULTA SQL PARA DETALLE DE COORDENADAS CON DECODIFICACIÓN SRID
+    #endpoint para coordendas
     @action(detail=False, methods=['get'], url_path='coordenadas')
     def detalle_coordenadas(self, request):
         result = obtener_detalle_coordenadas(estado_id=1)
         return Response(result)
-    
+    #endpoint para contar pedidos cancelados
     @action(detail=False, methods=['get'], url_path='count-cancelados')
     def pedidos_cancelados(self, request):
         try:
@@ -117,7 +117,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
             return Response({"count": count})
         except Exception as e:
             return Response({"error": str(e)}, status=500)
-        
+    #endpoint para contar los pedidos entregados
     @action(detail=False, methods=['get'], url_path='count-entregados')
     def pedidos_entregados(self, request):
         try:
@@ -160,7 +160,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
         }
 
         return Response(data, status=200)
-    
+    #endpoint para actualiza el estado de un pedido
     @action(detail=True, methods=['patch'], url_path='actualizar-estado')
     def actualizar_estado(self, request, pk=None):
         nuevo_estado_id = request.data.get('estado_id')
@@ -177,7 +177,29 @@ class PedidoViewSet(viewsets.ModelViewSet):
             return Response({"mensaje": "Estado actualizado correctamente"}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    #endpoint para editar pedidos
+    @action(detail=True, methods=["patch"], url_path="editar")
+    def editar_pedido(self, request, pk=None):
         
+        try:
+            pedido = self.get_object()
+
+            serializer = PedidoSerializer(pedido, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    {"message": "Pedido actualizado exitosamente", "data": serializer.data},
+                    status=status.HTTP_200_OK,
+                )
+            return Response(
+                {"error": "Datos inválidos", "details": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Pedido.DoesNotExist:
+            return Response(
+                {"error": "Pedido no encontrado"}, status=status.HTTP_404_NOT_FOUND
+            )
+    
     #contar pedidos dinamicamente
     @action(detail=False, methods=['get'], url_path='count')
     def count(self, request):
