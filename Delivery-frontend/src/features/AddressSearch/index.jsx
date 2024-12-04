@@ -15,11 +15,11 @@ function AddressSearch({ onPlaceSelected, initialAddress = "" }) {
 
   const handlePlaceChanged = useCallback(() => {
     const place = searchBoxRef.current?.getPlaces();
-    console.log("Lugares obtenidos:", place); // <-- Inspeccionar el valor de `place`
+    console.log("Lugares obtenidos:", place);
 
     if (place && place.length > 0) {
       const selectedPlace = place[0];
-      console.log("Lugar seleccionado:", selectedPlace); // <-- Inspeccionar `selectedPlace`
+      console.log("Lugar seleccionado:", selectedPlace);
 
       const formattedAddress = selectedPlace.formatted_address;
       const lat = selectedPlace.geometry?.location?.lat();

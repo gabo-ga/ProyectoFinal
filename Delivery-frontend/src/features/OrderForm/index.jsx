@@ -140,7 +140,7 @@ function OrderForm() {
               </Col>
               <Col xs={12} md={10}>
                 <Form.Group controlId="fromDestiny">
-                  <Form.Label>DIRECCIÓN DESTINO:</Form.Label>
+                  <Form.Label>DIRECCIÓN DE DESTINO:</Form.Label>
                   <AddressSearch
                     onPlaceSelected={handleDestinationPlaceSelected}
                     initialAddress={formData.direccion_destino}
