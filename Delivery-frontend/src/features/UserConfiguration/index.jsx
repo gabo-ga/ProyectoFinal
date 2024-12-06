@@ -59,22 +59,48 @@ function UserPage() {
     setCoordenadasOrigen({ lat, lng });
   };
 
-  const handleMarkerPositionChanged = (newPosition) => {
-    setCoordenadasOrigen(newPosition);
+  const handleMarkerPositionChanged = async (newPosition) => {
+    try {
+      setCoordenadasOrigen(newPosition);
 
-    // Actualiza la dirección en función de las nuevas coordenadas
-    fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${
-        newPosition.lat
-      },${newPosition.lng}&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.results[0]) {
-          setDireccionOrigen(data.results[0].formatted_address);
-        }
-      })
-      .catch((error) => console.error("Error al obtener la dirección:", error));
+      const formattedAddress = await fetchAddressFromCoordinates(newPosition);
+
+      if (formattedAddress) {
+        setDireccionOrigen(formattedAddress);
+      } else {
+        console.warn(
+          "No se pudo obtener una dirección para las coordenadas proporcionadas."
+        );
+      }
+    } catch (error) {
+      console.error(
+        "Error al manejar el cambio de posición del marcador:",
+        error
+      );
+    }
+  };
+
+  const fetchAddressFromCoordinates = async ({ lat, lng }) => {
+    const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${API_KEY}`;
+
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`Error en la solicitud: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      return data.results?.[0]?.formatted_address || null;
+    } catch (error) {
+      console.error(
+        "Error al obtener la dirección desde las coordenadas:",
+        error
+      );
+      return null;
+    }
   };
 
   const handleSave = async (e) => {
@@ -98,8 +124,7 @@ function UserPage() {
         <Card className={styles.card}>
           <Card.Body>
             <Col xs={12} className={styles.container}>
-              <PersonCircle size={50} />
-              <Card.Title>Hola: {userName}</Card.Title>
+              <PersonCircle size={100} />
               <Form className={styles.formContainer} onSubmit={handleSave}>
                 <EmailInput value={userEmail} />
                 <NameComponent value={userName} />

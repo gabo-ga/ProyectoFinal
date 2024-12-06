@@ -11,12 +11,7 @@ import CustomerSelect from "../../components/CostumerSelect";
 import DriverField from "../../components/DriverField";
 import PriceField from "../../components/PriceField";
 import DescriptionField from "../../components/DescriptionField";
-import {
-  fetchPedidoById,
-  saveOrUpdatePedido,
-  fetchDriversWithActiveOrders,
-  crearUbicacion,
-} from "../../api/apiService";
+import { crearUbicacion } from "../../api/apiService";
 import styles from "./index.module.css";
 import MapWithMarker from "../../components/MapWithMarkerComponent";
 import {
@@ -34,6 +29,9 @@ function OrderForm() {
     precio: "",
     detalle: "",
     conductor: null,
+
+    //campo adicional
+    destino_direccion: "",
   });
 
   const [drivers, setDrivers] = useState([]);
@@ -143,7 +141,7 @@ function OrderForm() {
                   <Form.Label>DIRECCIÓN DE DESTINO:</Form.Label>
                   <AddressSearch
                     onPlaceSelected={handleDestinationPlaceSelected}
-                    initialAddress={formData.direccion_destino}
+                    initialAddress={formData.destino_direccion}
                   />
                 </Form.Group>
               </Col>

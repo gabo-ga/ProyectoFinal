@@ -8,7 +8,7 @@ export const obtenerOrigenFijo = async (setFormData) => {
     const data = await fetchOrigenFijo();
     if (data.direccion_origen && data.punto_origen) {
       const [lng, lat] = data.punto_origen
-        .replace("SRID=4326;POINT (", "")
+        .replace("POINT (", "")
         .replace(")", "")
         .split(" ")
         .map(parseFloat);
@@ -25,28 +25,41 @@ export const obtenerOrigenFijo = async (setFormData) => {
   }
 };
 
+/**
+ * Obtener la dirección de un destino por ID.
+ * @param {number|string} destinoId - ID del destino.
+ * @returns {Promise<string>} - Dirección del destino.
+ */
+export const fetchDireccionByDestinoId = async (destinoId) => {
+  try {
+    const response = await axiosInstance.get(`/api/ubicaciones/${destinoId}/destino/`);
+    const direccion = response.data.direccion; 
+    return direccion;
+  } catch (error) {
+    console.error("Error al obtener la dirección del destino:", error);
+    throw error;
+  }
+};
+
 // Cargar pedido
 export const cargarPedido = async (id, setFormData) => {
   try {
     const data = await fetchPedidoById(id);
     setFormData({
-      direccion_origen: data.direccion_origen || "",
-      coordenadas_origen_lat: data.coordenadas_origen?.lat || "",
-      coordenadas_origen_lng: data.coordenadas_origen?.lng || "",
-      direccion_destino: data.direccion_destino || "",
-      coordenadas_destino_lat: data.coordenadas_destino?.lat || "",
-      coordenadas_destino_lng: data.coordenadas_destino?.lng || "",
-      cliente: data.cliente || "",
+      cliente_id: data.cliente || "",
+      conductor: data.conductor || null,
+      origen: data.origen || "",
+      destino_direccion: data.destino_data?.direccion || "",
       estado: data.estado || "",
       precio: data.precio || "",
-      date: data.fecha_entrega ? data.fecha_entrega.split("T")[0] : "",
-      time: data.fecha_entrega ? data.fecha_entrega.split("T")[1].substring(0, 5) : "",
+      fecha_entrega: data.fecha_entrega || "",
       detalle: data.detalle || "",
     });
   } catch (error) {
     console.error(error.message);
   }
 };
+
 
 // Manejar el envío de datos
 export const handleOrderSubmit = async (formData, pedidoId = null) => {
@@ -73,7 +86,7 @@ export const handleOrderSubmit = async (formData, pedidoId = null) => {
     let response;
     if (pedidoId) {
       // Actualizar pedido existente
-      response = await axiosInstance.put(`api/pedidos/${pedidoId}/`, dataToSend);
+      response = await axiosInstance.put(`api/pedidos/${pedidoId}/editar`, dataToSend);
     } else {
       // Crear nuevo pedido
       response = await axiosInstance.post("api/pedidos/", dataToSend);

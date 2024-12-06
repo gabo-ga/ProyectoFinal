@@ -75,7 +75,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]  
 
 class PedidoViewSet(viewsets.ModelViewSet):
-    queryset = Pedido.objects.all()
+    queryset = Pedido.objects.select_related('cliente', 'conductor', 'origen', 'destino', 'estado')
     serializer_class = PedidoSerializer
     permission_classes = [AllowAny] 
     #action para pedidos en curso
@@ -255,6 +255,19 @@ class UbicacionViewSet(viewsets.ModelViewSet):
         ubicaciones = Ubicacion.objects.filter(direccion__icontains=direccion)
         serializer = self.get_serializer(ubicaciones, many=True)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['get'], url_path='destino')
+    def obtener_destino(self, request, pk=None):
+        try:
+            ubicacion = self.get_object()
+            serializer = self.get_serializer(ubicacion)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Ubicacion.DoesNotExist:
+            return Response(
+                {"error": "Destino no encontrado."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
 
 class ConfiguracionViewSet(viewsets.ViewSet):
     serializer_class = ConfiguracionSerializer
@@ -290,7 +303,7 @@ class ConfiguracionViewSet(viewsets.ViewSet):
 
         # Intentar crear el Point
         try:
-            punto_origen = Point(lng, lat, srid=4326)  # Crear el punto geográfico
+            punto_origen = Point(lng, lat,) 
             print("Punto de origen creado correctamente:", punto_origen)
 
             # Crear o actualizar la configuración

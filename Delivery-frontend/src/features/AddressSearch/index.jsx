@@ -4,11 +4,11 @@ import SearchInput from "../../components/AddressInput/index";
 import { useGoogleMapsScript } from "../../api/mapService";
 
 function AddressSearch({ onPlaceSelected, initialAddress = "" }) {
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState(initialAddress || "");
   const searchBoxRef = useRef(null);
 
   useEffect(() => {
-    setAddress(initialAddress);
+    setAddress(initialAddress || "");
   }, [initialAddress]);
 
   const { isLoaded, loadError } = useGoogleMapsScript();

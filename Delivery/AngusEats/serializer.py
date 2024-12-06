@@ -80,7 +80,8 @@ class PedidoSerializer(serializers.ModelSerializer):
         required=False
     )
     origen = serializers.PrimaryKeyRelatedField(queryset=Ubicacion.objects.all())
-    destino = serializers.PrimaryKeyRelatedField(queryset=Ubicacion.objects.all())
+    destino = serializers.PrimaryKeyRelatedField(queryset=Ubicacion.objects.all(), write_only=True)
+    destino_data = UbicacionSerializer(read_only=True, source='destino')
     estado = serializers.PrimaryKeyRelatedField(queryset=EstadoPedido.objects.all())
 
 
@@ -91,7 +92,8 @@ class PedidoSerializer(serializers.ModelSerializer):
             'cliente',
             'conductor',
             'origen',
-            'destino',
+            'destino', #para put y post
+            'destino_data', #para get
             'estado',
             'fecha_creacion',
             'fecha_entrega',
