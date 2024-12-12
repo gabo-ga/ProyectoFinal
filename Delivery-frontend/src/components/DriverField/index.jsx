@@ -25,12 +25,23 @@ const DriverField = ({ value, onChange }) => {
 
   const handleChange = (e) => {
     const selectedValue = e.target.value;
+    const selectedDriver = drivers.find(
+      (driver) => driver.id.toString() === selectedValue
+    );
+
+    if (selectedDriver && selectedDriver.numero_pedidos_pendientes >= 4) {
+      setError(
+        "No puede seleccionar un conductor con 4 o más pedidos pendientes."
+      );
+      return;
+    }
 
     if (selectedValue === "") {
       setError("Por favor, seleccione un conductor.");
     } else {
       setError("");
     }
+
     onChange(e);
   };
 
@@ -40,19 +51,27 @@ const DriverField = ({ value, onChange }) => {
       {isLoading ? (
         <Form.Text>Cargando conductores...</Form.Text>
       ) : (
-        <Form.Select
-          name="conductor"
-          value={value}
-          onChange={onChange}
-          required
-        >
-          <option value="">Seleccione un conductor</option>
-          {drivers.map((driver) => (
-            <option key={driver.id} value={driver.id}>
-              {driver.nombre}
-            </option>
-          ))}
-        </Form.Select>
+        <>
+          <Form.Select
+            name="conductor"
+            value={value}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Seleccione un conductor</option>
+            {drivers.map((driver) => (
+              <option
+                key={driver.id}
+                value={driver.id}
+                disabled={driver.numero_pedidos_pendientes >= 4} // Deshabilitar conductores con 4+ pedidos
+              >
+                {driver.nombre_conductor} (
+                {driver.numero_pedidos_pendientes || 0} pedidos)
+              </option>
+            ))}
+          </Form.Select>
+          {error && <Form.Text style={{ color: "red" }}>{error}</Form.Text>}
+        </>
       )}
     </Form.Group>
   );
