@@ -63,7 +63,7 @@ const DriverField = ({ value, onChange }) => {
               <option
                 key={driver.id}
                 value={driver.id}
-                disabled={driver.numero_pedidos_pendientes >= 4} // Deshabilitar conductores con 4+ pedidos
+                disabled={driver.numero_pedidos_pendientes >= 4}
               >
                 {driver.nombre_conductor} (
                 {driver.numero_pedidos_pendientes || 0} pedidos)
