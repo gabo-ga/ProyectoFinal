@@ -7,6 +7,7 @@ import Row from "react-bootstrap/esm/Row";
 import AddButton from "../../components/AddButton/button";
 import ActionBar from "../../components/ActionsBar/Actions";
 import Order from "../../components/OrderListComponent";
+import FilterButton from "../../components/FilterButton";
 
 function OrdersHistory() {
   return (
@@ -14,8 +15,11 @@ function OrdersHistory() {
       <Header></Header>
       <Container fluid className={styles.body}>
         <Row className="w-100">
-          <Col xs={10} md={11}>
+          <Col xs={8} md={10}>
             <h4>GESTION DE PEDIDOS</h4>
+          </Col>
+          <Col xs={2} md={1}>
+            <FilterButton></FilterButton>
           </Col>
           <Col xs={2} md={1}>
             <AddButton redirectTo="/addorder"></AddButton>
