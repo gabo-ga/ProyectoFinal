@@ -203,19 +203,26 @@ def obtener_detalle_coordenadas(estado_id):
 
 def obtener_conductores():
     """
-    Obtiene todos los usuarios que tienen el rol de 'conductor'.
+    Obtiene todos los usuarios que tienen el rol de 'conductor' y el numero de pedidos actuales.
     """
     query = """
         SELECT 
-            id, 
-            nombre, 
-            correo, 
-            telefono, 
-            rol
+            u.id AS id_conductor,
+            u.nombre AS nombre_conductor, 
+            u.correo AS correo_conductor, 
+            u.telefono AS telefono_conductor, 
+            u.rol AS rol_conductor,
+            COUNT(p.id) AS numero_pedidos_pendientes
         FROM 
-            "AngusEats_usuario"
+            "AngusEats_usuario" u
+        LEFT JOIN 
+            "AngusEats_pedido" p ON u.id = p.conductor_id AND p.estado_id = '1'
         WHERE 
-            rol = 'conductor';
+            u.rol = 'conductor'
+        GROUP BY 
+            u.id, u.nombre, u.correo, u.telefono, u.rol
+        ORDER BY 
+            numero_pedidos_pendientes DESC;
     """
     return execute_sql_query(query)
 
