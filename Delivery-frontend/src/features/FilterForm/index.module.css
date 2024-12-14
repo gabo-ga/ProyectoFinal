@@ -1,0 +1,17 @@
+.formulario {
+    transition: all 0.3s ease-in-out;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+  }
+  
+  .formulario.visible {
+    opacity: 1;
+    max-height: 500px;
+  }
+  
+  .formulario.oculto {
+    opacity: 0;
+    max-height: 0;
+  }
+  

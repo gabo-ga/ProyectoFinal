@@ -1,19 +1,26 @@
-import Button from "react-bootstrap/esm/Button";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import Button from "react-bootstrap/Button";
 import { Filter } from "react-bootstrap-icons";
 import styles from "./button.module.css";
+import FilterForm from "../../features/FilterForm";
 
-function FilterButton({ redirectTo }) {
-  const navigate = useNavigate();
+function FilterButton() {
+  const [mostrarModal, setMostrarModal] = useState(false);
 
-  const handleClick = () => {
-    navigate(redirectTo);
-  };
+  const handleAbrirModal = () => setMostrarModal(true);
+  const handleCerrarModal = () => setMostrarModal(false);
 
   return (
-    <Button onClick={handleClick} className={styles.buttonContainer}>
-      <Filter></Filter>
-    </Button>
+    <>
+      <Button
+        variant="warning"
+        className={styles.buttonContainer}
+        onClick={handleAbrirModal}
+      >
+        <Filter></Filter>
+      </Button>
+      <FilterForm show={mostrarModal} onHide={handleCerrarModal} />
+    </>
   );
 }
 
