@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Form, Row, Col, Button } from "react-bootstrap";
+import { fetchClientes } from "../../api/apiService";
 
 function FilterForm({ show, onHide, onFiltrar }) {
   const [filtroCliente, setFiltroCliente] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("");
+  const [clientes, setClientes] = useState([]);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -25,6 +27,19 @@ function FilterForm({ show, onHide, onFiltrar }) {
     setFiltroEstado(e.target.value);
   }
 
+  useEffect(() => {
+    const getClientes = async () => {
+      try {
+        const data = await fetchClientes();
+        setClientes(data);
+      } catch (error) {
+        console.error("Error fetching clientes:", error);
+      }
+    };
+
+    getClientes();
+  }, []);
+
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
@@ -36,12 +51,17 @@ function FilterForm({ show, onHide, onFiltrar }) {
             <Col md={6}>
               <Form.Group controlId="filtroCliente">
                 <Form.Label>Filtro por Cliente</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Escribe el nombre del cliente"
+                <Form.Select
                   value={filtroCliente}
                   onChange={handleFiltroClienteChange}
-                />
+                >
+                  <option value="">Seleccione un cliente</option>
+                  {clientes.map((cliente) => (
+                    <option key={cliente.id} value={cliente.id}>
+                      {cliente.nombre}
+                    </option>
+                  ))}
+                </Form.Select>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -54,6 +74,7 @@ function FilterForm({ show, onHide, onFiltrar }) {
                   <option value="">Todos</option>
                   <option value="pendiente">Pendiente</option>
                   <option value="completado">Completado</option>
+                  <option value="cancelado">Cancelado</option>
                 </Form.Select>
               </Form.Group>
             </Col>
