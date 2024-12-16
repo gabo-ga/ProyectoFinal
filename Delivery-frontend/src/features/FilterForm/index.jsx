@@ -7,26 +7,28 @@ function FilterForm({ show, onHide }) {
   const { filters, updateFilters } = useFilter();
   const [clientes, setClientes] = useState([]);
 
+  const [localCliente, setLocalCliente] = useState("");
+  const [localEstado, setLocalEstado] = useState("");
+
   const handleFiltroClienteChange = (e) => {
     const value = e.target.value;
-    updateFilters({ cliente: value }); // Actualiza el filtro de cliente en el contexto
-    console.log("Cliente seleccionado:", value);
+    setLocalCliente(value);
   };
 
   const handleFiltroEstadoChange = (e) => {
     const value = e.target.value;
-    updateFilters({ estado: value }); // Actualiza el filtro de estado en el contexto
-    console.log("Estado seleccionado:", value);
+    setLocalEstado(value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    updateFilters({ cliente: localCliente, estado: localEstado });
     console.log("Filtros aplicados:", filters);
     onHide();
   };
 
   const handleReset = () => {
-    updateFilters({ cliente: "", estado: "" }); // Restablece los filtros en el contexto
+    updateFilters({ cliente: "", estado: "" });
     console.log("Filtros restablecidos");
   };
 
@@ -55,12 +57,12 @@ function FilterForm({ show, onHide }) {
               <Form.Group controlId="filtroCliente">
                 <Form.Label>Filtro por Cliente</Form.Label>
                 <Form.Select
-                  value={filters.cliente}
+                  value={localCliente}
                   onChange={handleFiltroClienteChange}
                 >
                   <option value="">Seleccione un cliente</option>
                   {clientes.map((cliente) => (
-                    <option key={cliente.id} value={cliente.id}>
+                    <option key={cliente.id} value={cliente.nombre}>
                       {cliente.nombre}
                     </option>
                   ))}
@@ -71,12 +73,12 @@ function FilterForm({ show, onHide }) {
               <Form.Group controlId="filtroEstado">
                 <Form.Label>Filtro por Estado</Form.Label>
                 <Form.Select
-                  value={filters.estado}
+                  value={localEstado}
                   onChange={handleFiltroEstadoChange}
                 >
                   <option value="">Todos</option>
                   <option value="pendiente">Pendiente</option>
-                  <option value="completado">Completado</option>
+                  <option value="entregado">Entregado</option>
                   <option value="cancelado">Cancelado</option>
                 </Form.Select>
               </Form.Group>
