@@ -86,10 +86,10 @@ function FilterForm({ show, onHide }) {
           </Row>
           <Row>
             <Col>
-              <Button variant="primary" type="submit">
+              <Button variant="success" type="submit">
                 Filtrar
               </Button>{" "}
-              <Button variant="secondary" onClick={handleReset}>
+              <Button variant="danger" onClick={handleReset}>
                 Restablecer
               </Button>
             </Col>
