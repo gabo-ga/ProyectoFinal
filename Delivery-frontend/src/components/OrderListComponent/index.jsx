@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchPedidos, deletePedido } from "../../api/apiService.js";
 import { useFilter } from "../../contexts/FilterContext"; // Importa el contexto
 
-function Order() {
+function Order({ onPedidosLoad }) {
   const [pedidos, setPedidos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,6 +23,10 @@ function Order() {
       const data = await fetchPedidos();
       setPedidos(data);
       setIsLoading(false);
+
+      if (onPedidosLoad) {
+        onPedidosLoad(data);
+      }
     } catch (error) {
       console.error(error.message);
       setError(error);

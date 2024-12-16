@@ -10,9 +10,11 @@ import Order from "../../components/OrderListComponent";
 import FilterButton from "../../components/FilterButton";
 import { useState } from "react";
 import { FilterProvider } from "../../contexts/FilterContext";
+import DownloadButton from "../../components/DownloadButton";
 
 function OrdersHistory() {
   const [filtros, setFiltros] = useState({ cliente: "", estado: "" });
+  const [pedidos, setPedidos] = useState([]);
 
   const handleFiltroChange = (nuevosFiltros) => {
     console.log("Filtros recibidos:", nuevosFiltros);
@@ -25,11 +27,14 @@ function OrdersHistory() {
         <Header></Header>
         <Container fluid className={styles.body}>
           <Row className="w-100">
-            <Col xs={8} md={10}>
+            <Col xs={7} md={9}>
               <h4>GESTION DE PEDIDOS</h4>
             </Col>
             <Col xs={2} md={1}>
               <FilterButton onFiltrar={handleFiltroChange}></FilterButton>
+            </Col>
+            <Col xs={2} md={1}>
+              <DownloadButton data={pedidos}></DownloadButton>
             </Col>
             <Col xs={2} md={1}>
               <AddButton redirectTo="/addorder"></AddButton>
@@ -43,7 +48,7 @@ function OrdersHistory() {
               label4="DESTINO"
               label5="ACCIONES"
             ></ActionBar>
-            <Order filtros={filtros}></Order>
+            <Order filtros={filtros} onPedidosLoad={setPedidos}></Order>
           </Row>
         </Container>
         <Footer></Footer>

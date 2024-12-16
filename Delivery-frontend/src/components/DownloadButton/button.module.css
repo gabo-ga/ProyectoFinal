@@ -1,0 +1,9 @@
+.buttonContainer{
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffc107;
+    color: black;
+    border-color: transparent;
+}
