@@ -1,31 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Modal, Form, Row, Col, Button } from "react-bootstrap";
 import { fetchClientes } from "../../api/apiService";
+import { useFilter } from "../../contexts/FilterContext";
 
-function FilterForm({ show, onHide, onFiltrar }) {
-  const [filtroCliente, setFiltroCliente] = useState("");
-  const [filtroEstado, setFiltroEstado] = useState("");
+function FilterForm({ show, onHide }) {
+  const { filters, updateFilters } = useFilter();
   const [clientes, setClientes] = useState([]);
 
-  function handleSubmit(e) {
+  const handleFiltroClienteChange = (e) => {
+    const value = e.target.value;
+    updateFilters({ cliente: value }); // Actualiza el filtro de cliente en el contexto
+    console.log("Cliente seleccionado:", value);
+  };
+
+  const handleFiltroEstadoChange = (e) => {
+    const value = e.target.value;
+    updateFilters({ estado: value }); // Actualiza el filtro de estado en el contexto
+    console.log("Estado seleccionado:", value);
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    onFiltrar({ cliente: filtroCliente, estado: filtroEstado });
+    console.log("Filtros aplicados:", filters);
     onHide();
-  }
+  };
 
-  function handleReset() {
-    setFiltroCliente("");
-    setFiltroEstado("");
-    onFiltrar({ cliente: "", estado: "" });
-  }
-
-  function handleFiltroClienteChange(e) {
-    setFiltroCliente(e.target.value);
-  }
-
-  function handleFiltroEstadoChange(e) {
-    setFiltroEstado(e.target.value);
-  }
+  const handleReset = () => {
+    updateFilters({ cliente: "", estado: "" }); // Restablece los filtros en el contexto
+    console.log("Filtros restablecidos");
+  };
 
   useEffect(() => {
     const getClientes = async () => {
@@ -52,7 +55,7 @@ function FilterForm({ show, onHide, onFiltrar }) {
               <Form.Group controlId="filtroCliente">
                 <Form.Label>Filtro por Cliente</Form.Label>
                 <Form.Select
-                  value={filtroCliente}
+                  value={filters.cliente}
                   onChange={handleFiltroClienteChange}
                 >
                   <option value="">Seleccione un cliente</option>
@@ -68,7 +71,7 @@ function FilterForm({ show, onHide, onFiltrar }) {
               <Form.Group controlId="filtroEstado">
                 <Form.Label>Filtro por Estado</Form.Label>
                 <Form.Select
-                  value={filtroEstado}
+                  value={filters.estado}
                   onChange={handleFiltroEstadoChange}
                 >
                   <option value="">Todos</option>

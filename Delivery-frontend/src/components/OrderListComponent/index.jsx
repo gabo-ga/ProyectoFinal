@@ -1,16 +1,18 @@
-// src/components/Order.js
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styles from "./index.module.css";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import { fetchPedidos, deletePedido } from "../../api/apiService.js";
+import { useFilter } from "../../contexts/FilterContext"; // Importa el contexto
 
 function Order() {
   const [pedidos, setPedidos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  const { filters } = useFilter(); // Consumir filtros desde el contexto
 
   useEffect(() => {
     loadPedidos();
@@ -49,6 +51,16 @@ function Order() {
     navigate(`/editOrder/${id}`);
   };
 
+  // Filtrar pedidos según los valores en `filters`
+  const pedidosFiltrados = pedidos.filter((pedido) => {
+    const clienteCoincide =
+      !filters.cliente || pedido.CLIENTE === filters.cliente;
+    const estadoCoincide =
+      !filters.estado || pedido.ESTADO.toLowerCase() === filters.estado;
+
+    return clienteCoincide && estadoCoincide;
+  });
+
   if (isLoading) {
     return <div>Cargando...</div>;
   }
@@ -59,7 +71,7 @@ function Order() {
 
   return (
     <Container fluid className={styles.container}>
-      {pedidos.map((pedido) => (
+      {pedidosFiltrados.map((pedido) => (
         <Row key={pedido.ID} className="w-100">
           <Col md={2} className={styles.hideOnXS}>
             {pedido.ID}
