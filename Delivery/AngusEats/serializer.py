@@ -1,10 +1,39 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.gis.geos import Point
 from .models import Pedido, Vehiculo, Cliente, Configuracion, Ubicacion, EstadoPedido, AnalisisPedido, Usuario
 #serializers
 
+class LoginSerializer(serializers.Serializer):
+    usuario = serializers.CharField(required=True)
+    password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+    
+    def validate(self, data):
+        usuario = data.get('usuario')
+        password = data.get('password')
+        
+        user = authenticate(username=usuario, password=password)
+        if not user:
+            raise serializers.ValidationError("usuario o contraseña incorrectos")
+        
+        if not user.is_active:
+            raise serializers.ValidationError("cuenta inactiva")
+        
+        refresh = RefreshToken.for_user(user)
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'Usuario': user.usuario,
+            'rol': user.rol,
+        }
+        
+
 class UsuarioSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+    confirm_password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+    
     class Meta:
         model = Usuario
         fields = [
@@ -12,10 +41,11 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'nombre', 
             'usuario', 
             'correo', 
-            'contrasena_hash', 
             'rol', 
             'fecha_creacion', 
             'telefono'
+            'password'
+            'confirm_password'
         ]
         read_only_fields = ['fecha_creacion']
 
@@ -28,6 +58,34 @@ class UsuarioSerializer(serializers.ModelSerializer):
         if Usuario.objects.filter(correo=value).exists():
             raise serializers.ValidationError("Este correo ya está en uso.")
         return value
+    
+    def validate(self, data):
+        #valida que las contraseñas coincidan
+        if data['password'] != data['confirm_password']:
+            raise serializers.ValidationError({"password": "Las contraseñar no coinciden"})
+        return data
+    
+    def create(self, validated_data):
+        #crea un nuevo ususario
+        validated_data.pop('confirm_password')
+        password = validated_data.pop('password')
+        user = Usuario(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+    
+    def update(self, instance, validated_data):
+        #actualiza un usuario
+        validated_data.pop('confirm_password', None)
+        password = validated_data.pop('password', None)
+        
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+            
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance    
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
