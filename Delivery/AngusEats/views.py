@@ -17,7 +17,8 @@ from .queries import (contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso
                       obtener_vehiculos_disponibles, obtener_detalle_coordenadas, obtener_conductores, obtener_detalle_pedidos, actualizar_estado_pedido)
 
 # Serializadores
-from .serializer import ( UserSerializer, ClienteSerializer, PedidoSerializer, VehiculoSerializer,
+from .serializer import ( #UserSerializer, 
+                         ClienteSerializer, PedidoSerializer, VehiculoSerializer,
                          ConfiguracionSerializer, AnalisisPedidoSerializer, UsuarioSerializer, UbicacionSerializer)
 
 # Modelos
@@ -43,21 +44,21 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         return Response(conductores)
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+#class UserViewSet(viewsets.ReadOnlyModelViewSet):
+#    queryset = User.objects.all()
+#    serializer_class = UserSerializer
     #permission_classes = [IsAuthenticated]  
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
+#    def list(self, request, *args, **kwargs):
+#        queryset = self.get_queryset()
+#        serializer = self.get_serializer(queryset, many=True)
 
         # Modificar los datos serializados para agregar el campo nombre_completo
-        data = []
-        for user_data in serializer.data:
-            user_data["nombre_completo"] = f"{user_data['first_name']} {user_data['last_name']}"
-            data.append(user_data)
+#       data = []
+#        for user_data in serializer.data:
+#            user_data["nombre_completo"] = f"{user_data['first_name']} {user_data['last_name']}"
+#            data.append(user_data)
         
-        return Response(data)
+#        return Response(data)
 
 #class ConductorViewSet(viewsets.ModelViewSet):
 #    queryset = Conductor.objects.all()

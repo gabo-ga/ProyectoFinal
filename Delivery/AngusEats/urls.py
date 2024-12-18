@@ -2,13 +2,14 @@ from django.urls import path, include
 from rest_framework import routers
 from rest_framework.documentation import include_docs_urls
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import (UserViewSet, ClienteViewSet, PedidoViewSet, VehiculoViewSet,
+from .views import (#UserViewSet, 
+                    ClienteViewSet, PedidoViewSet, VehiculoViewSet,
                     ConfiguracionViewSet, AnalisisPedidoViewSet, UsuarioViewSet, UbicacionViewSet)
 
 # Configuración del router para los ViewSets
 router = routers.DefaultRouter()
 
-router.register(r'users', UserViewSet)
+#router.register(r'users', UserViewSet)
 router.register(r'clientes', ClienteViewSet)
 router.register(r'pedidos', PedidoViewSet, basename="pedidos")
 router.register(r'vehiculos', VehiculoViewSet, basename="vehiculos")
