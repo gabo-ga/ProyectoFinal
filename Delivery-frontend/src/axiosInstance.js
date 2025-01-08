@@ -20,15 +20,19 @@ let tokens = {
 const axiosInstance = axios.create({
   baseURL: baseURL,
   timeout: 5000,
+  withCredentials: true,
   headers: {
-    Authorization: tokens.access ? 'Bearer ' + tokens.access : null,
     'Content-Type': 'application/json',
-    accept: 'application/json',
-  },
+  }
+  //headers: {
+  //  Authorization: tokens.access ? 'Bearer ' + tokens.access : null,
+  //  'Content-Type': 'application/json',
+  //  accept: 'application/json',
+  //},
 });
 
 // Interceptor para refrescar el token si ha expirado
-axiosInstance.interceptors.request.use(async (request) => {
+/*axiosInstance.interceptors.request.use(async (request) => {
   if (tokens.access) {
     const user = jwt_decode(tokens.access);
     const isExpired = dayjs.unix(user.exp).diff(dayjs()) < 1;
@@ -51,10 +55,10 @@ axiosInstance.interceptors.request.use(async (request) => {
     }
   }
   return request;
-});
+});*/
 
 // Interceptor para manejar respuestas no autorizadas (opcional)
-axiosInstance.interceptors.response.use(
+/*axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (
@@ -69,5 +73,5 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
+*/
 export default axiosInstance;

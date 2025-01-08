@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api/';
+const API_URL = 'http://localhost:8000/';
 
 import axiosInstance from '../axiosInstance';
 
-export const loginUser = async (username, password) => {
+export const loginUser = async (usuario, password) => {
   try {
     const response = await axiosInstance.post('/login/', {
-      username,
+      usuario,
       password,
     });
     return response.data;
