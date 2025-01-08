@@ -2,11 +2,13 @@ from django.shortcuts import render
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import Distance
 from rest_framework import status, viewsets
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 from django.db import connection
 from django.core.exceptions import ValidationError
 from django.db.models import Count, Q
@@ -18,6 +20,7 @@ from .queries import (contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso
 
 # Serializadores
 from .serializer import ( #UserSerializer, 
+                         LoginSerializer,
                          ClienteSerializer, PedidoSerializer, VehiculoSerializer,
                          ConfiguracionSerializer, AnalisisPedidoSerializer, UsuarioSerializer, UbicacionSerializer)
 
@@ -31,6 +34,28 @@ class ProtectedView(APIView):
     def get(self, request):
         data = {'message': 'Esta es una vista protegida'}
         return Response(data)
+    
+class LoginView(APIView):
+    def post(self,request):
+        usuario = request.data.get('usuario')
+        password = request.data.get('password')
+        
+        user = authenticate(username=usuario, password=password)
+        if user is not None:
+            login(request, user)
+            return Response({"message": "Usuario autenticado"}, status=status.HTTP_200_OK)
+        return Response({"error": "Usuario o contraseña incorrectos"}, status=status.HTTP_401_UNAUTHORIZED)
+            
+        
+        #serializer = LoginSerializer(data=request.data)
+        #if serializer.is_valid():
+         #   return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        #return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+
+class LogoutView(APIView):
+    def post(self, request):
+        logout(request)
+        return Response({"message": "Usuario deslogueado"}, status=status.HTTP_200_OK)
 
 class UsuarioViewSet(viewsets.ModelViewSet):
 

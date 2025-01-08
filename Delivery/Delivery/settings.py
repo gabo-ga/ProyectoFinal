@@ -49,6 +49,8 @@ INSTALLED_APPS = [
 CORS_ALLOWED_ORIGINS = ["https://localhost:5173", 'https://localhost:3000',
     'https://127.0.0.1:8000', "https://127.0.0.1:5173", "http://localhost:5173"]
 
+CORS_TRUSTED_ORIGINS = ["http://localhost:5173", 'http://localhost:3000',]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -143,13 +145,17 @@ GEOS_LIBRARY_PATH = '/opt/local/lib/libgeos_c.dylib'
 #Rest Framework 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':(
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        #'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ),
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }
+
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 #jwt config
 
@@ -158,6 +164,7 @@ from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('Bearer',),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
 }

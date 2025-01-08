@@ -1,10 +1,10 @@
 from django.urls import path, include
 from rest_framework import routers
 from rest_framework.documentation import include_docs_urls
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 from .views import (#UserViewSet, 
                     ClienteViewSet, PedidoViewSet, VehiculoViewSet,
-                    ConfiguracionViewSet, AnalisisPedidoViewSet, UsuarioViewSet, UbicacionViewSet)
+                    ConfiguracionViewSet, AnalisisPedidoViewSet, UsuarioViewSet, UbicacionViewSet, LoginView)
 
 # Configuración del router para los ViewSets
 router = routers.DefaultRouter()
@@ -22,8 +22,12 @@ router.register(r'ubicaciones', UbicacionViewSet, basename='ubicaciones')
 
 urlpatterns = [
     # Endpoint para autenticación JWT
-    path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    #path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    
+    #endpoint nuevo para autenticacion JWT
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LoginView.as_view(), name='logout'),    
     
     # Endpoints para la API
     path("api/", include(router.urls)),
