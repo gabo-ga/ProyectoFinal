@@ -26,9 +26,15 @@ function Logout({ onClose }) {
     fetchUserData();
   }, []);
 
-  const handleLogout = () => {
-    logoutUser();
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await axiosInstance.post("/logout/"); // Endpoint del backend
+      //localStorage.removeItem("access_token"); // Opcional si tienes JWT almacenados
+      //localStorage.removeItem("refresh_token");
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
   };
 
   const userId = 1;
