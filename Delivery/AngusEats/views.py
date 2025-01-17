@@ -3,6 +3,7 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import Distance
 from rest_framework import status, viewsets
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -26,24 +27,33 @@ from .serializer import ( #UserSerializer,
 
 # Modelos
 from .models import Cliente, Pedido, Vehiculo, Configuracion, AnalisisPedido, Usuario, Ubicacion, EstadoPedido
-
-
-class ProtectedView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        data = {'message': 'Esta es una vista protegida'}
-        return Response(data)
     
 class LoginView(APIView):
+    """
+    LoginView maneja la autenticación de usuarios.
+    Métodos:
+        post(request):
+            Autentica a un usuario basado en el nombre de usuario y contraseña proporcionados.
+            Devuelve una respuesta con tokens de acceso y refresco si la autenticación es exitosa.
+            Devuelve una respuesta de error si la autenticación falla.
+    Atributos:
+        Ninguno
+    """
+    permission_classes = [AllowAny]
     def post(self,request):
         usuario = request.data.get('usuario')
         password = request.data.get('password')
         
         user = authenticate(username=usuario, password=password)
         if user is not None:
-            login(request, user)
-            return Response({"message": "Usuario autenticado"}, status=status.HTTP_200_OK)
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            return Response({
+                "access_token": access_token,
+                "refresh_token": str(refresh),
+                "username": user.usuario,
+                "rol": user.rol,
+            }, status=status.HTTP_200_OK)
         return Response({"error": "Usuario o contraseña incorrectos"}, status=status.HTTP_401_UNAUTHORIZED)
             
         
