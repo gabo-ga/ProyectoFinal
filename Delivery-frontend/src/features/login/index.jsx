@@ -14,21 +14,20 @@ import UsernameInput from "../../components/userNameInput";
 import PasswordInput from "../../components/PasswordInput";
 import LoginButton from "../../components/LoginButton";
 import LoginError from "../../components/LoginError";
-import { loginUser } from "../../services/authService";
+import { useAuth } from "../../AuthContext";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const { loginUser } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
     try {
-      const data = await loginUser(username, password);
-      localStorage.setItem("access_token", data.access);
-      localStorage.setItem("refresh_token", data.refresh);
+      await loginUser(username, password);
       navigate("/dashboard");
     } catch (error) {
       console.error("Error al iniciar sesión:", error.message);
