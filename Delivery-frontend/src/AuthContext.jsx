@@ -1,29 +1,88 @@
-import React, { createContext, useState } from 'react';
-import axios from 'axios';
+import React, { createContext, useEffect, useState } from "react";
+import axios from "axios";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [authTokens, setAuthTokens] = useState(() =>
-    localStorage.getItem('access_token') ? true : false
+  const [authTokens, setAuthTokens] = useState(() => ({
+    access: localStorage.getItem("access_token"),
+    refresh: localStorage.getItem("refresh_token"),
+  }));
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    () => !!authTokens.access
   );
+
+  useEffect(() => {
+    if (authTokens.access) {
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${authTokens.access}`;
+    } else {
+      delete axios.defaults.headers.common["Authorization"];
+    }
+  }, [authTokens]);
 
   const loginUser = (tokens) => {
     setAuthTokens(tokens);
-    localStorage.setItem('access_token', tokens.access);
-    localStorage.setItem('refresh_token', tokens.refresh);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${tokens.access}`;
+    setIsAuthenticated(true);
+    localStorage.setItem("access_token", tokens.access);
+    localStorage.setItem("refresh_token", tokens.refresh);
+    axios.defaults.headers.common["Authorization"] = `Bearer ${tokens.access}`;
   };
 
   const logoutUser = () => {
     setAuthTokens(null);
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    delete axios.defaults.headers.common['Authorization'];
+    setIsAuthenticated(false);
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    delete axios.defaults.headers.common["Authorization"];
   };
 
+  const refreshToken = async () => {
+    try {
+      const response = await axios.post("http://localhost:8000/token/refresh", {
+        refresh: authTokens.refresh,
+      });
+      const newAccessToken = response.data.access;
+      setAuthTokens((prevTokens) => ({
+        ...prevTokens,
+        access: newAccessToken,
+      }));
+      localStorage.setItem("access_token", newAccessToken);
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${newAccessToken}`;
+    } catch (error) {
+      console.log("Error al refrescar el token", error);
+      logoutUser();
+    }
+  };
+
+  useEffect(() => {
+    if (authTokens.access) {
+      const tokenExpirationTime = jwt_decode(authTokens.access).exp * 1000;
+      const now = Date.now();
+      const timeUntilExpiration = tokenExpirationTime - now;
+
+      if (timeUntilExpiration <= 0) {
+        refreshToken();
+      } else {
+        const timeout = setTimeout(refreshToken, timeUntilExpiration - 5000);
+        return () => clearTimeout(timeout);
+      }
+    }
+  }, [authTokens]);
+
   return (
-    <AuthContext.Provider value={{ authTokens, loginUser, logoutUser }}>
+    <AuthContext.Provider
+      value={{
+        authTokens,
+        isAuthenticated,
+        loginUser,
+        logoutUser,
+        refreshToken,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

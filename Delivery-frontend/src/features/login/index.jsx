@@ -27,21 +27,13 @@ function Login() {
     setErrorMessage("");
     try {
       const data = await loginUser(username, password);
-      //localStorage.setItem("access_token", data.access);
-      //localStorage.setItem("refresh_token", data.refresh);
+      localStorage.setItem("access_token", data.access);
+      localStorage.setItem("refresh_token", data.refresh);
       navigate("/dashboard");
     } catch (error) {
-      console.error("Error al iniciar sesión:", error);
-      //if (error.response && error.response.data && error.response.data.detail) {
-      const errorDetail =
-        error.response?.data?.detail ||
-        "Error al iniciar sesión. Por favor, inténtalo de nuevo.";
+      console.error("Error al iniciar sesión:", error.message);
+      const errorDetail = error.message;
       setErrorMessage(errorDetail);
-      //} else {
-      //  setErrorMessage(
-      //    "Error al iniciar sesión. Por favor, inténtalo de nuevo."
-      //  );
-      //}
     }
   };
 
