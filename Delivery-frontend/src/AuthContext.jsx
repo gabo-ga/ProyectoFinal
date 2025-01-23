@@ -23,12 +23,24 @@ export const AuthProvider = ({ children }) => {
     }
   }, [authTokens]);
 
-  const loginUser = (tokens) => {
-    setAuthTokens(tokens);
-    setIsAuthenticated(true);
-    localStorage.setItem("access_token", tokens.access);
-    localStorage.setItem("refresh_token", tokens.refresh);
-    axios.defaults.headers.common["Authorization"] = `Bearer ${tokens.access}`;
+  const loginUser = async (username, password) => {
+    try {
+      const response = await axios.post("http://localhost:8000/login/", {
+        usuario: username,
+        password,
+      });
+      console.log("Respuesta:", response.data);
+      const tokens = response.data;
+      setAuthTokens(tokens);
+      setIsAuthenticated(true);
+      localStorage.setItem("access_token", tokens.access);
+      localStorage.setItem("refresh_token", tokens.refresh);
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${tokens.access}`;
+    } catch (error) {
+      throw new Error("Error al iniciar Sesion: " + error.response.data.detail);
+    }
   };
 
   const logoutUser = () => {
@@ -41,9 +53,12 @@ export const AuthProvider = ({ children }) => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.post("http://localhost:8000/token/refresh", {
-        refresh: authTokens.refresh,
-      });
+      const response = await axios.post(
+        "http://localhost:8000/token/refresh/",
+        {
+          refresh: authTokens.refresh,
+        }
+      );
       const newAccessToken = response.data.access;
       setAuthTokens((prevTokens) => ({
         ...prevTokens,
