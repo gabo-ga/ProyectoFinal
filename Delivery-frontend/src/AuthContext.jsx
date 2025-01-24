@@ -6,18 +6,18 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [authTokens, setAuthTokens] = useState(() => ({
-    access: localStorage.getItem("access_token"),
-    refresh: localStorage.getItem("refresh_token"),
+    access_token: localStorage.getItem("access_token"),
+    refresh_token: localStorage.getItem("refresh_token"),
   }));
   const [isAuthenticated, setIsAuthenticated] = useState(
-    () => !!authTokens.access
+    () => !!authTokens.access_token
   );
 
   useEffect(() => {
-    if (authTokens.access) {
+    if (authTokens.access_token) {
       axios.defaults.headers.common[
         "Authorization"
-      ] = `Bearer ${authTokens.access}`;
+      ] = `Bearer ${authTokens.access_token}`;
     } else {
       delete axios.defaults.headers.common["Authorization"];
     }
@@ -30,14 +30,17 @@ export const AuthProvider = ({ children }) => {
         password,
       });
       console.log("Respuesta:", response.data);
-      const tokens = response.data;
+      const tokens = {
+        access_token: response.data.access_token,
+        refresh_token: response.data.refresh_token,
+      };
       setAuthTokens(tokens);
       setIsAuthenticated(true);
-      localStorage.setItem("access_token", tokens.access);
-      localStorage.setItem("refresh_token", tokens.refresh);
+      localStorage.setItem("access_token", tokens.access_token);
+      localStorage.setItem("refresh_token", tokens.refresh_token);
       axios.defaults.headers.common[
         "Authorization"
-      ] = `Bearer ${tokens.access}`;
+      ] = `Bearer ${tokens.access_token}`;
     } catch (error) {
       throw new Error("Error al iniciar Sesion: " + error.response.data.detail);
     }
@@ -56,13 +59,13 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.post(
         "http://localhost:8000/token/refresh/",
         {
-          refresh: authTokens.refresh,
+          refresh: authTokens.refresh_token,
         }
       );
-      const newAccessToken = response.data.access;
+      const newAccessToken = response.data.access_token;
       setAuthTokens((prevTokens) => ({
         ...prevTokens,
-        access: newAccessToken,
+        access_token: newAccessToken,
       }));
       localStorage.setItem("access_token", newAccessToken);
       axios.defaults.headers.common[
@@ -75,8 +78,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (authTokens.access) {
-      const tokenExpirationTime = jwt_decode(authTokens.access).exp * 1000;
+    if (authTokens.access_token) {
+      const tokenExpirationTime =
+        jwt_decode(authTokens.access_token).exp * 1000;
       const now = Date.now();
       const timeUntilExpiration = tokenExpirationTime - now;
 

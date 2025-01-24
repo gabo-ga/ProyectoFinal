@@ -56,11 +56,6 @@ class LoginView(APIView):
             }, status=status.HTTP_200_OK)
         return Response({"error": "Usuario o contraseña incorrectos"}, status=status.HTTP_401_UNAUTHORIZED)
             
-        
-        #serializer = LoginSerializer(data=request.data)
-        #if serializer.is_valid():
-         #   return Response(serializer.validated_data, status=status.HTTP_200_OK)
-        #return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
 class LogoutView(APIView):
     def post(self, request):
@@ -78,22 +73,6 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         conductores = obtener_conductores()
         return Response(conductores)
 
-
-#class UserViewSet(viewsets.ReadOnlyModelViewSet):
-#    queryset = User.objects.all()
-#    serializer_class = UserSerializer
-    #permission_classes = [IsAuthenticated]  
-#    def list(self, request, *args, **kwargs):
-#        queryset = self.get_queryset()
-#        serializer = self.get_serializer(queryset, many=True)
-
-        # Modificar los datos serializados para agregar el campo nombre_completo
-#       data = []
-#        for user_data in serializer.data:
-#            user_data["nombre_completo"] = f"{user_data['first_name']} {user_data['last_name']}"
-#            data.append(user_data)
-        
-#        return Response(data)
 
 #class ConductorViewSet(viewsets.ModelViewSet):
 #    queryset = Conductor.objects.all()
