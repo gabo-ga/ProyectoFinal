@@ -58,6 +58,19 @@ class LoginView(APIView):
             
 
 class LogoutView(APIView):
+    """
+    LogoutView maneja el proceso de cierre de sesión de usuario.
+
+    Métodos:
+        post(request):
+            Cierra la sesión del usuario y devuelve un mensaje de éxito.
+
+            Args:
+                request (Request): El objeto de solicitud HTTP.
+
+            Returns:
+                Response: Un objeto de respuesta que contiene un mensaje de éxito y el código de estado HTTP 200.
+    """
     def post(self, request):
         logout(request)
         return Response({"message": "Usuario deslogueado"}, status=status.HTTP_200_OK)
@@ -85,9 +98,17 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     #accion personalizada para pedidos activos
 
 class ClienteViewSet(viewsets.ModelViewSet):
+    """
+    Un viewset para ver y editar instancias de Cliente.
+
+    Atributos:
+        queryset (QuerySet): El conjunto de consultas que recupera todos los objetos Cliente.
+        serializer_class (Serializer): La clase de serializador utilizada para serializar y deserializar objetos Cliente.
+        permission_classes (list): La lista de clases de permisos que determinan el acceso a este viewset.
+    """
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
-    permission_classes = [AllowAny]  
+    permission_classes = [IsAuthenticated]  
 
 class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.select_related('cliente', 'conductor', 'origen', 'destino', 'estado')
