@@ -175,9 +175,10 @@ def obtener_vehiculos_disponibles():
     """
     return execute_sql_query(query)
 
-def obtener_detalle_coordenadas(estado_id):
+def obtener_detalle_coordenadas(estado_id, conductor_id):
     """
-    Obtiene las coordenadas de origen y destino de los pedidos con un estado específico.
+    Obtiene las coordenadas de origen y destino de los pedidos con un estado específico
+    y un conductor especifico.
     """
     query = """
         SELECT
@@ -197,9 +198,10 @@ def obtener_detalle_coordenadas(estado_id):
         ON 
             p.destino_id = u_destino.id
         WHERE 
-            p.estado_id = %s;
+            p.estado_id = %s
+            AND p.conductor_id=%s;
     """
-    return execute_sql_query(query, [estado_id])
+    return execute_sql_query(query, [estado_id, conductor_id])
 
 def obtener_conductores():
     """

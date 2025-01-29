@@ -143,7 +143,8 @@ class PedidoViewSet(viewsets.ModelViewSet):
     #endpoint para coordendas
     @action(detail=False, methods=['get'], url_path='coordenadas')
     def detalle_coordenadas(self, request):
-        result = obtener_detalle_coordenadas(estado_id=1)
+        conductor_id = request.query_params.get('conductor_id', None)
+        result = obtener_detalle_coordenadas(estado_id=1, conductor_id= conductor_id)
         return Response(result)
     #endpoint para contar pedidos cancelados
     @action(detail=False, methods=['get'], url_path='count-cancelados')
