@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(
     () => !!authTokens.access_token
   );
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     if (authTokens.access_token) {
@@ -36,8 +37,10 @@ export const AuthProvider = ({ children }) => {
       };
       setAuthTokens(tokens);
       setIsAuthenticated(true);
+      setUserId(response.data.user_id);
       localStorage.setItem("access_token", tokens.access_token);
       localStorage.setItem("refresh_token", tokens.refresh_token);
+      localStorage.setItem("user_id", response.data.user_id);
       axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${tokens.access_token}`;
