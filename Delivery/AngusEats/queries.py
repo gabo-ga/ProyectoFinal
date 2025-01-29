@@ -180,7 +180,7 @@ def obtener_detalle_coordenadas(estado_id, conductor_id):
     Obtiene las coordenadas de origen y destino de los pedidos con un estado específico
     y un conductor especifico.
     """
-    query = """
+    base_query = """
         SELECT
             p.id AS "ID",
             ST_X(u_origen.coordenadas) AS "ORIGEN_LAT",
@@ -199,9 +199,14 @@ def obtener_detalle_coordenadas(estado_id, conductor_id):
             p.destino_id = u_destino.id
         WHERE 
             p.estado_id = %s
-            AND p.conductor_id=%s;
     """
-    return execute_sql_query(query, [estado_id, conductor_id])
+    params = [estado_id]
+    
+    if conductor_id:
+        base_query += " AND p.conductor_id = %s"
+        params.append(conductor_id)
+        
+    return execute_sql_query(base_query, params)
 
 def obtener_conductores():
     """

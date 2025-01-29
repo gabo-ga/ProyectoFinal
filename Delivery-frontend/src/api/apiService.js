@@ -152,9 +152,9 @@ export const fetchVehiculos = async () => {
 };
 
 // Obtener coordenadas de pedidos
-export const fetchPedidosCoordenadas = async () => {
+export const fetchPedidosCoordenadas = async (conductorId) => {
   try {
-    const response = await axiosInstance.get('/api/pedidos/coordenadas');
+    const response = await axiosInstance.get(`/api/pedidos/coordenadas?conductor_id=${conductorId}`);
     return response.data;
   } catch (error) {
     console.error('Error al obtener coordenadas:', error);
