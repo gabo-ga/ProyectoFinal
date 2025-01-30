@@ -25,16 +25,6 @@ const DriverField = ({ value, onChange }) => {
 
   const handleChange = (e) => {
     const selectedValue = e.target.value;
-    const selectedDriver = drivers.find(
-      (driver) => driver.id.toString() === selectedValue
-    );
-
-    if (selectedDriver && selectedDriver.numero_pedidos_pendientes >= 4) {
-      setError(
-        "No puede seleccionar un conductor con 4 o más pedidos pendientes."
-      );
-      return;
-    }
 
     if (selectedValue === "") {
       setError("Por favor, seleccione un conductor.");
@@ -61,8 +51,8 @@ const DriverField = ({ value, onChange }) => {
             <option value="">Seleccione un conductor</option>
             {drivers.map((driver) => (
               <option
-                key={driver.id}
-                value={driver.id}
+                key={driver.id_conductor}
+                value={driver.id_conductor}
                 disabled={driver.numero_pedidos_pendientes >= 4}
               >
                 {driver.nombre_conductor} (

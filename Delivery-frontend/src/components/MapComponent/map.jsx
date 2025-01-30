@@ -21,6 +21,7 @@ function Map() {
 
   const [vehiculos, setVehiculos] = useState([]);
   const [route, setRoute] = useState(null);
+  const [conductorId, setConductorId] = useState(11);
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
@@ -44,7 +45,7 @@ function Map() {
   useEffect(() => {
     const fetchAndCalculateRoute = async () => {
       try {
-        const data = await fetchPedidosCoordenadas();
+        const data = await fetchPedidosCoordenadas(conductorId);
 
         if (data.length < 2) {
           console.error("No hay suficientes datos para calcular la ruta");

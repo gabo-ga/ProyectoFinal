@@ -46,6 +46,7 @@ axiosInstance.interceptors.request.use(async (request) => {
       request.headers.Authorization = 'Bearer ' + tokens.access;
     } catch (error) {
       console.error('Error al refrescar el token:', error);
+
     }
   }
   return request;

@@ -34,7 +34,6 @@ function OrderForm() {
     destino_direccion: "",
   });
 
-  const [drivers, setDrivers] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -166,7 +165,6 @@ function OrderForm() {
               </Col>
               <Col xs={12} md={10}>
                 <DriverField
-                  drivers={drivers}
                   value={formData.conductor}
                   onChange={handleInputChange}
                 />
