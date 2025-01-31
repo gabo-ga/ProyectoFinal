@@ -7,23 +7,15 @@ import {
 } from "@react-google-maps/api";
 import { fetchVehiculos, fetchPedidosCoordenadas } from "../../api/apiService";
 import { calculateRoute } from "../../api/mapService";
+import { useAuth } from "../../AuthContext";
 
 function Map() {
-  const containerStyle = {
-    width: "100%",
-    height: "100%",
-  };
-
-  const center = {
-    lat: -17.3895,
-    lng: -66.1568,
-  };
+  const containerStyle = { width: "100%", height: "100%" };
+  const center = { lat: -17.3895, lng: -66.1568 };
 
   const [vehiculos, setVehiculos] = useState([]);
   const [routes, setRoutes] = useState([]);
-  const [conductorId, setConductorId] = useState(11);
-
-  const colors = ["#FF000", "#00FF00", "#0000FF", "#FFA500", "#80080"];
+  const { userId } = useAuth();
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
@@ -47,68 +39,86 @@ function Map() {
   useEffect(() => {
     const fetchAndCalculateRoute = async () => {
       try {
-        const conductores = [
-          { id: 7, color: "red" },
-          { id: 10, color: "blue" },
-          { id: 11, color: "green" },
-          { id: 12, color: "yellow" },
-        ];
-        const tempRoutes = [];
+        if (userId === 6) {
+          //caso de admin
+          const conductores = [
+            { id: 7, color: "red" },
+            { id: 10, color: "blue" },
+            { id: 11, color: "green" },
+            { id: 12, color: "yellow" },
+          ];
+          const tempRoutes = [];
+          for (const conductor of conductores) {
+            const data = await fetchPedidosCoordenadas(conductor.id);
+            if (data.length < 2) continue;
 
-        for (const conductor of conductores) {
-          const data = await fetchPedidosCoordenadas(conductor.id);
-
-          if (data.length < 2) {
-            console.warn(
-              `No hay suficientes datos para el conductor ${conductor.id}`
+            const { origin, destination, waypoints } = parseCoords(data);
+            const routeResult = await calculateRoute(
+              origin,
+              destination,
+              waypoints
             );
-            continue;
-          }
-          //extrae el origen y el destino
-          const origin = {
-            lat: parseFloat(data[0].ORIGEN_LNG),
-            lng: parseFloat(data[0].ORIGEN_LAT),
-          };
-          const destination = {
-            lat: parseFloat(data[data.length - 1].DESTINO_LNG),
-            lng: parseFloat(data[data.length - 1].DESTINO_LAT),
-          };
-          //extrae los waypoints
-          const waypoints = data.slice(1, -1).map((pedido) => ({
-            location: {
-              lat: parseFloat(pedido.DESTINO_LNG),
-              lng: parseFloat(pedido.DESTINO_LAT),
-            },
-            stopover: true,
-          }));
 
-          // Calcular la ruta con waypoints optimizados
+            tempRoutes.push({
+              directions: routeResult,
+              color: conductor.color,
+              conductorId: conductor.id,
+            });
+
+            console.log(
+              "Orden optimizado de waypoints:",
+              routeResult.routes[0].waypoint_order
+            );
+          }
+
+          setRoutes(tempRoutes);
+        } else {
+          const data = await fetchPedidosCoordenadas(userId);
+          if (data.length < 2) {
+            console.warn("No hay suficientes datos para trazar la ruta");
+            return;
+          }
+          const { origin, destination, waypoints } = parseCoords(data);
           const routeResult = await calculateRoute(
             origin,
             destination,
             waypoints
           );
 
-          tempRoutes.push({
-            directions: routeResult,
-            color: conductor.color,
-            conductorId: conductorId,
-          });
-          console.log(
-            "Orden optimizado de waypoints:",
-            routeResult.routes[0].waypoint_order
-          );
+          setRoutes([
+            {
+              directions: routeResult,
+              color: "blue",
+              conductorId: userId,
+            },
+          ]);
         }
-        setRoutes(tempRoutes);
-      } catch (error) {
-        console.error("Error al obtener pedidos o calcular la ruta:", error);
+      } catch (err) {
+        console.error("Error al obtener o calcular rutas", err);
       }
     };
 
-    if (isLoaded) {
-      fetchAndCalculateRoute();
-    }
-  }, [isLoaded]);
+    fetchAndCalculateRoute();
+  }, [isLoaded, userId]);
+
+  const parseCoords = (data) => {
+    const origin = {
+      lat: parseFloat(data[0].ORIGEN_LNG),
+      lng: parseFloat(data[0].ORIGEN_LAT),
+    };
+    const destination = {
+      lat: parseFloat(data[data.length - 1].DESTINO_LNG),
+      lng: parseFloat(data[data.length - 1].DESTINO_LAT),
+    };
+    const waypoints = data.slice(1, -1).map((pedido) => ({
+      location: {
+        lat: parseFloat(pedido.DESTINO_LNG),
+        lng: parseFloat(pedido.DESTINO_LAT),
+      },
+      stopover: true,
+    }));
+    return { origin, destination, waypoints };
+  };
 
   if (loadError) {
     return <div>Error al cargar el mapa</div>;
@@ -131,13 +141,13 @@ function Map() {
           title={`Vehículo: ${vehiculo.placa}`}
         />
       ))}
-      {routes.map((routeData, index) => (
+      {routes.map((routeObj, index) => (
         <DirectionsRenderer
           key={index}
-          directions={routeData.directions}
+          directions={routeObj.directions}
           options={{
             polylineOptions: {
-              strokeColor: routeData.color,
+              strokeColor: routeObj.color,
               strokeWeight: 4,
               strokeOpacity: 0.8,
             },

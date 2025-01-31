@@ -104,6 +104,7 @@ export const AuthProvider = ({ children }) => {
         loginUser,
         logoutUser,
         refreshToken,
+        userId,
       }}
     >
       {children}
