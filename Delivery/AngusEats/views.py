@@ -119,10 +119,12 @@ class PedidoViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], url_path='en-curso')
     def pedidos_en_curso(self, request):
         try:
-            result = obtener_pedidos_en_curso()
+            conductor_id = request.query_params.get('conductor_id', None)
+            result = obtener_pedidos_en_curso(conductor_id=conductor_id)
             return Response(result)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+        
     # action para pedidos entregados
     @action(detail=False, methods=['get'], url_path='entregados')
     def pedidos_entregados(self, request):

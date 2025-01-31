@@ -41,10 +41,12 @@ def contar_vehiculos(disponible=None):
     result = execute_sql_query(query, params)
     return result[0]['total_vehiculos'] if result else 0
 
-def obtener_pedidos_en_curso():
-    """Obtiene la lista de pedidos en estado 'pendiente' o 'en_ruta'."""
+def obtener_pedidos_en_curso(conductor_id=None):
+    """Obtiene la lista de pedidos en estado 'pendiente' o 'en_ruta'.
+        si se para un conductor_id se filtra por ese id
+    """
     query = """
-        SELECT 
+       SELECT 
             p.id AS pedido_id,
             c.nombre AS cliente_nombre,
             c.telefono AS cliente_telefono,
@@ -66,9 +68,16 @@ def obtener_pedidos_en_curso():
         ON 
             p.destino_id = u_destino.id
         WHERE 
-            e.nombre IN ('pendiente', 'en_ruta');
+            e.nombre IN ('pendiente', 'en_ruta')
     """
-    return execute_sql_query(query)
+    
+    params = []
+    
+    if conductor_id is not None:
+        query += "AND p.conductor_id = %s"
+        params.append(conductor_id)
+        
+    return execute_sql_query(query, params)
 
 def obtener_pedidos_entregados():
     """Obtiene la lista de pedidos en estado 'entregado'."""
