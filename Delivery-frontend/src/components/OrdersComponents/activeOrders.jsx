@@ -6,16 +6,19 @@ import Row from "react-bootstrap/esm/Row";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 import { fetchActiveOrders } from "../../api/apiService";
+import { useAuth } from "../../AuthContext";
 
 function ActiveOrders(props) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const { userId } = useAuth();
+
   useEffect(() => {
     const getOrders = async () => {
       try {
-        const data = await fetchActiveOrders();
+        const data = await fetchActiveOrders(userId);
         setOrders(data);
         setLoading(false);
       } catch (error) {
@@ -24,7 +27,7 @@ function ActiveOrders(props) {
       }
     };
     getOrders();
-  }, []);
+  }, [userId]);
 
   if (loading) {
     return <p>Cargando pedidos...</p>;
