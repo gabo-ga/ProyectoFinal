@@ -20,8 +20,10 @@ function Map() {
   };
 
   const [vehiculos, setVehiculos] = useState([]);
-  const [route, setRoute] = useState(null);
+  const [routes, setRoutes] = useState([]);
   const [conductorId, setConductorId] = useState(11);
+
+  const colors = ["#FF000", "#00FF00", "#0000FF", "#FFA500", "#80080"];
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
@@ -45,44 +47,59 @@ function Map() {
   useEffect(() => {
     const fetchAndCalculateRoute = async () => {
       try {
-        const data = await fetchPedidosCoordenadas(conductorId);
+        const conductores = [
+          { id: 7, color: "red" },
+          { id: 10, color: "blue" },
+          { id: 11, color: "green" },
+          { id: 12, color: "yellow" },
+        ];
+        const tempRoutes = [];
 
-        if (data.length < 2) {
-          console.error("No hay suficientes datos para calcular la ruta");
-          return;
+        for (const conductor of conductores) {
+          const data = await fetchPedidosCoordenadas(conductor.id);
+
+          if (data.length < 2) {
+            console.warn(
+              `No hay suficientes datos para el conductor ${conductor.id}`
+            );
+            continue;
+          }
+          //extrae el origen y el destino
+          const origin = {
+            lat: parseFloat(data[0].ORIGEN_LNG),
+            lng: parseFloat(data[0].ORIGEN_LAT),
+          };
+          const destination = {
+            lat: parseFloat(data[data.length - 1].DESTINO_LNG),
+            lng: parseFloat(data[data.length - 1].DESTINO_LAT),
+          };
+          //extrae los waypoints
+          const waypoints = data.slice(1, -1).map((pedido) => ({
+            location: {
+              lat: parseFloat(pedido.DESTINO_LNG),
+              lng: parseFloat(pedido.DESTINO_LAT),
+            },
+            stopover: true,
+          }));
+
+          // Calcular la ruta con waypoints optimizados
+          const routeResult = await calculateRoute(
+            origin,
+            destination,
+            waypoints
+          );
+
+          tempRoutes.push({
+            directions: routeResult,
+            color: conductor.color,
+            conductorId: conductorId,
+          });
+          console.log(
+            "Orden optimizado de waypoints:",
+            routeResult.routes[0].waypoint_order
+          );
         }
-
-        // Extraer origen y destino
-        const origin = {
-          lat: parseFloat(data[0].ORIGEN_LNG),
-          lng: parseFloat(data[0].ORIGEN_LAT),
-        };
-
-        const destination = {
-          lat: parseFloat(data[data.length - 1].DESTINO_LNG),
-          lng: parseFloat(data[data.length - 1].DESTINO_LAT),
-        };
-
-        // Extraer los waypoints
-        const waypoints = data.slice(1, -1).map((pedido) => ({
-          location: {
-            lat: parseFloat(pedido.DESTINO_LNG),
-            lng: parseFloat(pedido.DESTINO_LAT),
-          },
-          stopover: true,
-        }));
-
-        // Calcular la ruta con waypoints optimizados
-        const routeResult = await calculateRoute(
-          origin,
-          destination,
-          waypoints
-        );
-        console.log(
-          "Orden optimizado de waypoints:",
-          routeResult.routes[0].waypoint_order
-        );
-        setRoute(routeResult);
+        setRoutes(tempRoutes);
       } catch (error) {
         console.error("Error al obtener pedidos o calcular la ruta:", error);
       }
@@ -114,9 +131,19 @@ function Map() {
           title={`Vehículo: ${vehiculo.placa}`}
         />
       ))}
-
-      {/* Renderizar la ruta */}
-      {route && <DirectionsRenderer directions={route} />}
+      {routes.map((routeData, index) => (
+        <DirectionsRenderer
+          key={index}
+          directions={routeData.directions}
+          options={{
+            polylineOptions: {
+              strokeColor: routeData.color,
+              strokeWeight: 4,
+              strokeOpacity: 0.8,
+            },
+          }}
+        />
+      ))}
     </GoogleMap>
   );
 }
