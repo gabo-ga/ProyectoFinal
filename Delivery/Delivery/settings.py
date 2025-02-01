@@ -45,7 +45,10 @@ INSTALLED_APPS = [
     'coreapi',
     'sslserver',
     'django_extensions',
+    'channels',
 ]
+
+ASGI_APPLICATION = "Delivery.asgi.application"
 
 CORS_ALLOWED_ORIGINS = ["https://localhost:5173", 'https://localhost:3000',
     'https://127.0.0.1:8000', "https://127.0.0.1:5173", "http://localhost:5173"]
