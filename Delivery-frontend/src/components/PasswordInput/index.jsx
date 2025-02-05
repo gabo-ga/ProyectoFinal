@@ -12,6 +12,7 @@ function PasswordInput({ value, onChange }) {
         placeholder="Ingrese su contraseña"
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        autoComplete="current-password"
       />
     </Form.Group>
   );
