@@ -10,7 +10,7 @@ function Logout({ onClose }) {
 
   const handleLogout = () => {
     logoutUser();
-    Windows.location.href = "/login";
+    window.location.href = "/login";
   };
 
   const user = authTokens
