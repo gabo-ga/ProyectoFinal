@@ -16,7 +16,7 @@ export const fetchPedidosEnCurso = async () => {
 // Función para contar los vehículos
 export const fetchVehiculosDisponibles = async () => {
   try {
-    const response = await axiosInstance.get("/api/vehiculos/count-cancelados/");
+    const response = await axiosInstance.get("/api/vehiculos/count/");
     return response.data.count;
   } catch (error) {
     console.error("Error al obtener los vehículos disponibles:", error);

@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 
@@ -80,17 +86,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const tokenExpirationTime = useMemo(() => {
+    return authTokens.access_token
+      ? jwt_decode(authTokens.access_token).exp * 1000
+      : null;
+  }, [authTokens.access_token]);
+
   useEffect(() => {
     if (authTokens.access_token) {
-      const tokenExpirationTime =
-        jwt_decode(authTokens.access_token).exp * 1000;
       const now = Date.now();
       const timeUntilExpiration = tokenExpirationTime - now;
 
-      if (timeUntilExpiration <= 0) {
-        refreshToken();
-      } else {
-        const timeout = setTimeout(refreshToken, timeUntilExpiration - 5000);
+      if (timeUntilExpiration > 0) {
+        const timeout = setTimeout(() => {
+          requestIdleCallback(refreshToken);
+        }, timeUntilExpiration - 5000);
         return () => clearTimeout(timeout);
       }
     }
