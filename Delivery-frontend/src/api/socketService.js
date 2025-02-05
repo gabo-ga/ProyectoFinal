@@ -1,7 +1,7 @@
 let socket = null;
 
 export function initSocket(conductorId){
-    const wsUrl = `ws://localhost:8080/ws/location/${conductorId}`;
+    const wsUrl = `ws://localhost:8000/ws/location/${conductorId}/`;
     socket = new WebSocket(wsUrl);
 
 socket.onopen = () => {
@@ -29,8 +29,12 @@ export function sendLocation(lat, lng) {
 };
 
 export function closeSocket() {
-    if (socket){
+    if (socket && socket.readyState === WebSocket.OPEN) {
         socket.close();
+        socket = null;
+    }else if(socket){
         socket = null;
     }
 };
+
+export {socket}

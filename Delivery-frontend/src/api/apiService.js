@@ -145,17 +145,6 @@ export const fetchClientes = async () => {
   }
 };
 
-// Obtener ubicaciones de vehículos
-export const fetchVehiculos = async () => {
-  try {
-    const response = await axiosInstance.get('/api/vehiculos/ubicaciones');
-    return response.data;
-  } catch (error) {
-    console.error('Error al obtener ubicaciones:', error);
-    throw error;
-  }
-};
-
 // Obtener coordenadas de pedidos
 export const fetchPedidosCoordenadas = async (conductorId) => {
   try {

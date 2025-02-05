@@ -5,9 +5,15 @@ import {
   Marker,
   DirectionsRenderer,
 } from "@react-google-maps/api";
-import { fetchVehiculos, fetchPedidosCoordenadas } from "../../api/apiService";
+import { fetchPedidosCoordenadas } from "../../api/apiService";
 import { calculateRoute } from "../../api/mapService";
 import { useAuth } from "../../AuthContext";
+import {
+  initSocket,
+  sendLocation,
+  closeSocket,
+  socket,
+} from "../../api/socketService";
 
 function Map() {
   const containerStyle = { width: "100%", height: "100%" };
@@ -16,6 +22,7 @@ function Map() {
   const [vehiculos, setVehiculos] = useState([]);
   const [routes, setRoutes] = useState([]);
   const { userId } = useAuth();
+  const [location, setLocation] = useState(null);
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
@@ -23,17 +30,40 @@ function Map() {
 
   // Obtener ubicaciones de vehículos
   useEffect(() => {
-    const obtenerUbicaciones = async () => {
-      try {
-        const data = await fetchVehiculos();
-        setVehiculos(data);
-      } catch (error) {
-        console.error("Error al obtener vehículos:", error);
-      }
+    if (!userId) return;
+    initSocket(userId);
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("Ubicación recibida del servidor: ", data);
+      const lat = parseFloat(data.latitude);
+      const lng = parseFloat(data.longitude);
+      setLocation({
+        lat,
+        lng,
+      });
     };
 
-    obtenerUbicaciones();
-  }, []);
+    return () => {
+      closeSocket();
+    };
+  }, [userId]);
+
+  //enviar ubicacion del conductor periodicamente
+  useEffect(() => {
+    if (userId !== 6) {
+      const intervalId = setInterval(() => {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const { latitude, longitude } = position.coords;
+          sendLocation(latitude, longitude);
+          console.log("Ubicación enviada al servidor", { latitude, longitude });
+        });
+      }, 5000);
+      return () => {
+        clearInterval(intervalId);
+      };
+    }
+  }, [userId]);
 
   // Obtener pedidos y calcular ruta con waypoints optimizados
   useEffect(() => {
@@ -130,17 +160,6 @@ function Map() {
 
   return (
     <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={12}>
-      {/* Marcadores de los vehículos */}
-      {vehiculos.map((vehiculo) => (
-        <Marker
-          key={vehiculo.placa}
-          position={{
-            lat: vehiculo.ubicacion_geografica.latitude,
-            lng: vehiculo.ubicacion_geografica.longitude,
-          }}
-          title={`Vehículo: ${vehiculo.placa}`}
-        />
-      ))}
       {routes.map((routeObj, index) => (
         <DirectionsRenderer
           key={index}
@@ -154,6 +173,14 @@ function Map() {
           }}
         />
       ))}
+      {location && (
+        <Marker
+          position={location}
+          icon={{
+            url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+          }}
+        />
+      )}
     </GoogleMap>
   );
 }

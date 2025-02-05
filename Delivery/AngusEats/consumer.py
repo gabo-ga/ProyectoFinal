@@ -20,8 +20,8 @@ class LocationConsumer(AsyncWebsocketConsumer):
         
     async def receive(self, text_data):
         data = json.loads(text_data)
-        latitude = data.get("latitude")
-        longitude = data.get("longitude")
+        latitude = data.get("lat")
+        longitude = data.get("lng")
         
         await self.channel_layer.group_send(
             self.room_group_name,{
