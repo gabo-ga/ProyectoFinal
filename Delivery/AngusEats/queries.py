@@ -52,21 +52,20 @@ def obtener_pedidos_en_curso(conductor_id=None):
             c.telefono AS cliente_telefono,
             p.fecha_creacion AS pedido_fecha,
             e.nombre AS pedido_estado,
-            u_destino.direccion AS pedido_direccion_destino
+            u_destino.direccion AS pedido_direccion_destino,
+            p.precio AS pedido_precio,
+            p.detalle AS pedido_detalle,
+            u.nombre AS conductor_nombre
         FROM 
             "AngusEats_cliente" c
         JOIN 
-            "AngusEats_pedido" p
-        ON 
-            c.id = p.cliente_id
+            "AngusEats_pedido" p ON c.id = p.cliente_id
         JOIN 
-            "AngusEats_estadopedido" e
-        ON 
-            p.estado_id = e.id
+            "AngusEats_estadopedido" e ON p.estado_id = e.id
         JOIN 
-            "AngusEats_ubicacion" u_destino
-        ON 
-            p.destino_id = u_destino.id
+            "AngusEats_ubicacion" u_destino ON p.destino_id = u_destino.id
+        LEFT JOIN 
+            "AngusEats_usuario" u ON p.conductor_id = u.id
         WHERE 
             e.nombre IN ('pendiente', 'en_ruta')
     """
