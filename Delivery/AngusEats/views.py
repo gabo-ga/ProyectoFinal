@@ -109,7 +109,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
     """
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
-    permission_classes = [IsAuthenticated]  
+    permission_classes = [AllowAny]  
 
 class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.select_related('cliente', 'conductor', 'origen', 'destino', 'estado')
