@@ -13,10 +13,6 @@ let tokens = {
   refresh: localStorage.getItem('refresh_token'),
 };
 
-/*const httpsAgent = new https.Agent({
-  rejectUnauthorized: false,
-});*/
-
 const axiosInstance = axios.create({
   baseURL: baseURL,
   timeout: 5000,
@@ -52,21 +48,4 @@ axiosInstance.interceptors.request.use(async (request) => {
   return request;
 });
 
-// Interceptor para manejar respuestas no autorizadas (opcional)
-/*axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (
-      error.response &&
-      error.response.status === 401 &&
-      error.config &&
-      !error.config.__isRetryRequest
-    ) {
-      // Opcional: Redirigir al usuario al inicio de sesión
-      // window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
-*/
 export default axiosInstance;
