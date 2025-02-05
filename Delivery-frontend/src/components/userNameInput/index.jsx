@@ -12,6 +12,7 @@ function UsernameInput({ value, onChange }) {
         placeholder="Ingrese su nombre de usuario"
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        autoComplete="username"
       />
     </Form.Group>
   );
