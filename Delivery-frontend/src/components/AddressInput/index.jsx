@@ -9,6 +9,7 @@ function SearchInput({ value, onChange }) {
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className={styles.inputStyles}
+      required
     />
   );
 }
