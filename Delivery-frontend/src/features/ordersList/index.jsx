@@ -51,7 +51,7 @@ function OrdersHistory() {
             <Order filtros={filtros} onPedidosLoad={setPedidos}></Order>
           </Row>
         </Container>
-        <Footer></Footer>
+        {/*<Footer></Footer>*/}
       </FilterProvider>
     </>
   );

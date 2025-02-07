@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../AuthContext";
 
 function Logout({ onClose }) {
-  const { authTokens, logoutUser } = useContext(AuthContext);
+  const { authTokens, logoutUser, username } = useContext(AuthContext);
 
   const handleLogout = () => {
     logoutUser();
@@ -28,7 +28,7 @@ function Logout({ onClose }) {
           </XLg>
         </div>
         <Card.Title className={styles.textStyle}>
-          {user ? `Hola ${user.nombre}` : "Cargando..."}
+          {user ? `Hola ${username}` : "Cargando..."}
         </Card.Title>
         <Card.Text className={styles.textStyle}>
           <Link to="/user">Configuracion</Link>{" "}

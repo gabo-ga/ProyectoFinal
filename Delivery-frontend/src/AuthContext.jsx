@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }) => {
     () => !!authTokens.access_token
   );
   const [userId, setUserId] = useState(null);
+  const [username, setUserName] = useState(null);
 
   useEffect(() => {
     if (authTokens.access_token) {
@@ -44,6 +45,7 @@ export const AuthProvider = ({ children }) => {
       setAuthTokens(tokens);
       setIsAuthenticated(true);
       setUserId(response.data.user_id);
+      setUserName(response.data.username);
       localStorage.setItem("access_token", tokens.access_token);
       localStorage.setItem("refresh_token", tokens.refresh_token);
       localStorage.setItem("user_id", response.data.user_id);
@@ -115,6 +117,7 @@ export const AuthProvider = ({ children }) => {
         logoutUser,
         refreshToken,
         userId,
+        username,
       }}
     >
       {children}
