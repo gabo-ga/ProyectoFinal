@@ -79,7 +79,7 @@ function OrderDetails() {
       <Header />
       <div className={styles.container}>
         <Card>
-          <Card.Body>
+          <Card.Body className={styles.cardContainer}>
             <Row>
               <Col xs={12} md={6}>
                 <Card.Text>
