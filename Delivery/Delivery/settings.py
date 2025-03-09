@@ -51,7 +51,7 @@ INSTALLED_APPS = [
 
 ASGI_APPLICATION = "Delivery.asgi.application"
 
-CORS_ALLOWED_ORIGINS = ["https://localhost:5173", 'https://localhost:3000',
+CORS_ALLOWED_ORIGINS = ["https://localhost:5173", 'https://localhost:3000','http://localhost:3000',
     'https://127.0.0.1:8000', "https://127.0.0.1:5173", "http://localhost:5173"]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -152,8 +152,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-GDAL_LIBRARY_PATH = '/opt/local/lib/libgdal.dylib'
-GEOS_LIBRARY_PATH = '/opt/local/lib/libgeos_c.dylib'
+#mac os antigua
+#GDAL_LIBRARY_PATH = '/opt/homebrew/local/lib/libgdal.dylib'
+#GEOS_LIBRARY_PATH = '/opt/homebrew/local/lib/libgeos_c.dylib'
+
+GDAL_LIBRARY_PATH = '/opt/homebrew/Cellar/gdal/3.10.2_2/lib/libgdal.dylib'
+GEOS_LIBRARY_PATH = '/opt/homebrew/Cellar/geos/3.13.1/lib/libgeos_c.dylib'
 
 #Rest Framework 
 REST_FRAMEWORK = {
