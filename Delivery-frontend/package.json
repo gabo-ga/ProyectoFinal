@@ -15,8 +15,8 @@
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "dayjs": "^1.11.13",
-    "jspdf": "^2.5.2",
-    "jspdf-autotable": "^3.8.4",
+    "jspdf": "^3.0.0",
+    "jspdf-autotable": "^5.0.2",
     "jwt-decode": "^2.2.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.5",
@@ -44,7 +44,7 @@
     "globals": "^15.9.0",
     "jsdom": "^25.0.1",
     "msw": "^2.6.5",
-    "vite": "^5.4.1",
-    "vitest": "^2.1.5"
+    "vite": "^6.2.1",
+    "vitest": "^3.0.8"
   }
 }

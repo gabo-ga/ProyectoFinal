@@ -5,6 +5,10 @@ services:
     build:
       context: ./Delivery-frontend
       dockerfile: ./Dockerfile
+      args:
+        - VITE_GOOGLE_MAPS_API_KEY=${VITE_GOOGLE_MAPS_API_KEY}
+    env_file:
+      - ./.env
     environment:
       NODE_ENV: production
     ports:
