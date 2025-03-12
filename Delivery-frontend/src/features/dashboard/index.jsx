@@ -26,7 +26,7 @@ function Dashboard() {
           </Col>
           <Col xs={12} sm={6} className={styles.OrdersContainer}>
             <ActiveOrders title={"PEDIDOS EN CURSO"}></ActiveOrders>
-            {/*<CompletedOrders title={"PEDIDOS COMPLETADOS"}></CompletedOrders>*/}
+            <CompletedOrders title={"PEDIDOS COMPLETADOS"}></CompletedOrders>
             <ActiveVehicles title={"VEHICULOS ACTIVOS"}></ActiveVehicles>
           </Col>
         </Row>

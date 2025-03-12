@@ -25,7 +25,7 @@ function Map() {
   const [location, setLocation] = useState(null);
 
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: googleMapsApiKey,
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
   });
 
   // Obtener ubicaciones de vehículos
