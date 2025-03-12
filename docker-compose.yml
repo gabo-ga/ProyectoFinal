@@ -7,6 +7,9 @@ services:
       dockerfile: ./Dockerfile
       args:
         - VITE_GOOGLE_MAPS_API_KEY=${VITE_GOOGLE_MAPS_API_KEY}
+    volumes:
+      - ./Delivery-frontend:/app/src
+      - /app/node_modules
     env_file:
       - ./.env
     environment:

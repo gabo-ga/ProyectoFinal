@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import styles from "./index.module.css";
 import {
-  Button,
-  Alert,
   Card,
   Form,
   Container,
@@ -30,9 +28,8 @@ function Login() {
       await loginUser(username, password);
       navigate("/dashboard");
     } catch (error) {
-      console.error("Error al iniciar sesión:", error.message);
-      const errorDetail = error.message;
-      setErrorMessage(errorDetail);
+      console.error(error);
+      setErrorMessage("Usuario o contraseña incorrectos");
     }
   };
 
