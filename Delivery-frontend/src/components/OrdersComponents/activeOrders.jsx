@@ -53,7 +53,7 @@ function ActiveOrders(props) {
           <div className={styles.scrollWrapper}>
             <div className={styles.scrollContainer}>
               {orders.map((order, index) => (
-                <Col xs={12} md={5} lg={5} key={index}>
+                <Col xs={12} md={7} lg={4} key={index}>
                   <Link
                     to={`/orderdetails/${order.pedido_id}`}
                     className={styles.linkStyle}

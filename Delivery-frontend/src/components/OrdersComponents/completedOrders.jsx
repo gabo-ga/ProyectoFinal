@@ -41,14 +41,15 @@ function CompletedOrders(props) {
       <div className={styles.scrollWrapper}>
         <div className={styles.scrollContainer}>
           {orders.map((order, index) => (
+            <Col xs={12} md={7} lg={4} key={index}>
             <OrderCard
-              key={index}
               cliente={order.cliente_nombre}
               telefono={order.cliente_telefono}
               fecha={order.pedido_fecha}
               estado={order.pedido_estado}
               destino={order.pedido_direccion_destino}
             />
+          </Col>
           ))}
         </div>
       </div>
