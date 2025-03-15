@@ -59,10 +59,10 @@ export const fetchDriversWithActiveOrders = async () => {
 
 export const fetchActiveOrders = async (conductorId) => {
   try {
-    let url = "/api/pedidos/en-curso";
+    let url = "/api/pedidos/en-curso/?estado=pendiente";
 
     if(conductorId && conductorId !== 6){
-      url += `?conductor_id=${conductorId}`;
+      url += `&conductor_id=${conductorId}`;
     }
     const response = await axiosInstance.get(url);
     return response.data;
@@ -210,7 +210,7 @@ export const fetchUserById = async () => {
 
 export const fetchCompletedOrders = async () => {
   try {
-    const response = await axiosInstance.get('/api/pedidos/entregados/');
+    const response = await axiosInstance.get('/api/pedidos/en-curso/?estado=entregado');
     return response.data;
   } catch (error) {
     console.error('Error al cargar los pedidos completados:', error);
