@@ -48,7 +48,7 @@ function ActiveVehicles(props) {
         <div className={styles.scrollWrapper}>
           <div className={styles.scrollContainer}>
             {vehicles.map((vehicle, index) => (
-              <Col key={index}>
+              <Col key={index} xs={12} md={5} lg={5}>
                 <OrderCard
                   vehiculoNombre={vehicle.vehiculo_nombre}
                   tipo={vehicle.vehiculo_tipo}
