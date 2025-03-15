@@ -87,17 +87,6 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         conductores = obtener_conductores()
         return Response(conductores)
 
-
-#class ConductorViewSet(viewsets.ModelViewSet):
-#    queryset = Conductor.objects.all()
-#    serializer_class = ConductorSerializer
-    #permission_classes = [IsAuthenticated]
-#    def validate_pedido_por_conductor(conductor):
-#        pedidos_activos = Pedido.objects.filter(conductor=conductor, estado__in=['pendiente', 'en_ruta']).count()
-#        if pedidos_activos >= 4:
-#            raise ValidationError("El conductor ya tiene el máximo de 4 pedidos activos asignados.")
-    #accion personalizada para pedidos activos
-
 class ClienteViewSet(viewsets.ModelViewSet):
     """
     Un viewset para ver y editar instancias de Cliente.
@@ -115,12 +104,14 @@ class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.select_related('cliente', 'conductor', 'origen', 'destino', 'estado')
     serializer_class = PedidoSerializer
     permission_classes = [AllowAny] 
-    #action para pedidos en curso
+    #action para pedidos en curso o entregados o cancelados
     @action(detail=False, methods=['get'], url_path='en-curso')
     def pedidos_en_curso(self, request):
         try:
             conductor_id = request.query_params.get('conductor_id', None)
-            result = obtener_pedidos_en_curso(conductor_id=conductor_id)
+            estado = request.query_params.get('estado', None)
+            
+            result = obtener_pedidos_en_curso(conductor_id=conductor_id, estado=estado)
             return Response(result)
         except Exception as e:
             return Response({"error": str(e)}, status=500)

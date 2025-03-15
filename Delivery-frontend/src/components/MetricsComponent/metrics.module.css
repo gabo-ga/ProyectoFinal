@@ -1,33 +1,34 @@
+/*mobile first */
 .MetricsContainer {
     display: flex;
-    height: 13vh;
+    height: 15vh;           
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
     align-self: stretch;
     border-radius: 10px;
     background-color: #fff;
-    padding: 1rem;
+    padding: 1rem;        
 }
 
 .TextStyle {
     color: #34495e;
-    font-size: 0.90rem;
+    font-size: 0.90rem;    
     font-weight: 600;
     word-wrap: break-word;
     margin: 5px;
     margin-bottom: 0.40rem;
 }
 
-/* Desktop screens (576px and above) */
+/* Vista para escritorio */
 @media (min-width: 576px) {
     .MetricsContainer {
-        height: 15%;
-        padding: 1.5rem;
+        height: 15%;        
+        padding: 1.5rem;  
     }
 
     .TextStyle {
-        font-size: 1.5rem;
+        font-size: 1rem; 
         margin-bottom: 0.5rem;
     }
 }

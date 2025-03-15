@@ -34,7 +34,7 @@ function ActiveVehicles(props) {
   }
 
   return (
-    <Container fluid className="pb-4">
+    <Container fluid className="pb-3">
       <Row>
         <Col xs={12}>
           <h4 className={styles.TextStyle}>
