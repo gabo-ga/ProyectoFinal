@@ -130,23 +130,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
     def detalle_coordenadas(self, request):
         conductor_id = request.query_params.get('conductor_id', None)
         result = obtener_detalle_coordenadas(estado_id=1, conductor_id= conductor_id)
-        return Response(result)
-    #endpoint para contar pedidos cancelados
-    @action(detail=False, methods=['get'], url_path='count-cancelados')
-    def pedidos_cancelados(self, request):
-        try:
-            count = contar_pedidos_cancelados()
-            return Response({"count": count})
-        except Exception as e:
-            return Response({"error": str(e)}, status=500)
-    #endpoint para contar los pedidos entregados
-    @action(detail=False, methods=['get'], url_path='count-entregados')
-    def pedidos_entregados(self, request):
-        try:
-            count = contar_pedidos_entregados()
-            return Response({"count": count})
-        except Exception as e:
-            return Response({"error": str(e)}, status=500)
+        return Response(result)    
     
     @action(detail=False, methods=['post'], url_path='calcular-ruta-con-parada')
     def calcular_ruta_con_parada(self, request):
