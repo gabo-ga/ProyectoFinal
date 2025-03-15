@@ -19,7 +19,7 @@ function ActionBar({ label1, label2, label3, label4, label5 }) {
         <Col md={2} className={styles.hiddenOnXS}>
           {label4}
         </Col>
-        <Col className={styles.hiddenOnXS} xs={3} md={2}>
+        <Col xs={3} md={2}>
           {label5}
         </Col>
       </Row>
