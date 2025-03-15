@@ -18,7 +18,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 55vh;
+  height: 90%;
   gap: 15px;
   padding-bottom: 1rem;
 }
@@ -34,5 +34,8 @@
 @media (max-width: 575.98px) {
     .Body {
       overflow: scroll;
+    }
+    .MapContainer {
+      height: 60vh;
     }
   }
