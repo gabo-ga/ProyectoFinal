@@ -2,16 +2,17 @@
 import axiosInstance from '../axiosInstance';
 
 
-// Función para contar los pedidos en curso
-export const fetchPedidosEnCurso = async () => {
+// Función para contar los pedidos
+export const fetchPedidosEnCurso = async (estado = 1) => {
   try {
-    const response = await axiosInstance.get("/api/pedidos/count/?estado=1");
+    const response = await axiosInstance.get(`/api/pedidos/count/?estado=${estado}`);
     return response.data.count;
   } catch (error) {
     console.error("Error al obtener los pedidos en curso:", error);
     throw error;
   }
 };
+
 
 // Función para contar los vehículos
 export const fetchVehiculosDisponibles = async () => {
