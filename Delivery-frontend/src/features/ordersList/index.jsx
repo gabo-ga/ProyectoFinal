@@ -27,7 +27,7 @@ function OrdersHistory() {
         <Header></Header>
         <Container fluid className={styles.body}>
           <Row className="w-100">
-            <Col xs={7} md={9}>
+            <Col xs={6} md={9}>
               <h4>GESTION DE PEDIDOS</h4>
             </Col>
             <Col xs={2} md={1}>

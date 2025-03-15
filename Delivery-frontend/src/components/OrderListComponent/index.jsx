@@ -40,7 +40,7 @@ function Order({ onPedidosLoad }) {
         const success = await deletePedido(id);
         if (success) {
           alert("Pedido eliminado con éxito");
-          loadPedidos(); // Actualizar la lista de pedidos
+          loadPedidos();
         } else {
           alert("Error al eliminar el pedido");
         }
@@ -76,7 +76,7 @@ function Order({ onPedidosLoad }) {
   return (
     <Container fluid className={styles.container}>
       {pedidosFiltrados.map((pedido) => (
-        <Row key={pedido.ID} className="w-100">
+        <Row key={pedido.ID} className={styles.orders}>
           <Col md={2} className={styles.hideOnXS}>
             {pedido.ID}
           </Col>

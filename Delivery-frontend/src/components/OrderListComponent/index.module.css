@@ -26,6 +26,11 @@
     cursor: pointer;
 }
 
+.orders{
+    width: 100%;
+    gap: 10px;
+}
+
 @media (min-width: 768px) {
     .hiddenOnXS {
       display: block;
