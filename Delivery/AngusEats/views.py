@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import Distance
 from rest_framework import status, viewsets
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -14,9 +13,10 @@ from django.db import connection
 from django.core.exceptions import ValidationError
 from django.db.models import Count, Q
 from rest_framework.viewsets import ViewSet
+from django.utils.dateparse import parse_datetime
+from django.db.models import Sum, Avg
 #queries
-from .queries import (contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso, 
-                      obtener_pedidos_entregados, contar_pedidos_cancelados, contar_pedidos_entregados, 
+from .queries import (contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso,  
                       obtener_vehiculos_disponibles, obtener_detalle_coordenadas, obtener_conductores, obtener_detalle_pedidos, actualizar_estado_pedido)
 
 # Serializadores
@@ -243,6 +243,27 @@ class AnalisisPedidoViewSet(viewsets.ModelViewSet):
     queryset = AnalisisPedido.objects.all()
     serializer_class = AnalisisPedidoSerializer
     permission_classes = [AllowAny]  
+    
+    @action(detail=False, methods=['get'])
+    def rango_fechas(self, request):
+        fecha_inicio_str = request.query_params.get('fecha_inicio', None)
+        fecha_fin_str = request.query_params.get('fecha_fin', None)
+        
+        fecha_inicio = parse_datetime(fecha_inicio_str) if fecha_inicio_str else None
+        fecha_fin = parse_datetime(fecha_fin_str) if fecha_fin_str else None
+        
+        queryset = self.get_queryset()
+        if(fecha_inicio and fecha_fin):
+            queryset = queryset.filter(fecha_analisis__range=[fecha_inicio, fecha_fin])
+        elif fecha_inicio:
+            queryset = queryset.filter(fecha_analisis__gte=fecha_inicio)
+        elif fecha_fin:
+            queryset = queryset.filter(fecha_analisis__lte=fecha_fin)
+        
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    
     
 class UbicacionViewSet(viewsets.ModelViewSet):
     queryset = Ubicacion.objects.all()
