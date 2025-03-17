@@ -22,12 +22,12 @@
 
 .icons{
     width: 45%;
-    height: 45%;
+    height: 55%;
     cursor: pointer;
 }
 
 .orders{
-    width: 100%;
+    width: 110%;
     gap: 10px;
 }
 
