@@ -11,10 +11,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.db import connection
 from django.core.exceptions import ValidationError
-from django.db.models import Count, Q
 from rest_framework.viewsets import ViewSet
 from django.utils.dateparse import parse_datetime
-from django.db.models import Sum, Avg
 #queries
 from .queries import (contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso,  
                       obtener_vehiculos_disponibles, obtener_detalle_coordenadas, obtener_conductores, obtener_detalle_pedidos, actualizar_estado_pedido)
@@ -260,7 +258,12 @@ class AnalisisPedidoViewSet(viewsets.ModelViewSet):
         elif fecha_fin:
             queryset = queryset.filter(fecha_analisis__lte=fecha_fin)
         
-        serializer = self.get_serializer(queryset, many=True)
+        try:
+            ultimo_registro = queryset.latest('fecha_analisis')
+        except AnalisisPedido.DoesNotExist:
+            return Response({"error": "No se encontraron registros"}, status=404)
+        
+        serializer = self.get_serializer(ultimo_registro)
         return Response(serializer.data)
 
     
