@@ -77,19 +77,19 @@ function Order({ onPedidosLoad }) {
     <Container fluid className={styles.container}>
       {pedidosFiltrados.map((pedido) => (
         <Row key={pedido.ID} className={styles.orders}>
-          <Col md={2} className={styles.hiddenOnXS}>
+          <Col md={2} lg={2}className={styles.hiddenOnXS}>
             {pedido.ID}
           </Col>
-          <Col xs={4} md={3}>
+          <Col xs={4} md={3} lg={2}>
             {pedido.CLIENTE}
           </Col>
-          <Col xs={3} md={2}>
+          <Col xs={3} md={2} lg={2}>
             {pedido.ESTADO}
           </Col>
-          <Col md={2} className={styles.hiddenOnXS}>
+          <Col md={2} lg={3} className={styles.hiddenOnXS}>
             {pedido.DIRECCION_DESTINO}
           </Col>
-          <Col xs={4} md={2}>
+          <Col xs={4} md={2} lg={2}>
             <PencilSquare
               className={styles.icons}
               onClick={() => handleEdit(pedido.ID)}

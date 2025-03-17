@@ -5,7 +5,6 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 10px;
 }
 
 .row{
@@ -28,11 +27,17 @@
 
 .orders{
     width: 110%;
-    gap: 10px;
 }
 
 @media (min-width: 768px) {
     .hiddenOnXS {
       display: block;
+    }
+    .icons{
+        width: 40%;
+        height: 40%;
+    }
+    .orders{
+        width: 100%;
     }
   }

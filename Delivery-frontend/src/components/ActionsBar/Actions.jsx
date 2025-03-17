@@ -7,19 +7,19 @@ function ActionBar({ label1, label2, label3, label4, label5 }) {
   return (
     <Container fluid className={styles.container}>
       <Row className={styles.row}>
-        <Col md={2} className={styles.hiddenOnXS}>
+        <Col md={2} lg={2}className={styles.hiddenOnXS}>
           {label1}
         </Col>
-        <Col xs={4} md={3}>
+        <Col xs={4} md={2} lg={2}>
           {label2}
         </Col>
-        <Col xs={4} md={2}>
+        <Col xs={4} md={2} lg={2}>
           {label3}
         </Col>
-        <Col md={2} className={styles.hiddenOnXS}>
+        <Col md={2} lg={3} className={styles.hiddenOnXS}>
           {label4}
         </Col>
-        <Col xs={3} md={2}>
+        <Col xs={3} md={2} lg={3}>
           {label5}
         </Col>
       </Row>
