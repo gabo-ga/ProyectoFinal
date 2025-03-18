@@ -6,14 +6,23 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import styles from "./index.module.css";
+import { DateRangePicker } from 'react-date-range';
 
 function MetricsPage() {
   const [pedidosTotales, setPedidosTotales] = useState(0);
   const [pedidosEntregados, setPedidosEntregados] = useState(0);
   const [pedidosPendientes, setPedidosPendientes] = useState(0);
   const [tiempoPromedioEntrega, setTiempoPromedioEntrega] = useState(0);
-  const [kilometrosRecorridosTotales, setKilometrosRecorridosTotales] =
-    useState(0);
+  const [kilometrosRecorridosTotales, setKilometrosRecorridosTotales] = useState(0);
+  //para manejar fechas
+  const [range, setRange] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: 'selection'
+    }
+  ]);
+
 
   useEffect(() => {
     // Función para obtener los datos del endpoint
@@ -53,8 +62,16 @@ function MetricsPage() {
     <>
       <Header />
       <Container fluid className={styles.body}>
+      <Row className={styles.row}>
+        <DateRangePicker
+          onChange={item => setRange([item.selection])}
+          showSelectionPreview={true}
+          moveRangeOnFirstSelection={false}
+          months={1}
+          ranges={range}
+          direction="vertical"
+        ></DateRangePicker>
         {/* Primera fila de tarjetas */}
-        <Row className={styles.row}>
           <Col xs={12} md={4}>
             <Card>
               <Card.Body>
@@ -79,10 +96,6 @@ function MetricsPage() {
               </Card.Body>
             </Card>
           </Col>
-        </Row>
-
-        {/* Segunda fila de tarjetas */}
-        <Row className={styles.row}>
           <Col xs={12} md={6}>
             <Card>
               <Card.Body>
@@ -101,7 +114,7 @@ function MetricsPage() {
           </Col>
         </Row>
       </Container>
-      <Footer />
+      {/*<Footer />*/}
     </>
   );
 }

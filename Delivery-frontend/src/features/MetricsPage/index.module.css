@@ -1,7 +1,7 @@
 .body{
     background-color: #ecf0f1;
     height: 80vh;
-    padding: 5rem 8rem;
+    padding: 2rem 2rem;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -12,4 +12,38 @@
 .row{
     width: 100%;
     margin-bottom: 1.5rem;
+}
+
+:global(.rdrDefinedRangesWrapper){
+    display: none;
+}
+
+:global(.rdrDateDisplay){
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+:global(.rdrCalendarWrapper.rdrDateRangeWrapper){
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+}
+
+:global(.rdrMonthAndYearWrapper > button){
+  display: none;
+}
+
+:global(.rdrWeekDays){
+  display: flex;
+  justify-content: space-around;
+}
+
+:global(.rdrDays){
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  
 }
