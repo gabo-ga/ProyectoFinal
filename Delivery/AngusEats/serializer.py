@@ -208,6 +208,7 @@ class AnalisisPedidoSerializer(serializers.ModelSerializer):
             'id',
             'pedidos_totales',
             'pedidos_entregados',
+            'pedidos_cancelados',
             'tiempo_promedio_entrega_minutos',
             'kilometros_recorridos_totales',
             'fecha_analisis',

@@ -262,3 +262,28 @@ export const crearUbicacion = async (direccion, lat, lng) => {
   }
 };
 
+export const fetchAnalisisPedidosPorFecha = async (fechaInicio = null, fechaFin = null) => {
+  try {
+    let url = '/api/analisis-pedido/rango_fechas/';
+    const params = new URLSearchParams();
+
+    if (fechaInicio) {
+      params.append('fecha_inicio', fechaInicio);
+    }
+    if (fechaFin) {
+      params.append('fecha_fin', fechaFin);
+    }
+    
+    const queryString = params.toString();
+    if (queryString) {
+      url += `?${queryString}`;
+    }
+
+    const response = await axiosInstance.get(url);
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener análisis de pedidos:', error);
+    throw new Error('Error al obtener análisis de pedidos por fecha');
+  }
+};
+
