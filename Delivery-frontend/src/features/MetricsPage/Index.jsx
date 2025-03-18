@@ -63,7 +63,7 @@ function MetricsPage() {
       <Header />
       <Container fluid className={styles.body}>
         <Row className={styles.row}>
-          <Col xs={12} md={4} lg={4}>
+          <Col xs={12} md={4} lg={5}>
             <DateRangePicker
               onChange={handleRangeChange}
               showSelectionPreview={true}
@@ -73,7 +73,7 @@ function MetricsPage() {
               direction="vertical"
             />
           </Col>
-          <Col xs={12} md={4} lg={4} className={styles.metricsStyle}>
+          <Col xs={12} md={4} lg={3} className={styles.metricsStyle}>
             <Card>
               <Card.Body>
                 <Card.Text>Pedidos totales:</Card.Text>
