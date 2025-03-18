@@ -63,6 +63,7 @@ function MetricsPage() {
       <Header />
       <Container fluid className={styles.body}>
       <Row className={styles.row}>
+        <Col xs={12} md={4} lg={4}>
         <DateRangePicker
           onChange={item => setRange([item.selection])}
           showSelectionPreview={true}
@@ -71,40 +72,40 @@ function MetricsPage() {
           ranges={range}
           direction="vertical"
         ></DateRangePicker>
-        {/* Primera fila de tarjetas */}
-          <Col xs={12} md={4}>
+        </Col>
+          <Col xs={12} md={4} lg={4} className={styles.metricsStyle}>
             <Card>
               <Card.Body>
                 <Card.Text>Pedidos totales:</Card.Text>
                 <Card.Title>{pedidosTotales}</Card.Title>
               </Card.Body>
             </Card>
-          </Col>
-          <Col xs={12} md={4}>
             <Card>
               <Card.Body>
                 <Card.Text>Pedidos entregados:</Card.Text>
                 <Card.Title>{pedidosEntregados}</Card.Title>
               </Card.Body>
             </Card>
-          </Col>
-          <Col xs={12} md={4}>
             <Card>
+              <Card.Body>
+                <Card.Text>Promedio de precio:</Card.Text>
+                <Card.Title>{pedidosEntregados}</Card.Title>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col xs={12} md={4} lg={4} className={styles.metricsStyle}>
+          <Card>
               <Card.Body>
                 <Card.Text>Pedidos pendientes:</Card.Text>
                 <Card.Title>{pedidosPendientes}</Card.Title>
               </Card.Body>
             </Card>
-          </Col>
-          <Col xs={12} md={6}>
             <Card>
               <Card.Body>
                 <Card.Text>Tiempo promedio de entrega (minutos):</Card.Text>
                 <Card.Title>{tiempoPromedioEntrega}</Card.Title>
               </Card.Body>
             </Card>
-          </Col>
-          <Col xs={12} md={6}>
             <Card>
               <Card.Body>
                 <Card.Text>Kilómetros recorridos totales:</Card.Text>
