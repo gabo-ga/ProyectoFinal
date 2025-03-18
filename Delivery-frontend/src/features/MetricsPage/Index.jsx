@@ -7,72 +7,72 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import styles from "./index.module.css";
 import { DateRangePicker } from 'react-date-range';
+import { fetchAnalisisPedidosPorFecha } from "../../api/apiService";
 
 function MetricsPage() {
   const [pedidosTotales, setPedidosTotales] = useState(0);
   const [pedidosEntregados, setPedidosEntregados] = useState(0);
-  const [pedidosPendientes, setPedidosPendientes] = useState(0);
   const [tiempoPromedioEntrega, setTiempoPromedioEntrega] = useState(0);
   const [kilometrosRecorridosTotales, setKilometrosRecorridosTotales] = useState(0);
-  //para manejar fechas
+  const [pedidosCancelados, setPedidosCancelados] = useState(0);
+  
   const [range, setRange] = useState([
     {
-      startDate: new Date(),
+      startDate: new Date(new Date().setDate(new Date().getDate() - 7)),
       endDate: new Date(),
       key: 'selection'
     }
   ]);
 
-
   useEffect(() => {
-    // Función para obtener los datos del endpoint
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8000/api/analisis-pedido"
-        );
-        const data = await response.json();
+        // Format dates correctly for API
+        const formatDate = (date) => {
+          const d = new Date(date);
+          return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        };
 
-        console.log("Datos recibidos del endpoint:", data);
+        const data = await fetchAnalisisPedidosPorFecha({
+          fechaInicio: formatDate(range[0].startDate),
+          fechaFin: formatDate(range[0].endDate)
+        });
 
-        // Si data es un array, obtenemos el primer elemento
-        const record = Array.isArray(data) ? data[0] : data;
-
-        // Actualizar las variables de estado con los datos recibidos
-        setPedidosTotales(record.pedidos_totales || 0);
-        setPedidosEntregados(record.pedidos_entregados || 0);
-        setTiempoPromedioEntrega(record.tiempo_promedio_entrega_minutos || 0);
+        setPedidosTotales(data.pedidos_totales || 0);
+        setPedidosEntregados(data.pedidos_entregados || 0);
+        setTiempoPromedioEntrega(data.tiempo_promedio_entrega_minutos || 0);
         setKilometrosRecorridosTotales(
-          parseFloat(record.kilometros_recorridos_totales) || 0
+          parseFloat(data.kilometros_recorridos_totales) || 0
         );
+        setPedidosCancelados(data.pedidos_cancelados || 0);
 
-        // Calcular pedidos pendientes
-        const pendientes =
-          (record.pedidos_totales || 0) - (record.pedidos_entregados || 0);
-        setPedidosPendientes(pendientes);
       } catch (error) {
-        console.error("Error al obtener los datos del endpoint:", error);
+        console.error("Error al obtener los datos:", error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [range]); // Add range as dependency
+
+  const handleRangeChange = (item) => {
+    setRange([item.selection]);
+  };
 
   return (
     <>
       <Header />
       <Container fluid className={styles.body}>
-      <Row className={styles.row}>
-        <Col xs={12} md={4} lg={4}>
-        <DateRangePicker
-          onChange={item => setRange([item.selection])}
-          showSelectionPreview={true}
-          moveRangeOnFirstSelection={false}
-          months={1}
-          ranges={range}
-          direction="vertical"
-        ></DateRangePicker>
-        </Col>
+        <Row className={styles.row}>
+          <Col xs={12} md={4} lg={4}>
+            <DateRangePicker
+              onChange={handleRangeChange}
+              showSelectionPreview={true}
+              moveRangeOnFirstSelection={false}
+              months={1}
+              ranges={range}
+              direction="vertical"
+            />
+          </Col>
           <Col xs={12} md={4} lg={4} className={styles.metricsStyle}>
             <Card>
               <Card.Body>
@@ -96,8 +96,8 @@ function MetricsPage() {
           <Col xs={12} md={4} lg={4} className={styles.metricsStyle}>
           <Card>
               <Card.Body>
-                <Card.Text>Pedidos pendientes:</Card.Text>
-                <Card.Title>{pedidosPendientes}</Card.Title>
+                <Card.Text>Pedidos cancelados:</Card.Text>
+                <Card.Title>{pedidosCancelados}</Card.Title>
               </Card.Body>
             </Card>
             <Card>

@@ -262,7 +262,7 @@ export const crearUbicacion = async (direccion, lat, lng) => {
   }
 };
 
-export const fetchAnalisisPedidosPorFecha = async (fechaInicio = null, fechaFin = null) => {
+export const fetchAnalisisPedidosPorFecha = async ({ fechaInicio, fechaFin } = {}) => {
   try {
     let url = '/api/analisis-pedido/rango_fechas/';
     const params = new URLSearchParams();
