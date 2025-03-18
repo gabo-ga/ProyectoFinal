@@ -142,6 +142,7 @@ class HistorialGPS(models.Model):
 class AnalisisPedido(models.Model):
     pedidos_totales = models.IntegerField()
     pedidos_entregados = models.IntegerField()
+    pedidos_cancelados = models.IntegerField(default=0)
     tiempo_promedio_entrega_minutos = models.IntegerField(null=True, blank=True)
     kilometros_recorridos_totales = models.DecimalField(max_digits=10, decimal_places=2)
     fecha_analisis = models.DateTimeField(auto_now_add=True)
