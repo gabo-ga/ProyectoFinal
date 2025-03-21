@@ -3,11 +3,11 @@ import styles from "./footer.module.css";
 
 function Footer() {
   return (
-    <>
+    <footer className={styles.FooterStyle}>
       <Container fluid className={styles.FooterStyle}>
-        <h2>Proyecto de Grado 2/24</h2>
+        
       </Container>
-    </>
+    </footer>
   );
 }
 

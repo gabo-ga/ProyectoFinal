@@ -1,7 +1,7 @@
 .FooterStyle {
     display: flex;
     width: 100%;
-    height: 10vh;         
+    height: 7vh;         
     justify-content: center;
     align-items: center;
     background-color: #1abc9c;
@@ -12,7 +12,7 @@
 /*vista de escritorio */
 @media (min-width: 576px) {
     .FooterStyle {
-        height: 15vh;         
+        height: 12vh;         
         padding: 2rem;       
     }
 }

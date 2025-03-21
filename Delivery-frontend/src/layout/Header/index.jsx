@@ -10,7 +10,7 @@ import styles2 from "../../components/LogoutComponent/logout.module.css";
 function Header() {
   const [showProfile, setShowProfile] = useState(false);
   return (
-    <>
+    <header>
       <Container fluid className={styles.HeaderStyles}>
         <Row className={styles.row}>
           <Col xs={12} md={6}></Col>
@@ -31,7 +31,7 @@ function Header() {
           <Logout onClose={() => setShowProfile(false)} />
         </div>
       )}
-    </>
+    </header>
   );
 }
 
