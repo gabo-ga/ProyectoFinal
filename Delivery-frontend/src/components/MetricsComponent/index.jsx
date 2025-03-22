@@ -1,22 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Container from "react-bootstrap/esm/Container";
-import Row from "react-bootstrap/esm/Row";
-import Col from "react-bootstrap/esm/Col";
-import styles from "./metrics.module.css";
 import {
   fetchPedidosEnCurso,
   fetchVehiculosDisponibles,
 } from "../../api/apiService";
 
 function Metrics() {
-  return (
-    <Container className={styles.MetricsContainer}>
-      <MetricsBody />
-    </Container>
-  );
-}
-
-function MetricsBody() {
   const [pedidosEnCurso, setPedidosEnCurso] = useState(0);
   const [pedidosCompletados, setPedidosCompletados] = useState(0);
   const [pedidosCancelados, setPedidosCancelados] = useState(0);
@@ -41,29 +29,24 @@ function MetricsBody() {
 
     fetchData();
   }, []);
-
   return (
-    <Row>
-      <Col xs={12} md={6}>
-        <h3 className={styles.TextStyle}>Pedidos en curso: {pedidosEnCurso}</h3>
-      </Col>
-      <Col xs={12} md={6}>
-        <h3 className={styles.TextStyle}>
+    <section className="h-auto w-full rounded-lg bg-white p-2">
+      <div className="grid grid-cols-2 gap-1">
+        <p className="text-xs font-semibold break-words m-0 lg:text-sm">
+          Pedidos en curso: {pedidosEnCurso}</p>
+        <p className="text-xs font-semibold break-words m-0 lg:text-sm">
           Vehículos Disponibles: {vehiculosDisponibles}
-        </h3>
-      </Col>
-      <Col xs={12} md={6}>
-        <h3 className={styles.TextStyle}>
+        </p>
+        <p className="text-xs font-semibold break-words m-0 lg:text-sm">
           Pedidos completados: {pedidosCompletados}
-        </h3>
-      </Col>
-      <Col xs={12} md={6}>
-        <h3 className={styles.TextStyle}>
+        </p>
+        <p className="text-xs font-semibold break-words m-0 lg:text-sm">
           Pedidos cancelados: {pedidosCancelados}
-        </h3>
-      </Col>
-    </Row>
+        </p>
+      </div>
+    </section>
   );
 }
+
 
 export default Metrics;

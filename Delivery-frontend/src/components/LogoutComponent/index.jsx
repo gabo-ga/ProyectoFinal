@@ -1,8 +1,7 @@
-import Card from "react-bootstrap/esm/Card";
-import styles from "./logout.module.css";
+
 import { XLg } from "react-bootstrap-icons";
-import React, { useEffect, useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, {useContext } from "react";
+import { Link} from "react-router-dom";
 import { AuthContext } from "../../AuthContext";
 
 function Logout({ onClose }) {
