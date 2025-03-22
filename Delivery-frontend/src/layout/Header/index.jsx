@@ -12,7 +12,7 @@ const ProfileIcon = ({ onClick }) => (
 
 // Logout Modal
 const LogoutModal = ({ onClose }) => (
-  <div className="absolute right-24 top-12 lg:top-14 lg:right-50 z-50">
+  <div className="absolute right-38 top-12 lg:top-14 lg:right-44 z-50">
     <Logout onClose={onClose} />
   </div>
 );

@@ -20,28 +20,31 @@ function Logout({ onClose }) {
     : null;
 
   return (
-    <Card className={styles.cardStyle}>
-      <Card.Body className={styles.cardContainer}>
-        <div className={styles.closeContainer}>
-          <XLg className={styles.closeButton} onClick={onClose}>
-            &times;
-          </XLg>
-        </div>
-        <Card.Title className={styles.textStyle}>
-          {user ? `Hola ${username}` : "Cargando..."}
-        </Card.Title>
-        <Card.Text className={styles.textStyle}>
-          <Link to="/user">Configuracion</Link>{" "}
-        </Card.Text>
-        <Card.Text
-          className={styles.textStyle}
+    
+    <div className="absolute z-50">
+      <div className="bg-[#1abc9c] w-38 flex flex-col fixed rounded-lg p-3 lg:w-44">
+        <div className="flex flex-col">
+        <div className="flex justify-end">
+            <XLg 
+              className="cursor-pointer" 
+              onClick={onClose}
+            />
+          </div>
+          <p className="text-white mb-0 p-1 text-md lg:text-xl">
+            <strong>{user ? `Hola ${username}` : "Cargando..."}</strong>
+          </p>
+          <p className="text-white mb-0 p-1 text-sm lg:text-md">
+          <Link to="/user">Configuracion</Link>
+        </p>
+        <p
+          className="text-white mb-0 p-1 cursor-pointer text-sm lg:text-md"
           onClick={handleLogout}
-          style={{ cursor: "pointer" }}
         >
           Cerrar Sesión
-        </Card.Text>
-      </Card.Body>
-    </Card>
+        </p>
+        </div>
+      </div>
+      </div>
   );
 }
 
