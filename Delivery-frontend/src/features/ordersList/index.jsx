@@ -1,7 +1,6 @@
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
 import styles from "./index.module.css";
-import Col from "react-bootstrap/esm/Col";
 import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
 import AddButton from "../../components/AddButton/button";
@@ -26,20 +25,15 @@ function OrdersHistory() {
       <FilterProvider>
         <Header></Header>
         <Container fluid className={styles.body}>
-          <Row className="w-100">
-            <Col xs={6} md={9}>
-              <h4>GESTION DE PEDIDOS</h4>
-            </Col>
-            <Col xs={2} md={1}>
+          <div className="w-full grid grid-cols-2">
+              <p className="flex self-end text-md font-bold m-0 lg:text-xl">GESTION DE PEDIDOS</p>
+            <div className="flex justify-end h-auto gap-2 lg:gap-4">
               <FilterButton onFiltrar={handleFiltroChange}></FilterButton>
-            </Col>
-            <Col xs={2} md={1}>
               <DownloadButton data={pedidos}></DownloadButton>
-            </Col>
-            <Col xs={2} md={1}>
               <AddButton redirectTo="/addorder"></AddButton>
-            </Col>
-          </Row>
+            </div>
+          </div>
+          
           <Row className={styles.row}>
             <ActionBar
               label1="ID"
