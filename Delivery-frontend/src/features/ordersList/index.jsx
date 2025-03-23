@@ -24,7 +24,8 @@ function OrdersHistory() {
     <>
       <FilterProvider>
         <Header></Header>
-        <Container fluid className={styles.body}>
+        <div className="bg-[#ecf0f1] h-screen p-4 flex flex-col items-start gap-2 flex-shrink-0">
+          {/*Gestion de pedidos y botones*/}
           <div className="w-full grid grid-cols-2">
               <p className="flex self-end text-md font-bold m-0 lg:text-xl">GESTION DE PEDIDOS</p>
             <div className="flex justify-end h-auto gap-2 lg:gap-4">
@@ -33,8 +34,8 @@ function OrdersHistory() {
               <AddButton redirectTo="/addorder"></AddButton>
             </div>
           </div>
+          {/*barra de titulos*/}
           
-          <Row className={styles.row}>
             <ActionBar
               label1="ID"
               label2="CLIENTE"
@@ -43,8 +44,9 @@ function OrdersHistory() {
               label5="ACCIONES"
             ></ActionBar>
             <Order filtros={filtros} onPedidosLoad={setPedidos}></Order>
-          </Row>
-        </Container>
+          
+        
+        </div>
         {/*<Footer></Footer>*/}
       </FilterProvider>
     </>
