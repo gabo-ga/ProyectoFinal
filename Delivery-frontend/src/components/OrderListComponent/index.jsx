@@ -80,22 +80,22 @@ function Order({ onPedidosLoad }) {
           <div className="hidden md:block lg:block">
             {pedido.ID}
           </div>
-          <div className="">
+          <div className="text-sm lg:text-base">
             {pedido.CLIENTE}
           </div>
-          <div>
+          <div className="text-sm lg:text-base">
             {pedido.ESTADO}
           </div>
           <div className={styles.hiddenOnXS}>
             {pedido.DIRECCION_DESTINO}
           </div>
-          <div className="grid grid-cols-2">
+          <div className="grid grid-cols-2 lg:grid-cols-3">
             <PencilSquare
-              className="size-8"
+              className="size-7 lg:size-10"
               onClick={() => handleEdit(pedido.ID)}
             />
             <Trash
-              className="size-8"
+              className="size-7 lg:size-10"
               onClick={() => handleDelete(pedido.ID)}
             />
           </div>
