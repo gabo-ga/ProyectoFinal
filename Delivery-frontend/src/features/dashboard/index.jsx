@@ -17,20 +17,21 @@ function Dashboard() {
   return (
     <>
       <Header></Header>
-      <Container fluid className={styles.Body}>
-        <Row className={styles.BodyContainer}>
-          <Col xs={12} sm={6} className={styles.MapContainer}>
+      <main className="bg-[#ecf0f1] h-auto p-4 gap-2 flex flex-col">
+        <section className="grid grid-rows-7 gap-2 h-auto">
             <Map></Map>
             <Metrics></Metrics>
             <ButtonsContainer></ButtonsContainer>
-          </Col>
-          <Col xs={12} sm={6} className={styles.OrdersContainer}>
+            </section>
+            <section>
+          
             <ActiveOrders title={"PEDIDOS EN CURSO"}></ActiveOrders>
             <CompletedOrders title={"PEDIDOS COMPLETADOS"}></CompletedOrders>
             <ActiveVehicles title={"VEHICULOS ACTIVOS"}></ActiveVehicles>
-          </Col>
-        </Row>
-      </Container>
+            </section>
+        
+      
+      </main>
       <Footer></Footer>
     </>
   );

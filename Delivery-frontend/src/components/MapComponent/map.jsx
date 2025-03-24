@@ -16,7 +16,6 @@ import {
 } from "../../api/socketService";
 
 function Map() {
-  const containerStyle = { width: "100%", height: "100%" };
   const center = { lat: -17.3895, lng: -66.1568 };
 
   const [vehiculos, setVehiculos] = useState([]);
@@ -159,7 +158,7 @@ function Map() {
   }
 
   return (
-    <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={12}>
+    <GoogleMap mapContainerClassName="w-full h-full rounded-lg overflow-hidden shadow-lg grid row-span-5" center={center} zoom={12}>
       {routes.map((routeObj, index) => (
         <DirectionsRenderer
           key={index}
@@ -182,6 +181,7 @@ function Map() {
         />
       )}
     </GoogleMap>
+  
   );
 }
 
