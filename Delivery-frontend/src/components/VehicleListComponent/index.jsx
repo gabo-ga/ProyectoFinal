@@ -44,7 +44,7 @@ function Vehicles() {
   return (
     <section className="bg-white rounded-lg flex w-full flex-col">
       {vehiculos.map((vehiculo, index) => (
-        <div className="grid grid-cols-3 p-2 lg:grid-cols-5">
+        <div className="grid grid-cols-3 p-2 md:grid-cols-5 lg:grid-cols-5">
           <div className="hidden md:block lg:block">
             {index + 1}
           </div>
@@ -59,14 +59,12 @@ function Vehicles() {
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-3">
             <PencilSquare
-              className="size-7 lg:size-10"
+              className="size-7 lg:size-10 cursor-pointer"
               onClick={() => handleEdit(vehiculo)}
-              style={{ cursor: "pointer", marginRight: "10px" }}
             />
             <Trash
-              className="size-7 lg:size-10"
+              className="size-7 lg:size-10 cursor-pointer"
               onClick={() => handleDelete(vehiculo)}
-              style={{ cursor: "pointer" }}
             />
           </div>
         </div>
