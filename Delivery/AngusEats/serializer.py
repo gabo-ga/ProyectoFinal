@@ -43,9 +43,9 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'correo', 
             'rol', 
             'fecha_creacion', 
-            'telefono'
-            'password'
-            'confirm_password'
+            'telefono',
+            'password',
+            'confirm_password',
         ]
         read_only_fields = ['fecha_creacion']
 

@@ -101,7 +101,6 @@ function Order({ onPedidosLoad }) {
           </div>
         </div>
       ))}
-    
     </section>
   );
 }

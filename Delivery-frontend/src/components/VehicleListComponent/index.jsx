@@ -44,12 +44,11 @@ function Vehicles() {
   };
 
   return (
-    <Container fluid className={styles.container}>
-      {/* Datos de los vehículos */}
+    <section className="bg-white rounded-lg flex w-full flex-col">
       {vehiculos.map((vehiculo, index) => (
-        <Row key={vehiculo.placa} className="w-100">
+        <div  className="grid grid-cols-3 p-2 lg:grid-cols-5">
           <Col md={2} className={styles.hideOnXS}>
-            {index + 1} {/* Puedes usar un campo de ID si está disponible */}
+            {index + 1}
           </Col>
           <Col xs={4} md={3}>
             {vehiculo.vehiculo_nombre}
@@ -72,9 +71,10 @@ function Vehicles() {
               style={{ cursor: "pointer" }}
             />
           </Col>
-        </Row>
+        </div>
       ))}
-    </Container>
+    
+    </section>
   );
 }
 
