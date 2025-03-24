@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Col, Container, Row } from "react-bootstrap";
-import styles from "./index.module.css";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import { fetchPedidos, deletePedido } from "../../api/apiService.js";
@@ -86,7 +84,7 @@ function Order({ onPedidosLoad }) {
           <div className="text-sm lg:text-base">
             {pedido.ESTADO}
           </div>
-          <div className={styles.hiddenOnXS}>
+          <div className="hidden md:block lg:block">
             {pedido.DIRECCION_DESTINO}
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-3">

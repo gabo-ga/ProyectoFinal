@@ -1,7 +1,5 @@
 // src/components/Vehicles.js
 import React, { useEffect, useState } from "react";
-import { Col, Container, Row } from "react-bootstrap";
-import styles from "./index.module.css";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import { fetchActiveVehicles, deleteVehiculo } from "../../api/apiService.js";
@@ -46,31 +44,31 @@ function Vehicles() {
   return (
     <section className="bg-white rounded-lg flex w-full flex-col">
       {vehiculos.map((vehiculo, index) => (
-        <div  className="grid grid-cols-3 p-2 lg:grid-cols-5">
-          <Col md={2} className={styles.hideOnXS}>
+        <div className="grid grid-cols-3 p-2 lg:grid-cols-5">
+          <div className="hidden md:block lg:block">
             {index + 1}
-          </Col>
-          <Col xs={4} md={3}>
+          </div>
+          <div className="text-sm lg:text-base">
             {vehiculo.vehiculo_nombre}
-          </Col>
-          <Col xs={3} md={2}>
+          </div>
+          <div className="text-sm lg:text-base">
             {vehiculo.vehiculo_tipo}
-          </Col>
-          <Col md={2} className={styles.hideOnXS}>
-            {vehiculo.placa}
-          </Col>
-          <Col xs={3} md={2}>
+          </div>
+          <div className="hidden md:block lg:block">
+            {vehiculo.vehiculo_placa}
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-3">
             <PencilSquare
-              className={styles.icons}
+              className="size-7 lg:size-10"
               onClick={() => handleEdit(vehiculo)}
               style={{ cursor: "pointer", marginRight: "10px" }}
             />
             <Trash
-              className={styles.icons}
+              className="size-7 lg:size-10"
               onClick={() => handleDelete(vehiculo)}
               style={{ cursor: "pointer" }}
             />
-          </Col>
+          </div>
         </div>
       ))}
     
