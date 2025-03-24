@@ -74,34 +74,35 @@ function Order({ onPedidosLoad }) {
   }
 
   return (
-    <Container fluid className={styles.container}>
+    <section className="bg-white rounded-lg flex w-full flex-col">
       {pedidosFiltrados.map((pedido) => (
-        <Row key={pedido.ID} className={styles.orders}>
-          <Col md={2} lg={2}className={styles.hiddenOnXS}>
+        <div key={pedido.ID} className="grid grid-cols-3 p-2 lg:grid-cols-5">
+          <div className="hidden md:block lg:block">
             {pedido.ID}
-          </Col>
-          <Col xs={4} md={3} lg={2}>
+          </div>
+          <div className="">
             {pedido.CLIENTE}
-          </Col>
-          <Col xs={3} md={2} lg={2}>
+          </div>
+          <div>
             {pedido.ESTADO}
-          </Col>
-          <Col md={2} lg={3} className={styles.hiddenOnXS}>
+          </div>
+          <div className={styles.hiddenOnXS}>
             {pedido.DIRECCION_DESTINO}
-          </Col>
-          <Col xs={4} md={2} lg={2}>
+          </div>
+          <div className="grid grid-cols-2">
             <PencilSquare
-              className={styles.icons}
+              className="size-8"
               onClick={() => handleEdit(pedido.ID)}
             />
             <Trash
-              className={styles.icons}
+              className="size-8"
               onClick={() => handleDelete(pedido.ID)}
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       ))}
-    </Container>
+    
+    </section>
   );
 }
 
