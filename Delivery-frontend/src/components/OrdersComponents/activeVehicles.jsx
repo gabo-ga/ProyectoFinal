@@ -69,17 +69,17 @@ function OrderCard({
   conductorTelefono,
 }) {
   return (
-    <Card className="w-48 p-2 lg:w-52">
-            <Card.Body className="flex w-ato flex-col p-2 items-start gap-1 break-words overflow-hidden truncate">
-              <Card.Text className="text-xs font-semibold leading-normal m-0">Vehiculo: {vehiculoNombre}</Card.Text>
-              <Card.Text className="text-xs font-semibold leading-normal m-0 truncate break-words">
+    <Card className="w-48 p-2 lg:w-54">
+            <Card.Body className="flex w-auto flex-col p-2 items-start gap-1 break-words overflow-hidden truncate">
+              <Card.Text className="text-xs font-semibold leading-normal m-0 lg:text-sm">Vehiculo: {vehiculoNombre}</Card.Text>
+              <Card.Text className="text-xs font-semibold leading-normal m-0 truncate break-words lg:text-sm">
                 Tipo: {tipo}
               </Card.Text>
-              <Card.Text className="text-xs font-semibold leadng-normal m-0 truncate break-words">
+              <Card.Text className="text-xs font-semibold leadng-normal m-0 truncate break-words lg:text-sm">
                 Placa: {placa}
               </Card.Text>
-              <Card.Text className="text-xs font-semibold leading-normal m-0  truncate break-words">Conductor: {conductorNombre}</Card.Text>
-              <Card.Text className="text-xs font-semibold leading-normal m-0 truncate break-words">Teléfono: {conductorTelefono}</Card.Text>
+              <Card.Text className="text-xs font-semibold leading-normal m-0  truncate break-words lg:text-sm">Conductor: {conductorNombre}</Card.Text>
+              <Card.Text className="text-xs font-semibold leading-normal m-0 truncate break-words lg:text-sm">Teléfono: {conductorTelefono}</Card.Text>
             </Card.Body>
           </Card>
   );

@@ -61,17 +61,17 @@ function CompletedOrders(props) {
 
 function OrderCard({ cliente, telefono, fecha, estado, destino }) {
   return (
-     <Card className="w-48 p-2">
+     <Card className="w-48 p-2 lg:w-54">
             <Card.Body className="flex w-ato flex-col p-2 items-start gap-1 break-words overflow-hidden truncate">
-              <Card.Text className="text-xs font-semibold leading-normal m-0">Cliente: {cliente}</Card.Text>
-              <Card.Text className="text-xs font-semibold leading-normal m-0 truncate break-words">
+              <Card.Text className="text-xs font-semibold leading-normal m-0 lg:text-sm">Cliente: {cliente}</Card.Text>
+              <Card.Text className="text-xs font-semibold leading-normal m-0 truncate break-words lg:text-sm">
                 Teléfono: {telefono}
               </Card.Text>
-              <Card.Text className="text-xs font-semibold leadng-normal m-0 truncate break-words">
+              <Card.Text className="text-xs font-semibold leadng-normal m-0 truncate break-words lg:text-sm">
                 Fecha del pedido: {fecha}
               </Card.Text>
-              <Card.Text className="text-xs font-semibold leading-normal m-0  truncate break-words">Estado: {estado}</Card.Text>
-              <Card.Text className="text-xs font-semibold leading-normal m-0 truncate break-words">Destino: {destino}</Card.Text>
+              <Card.Text className="text-xs font-semibold leading-normal m-0  truncate break-words lg:text-sm">Estado: {estado}</Card.Text>
+              <Card.Text className="text-xs font-semibold leading-normal m-0 truncate break-words lg:text-sm">Destino: {destino}</Card.Text>
             </Card.Body>
           </Card>
   );
