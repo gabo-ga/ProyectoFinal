@@ -1,8 +1,6 @@
-import styles from "./index.module.css";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
 import Map from "../../components/MapComponent/map";
-
 import ActiveOrders from "../../components/OrdersComponents/activeOrders";
 import ButtonsContainer from "../../components/ButtonsComponent/buttons";
 import Metrics from "../../components/MetricsComponent";

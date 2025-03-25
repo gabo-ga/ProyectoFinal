@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card } from "react-bootstrap";
-import styles from "./orders.module.css";
+import {  Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { fetchCompletedOrders } from "../../api/apiService";
 
