@@ -28,52 +28,52 @@ function CompletedOrders(props) {
   if (error) return <p>{error}</p>;
 
   return (
-    <Container fluid>
-      <Row>
-        <Col xs={12}>
-          <h4 className={styles.TextStyle}>
-            <Link to="/ordershistory" className={styles.TextStyle}>
-              {props.title}
-            </Link>
-          </h4>
-        </Col>
-      </Row>
-      <div className={styles.scrollWrapper}>
-        <div className={styles.scrollContainer}>
-          {orders.map((order, index) => (
-            <Col xs={12} md={7} lg={4} key={index}>
-            <OrderCard
-              cliente={order.cliente_nombre}
-              telefono={order.cliente_telefono}
-              fecha={order.pedido_fecha}
-              estado={order.pedido_estado}
-              destino={order.pedido_direccion_destino}
-            />
-          </Col>
-          ))}
-        </div>
-      </div>
-    </Container>
+    <div className="flex h-full w-full flex-col">
+                <h4 className="font-semibold flex items-center">
+                  <Link to="/ordershistory" className="text-xs text-gray-800 hover:text-gray-600">
+                    {props.title}
+                  </Link>
+                </h4>
+            <div className="flex-1 overflow-y-hidden overflow-x-auto pb-2">
+              <div className="flex flex-nowrap h-full w-auto gap-4">
+                
+                  {orders.map((order) => (
+                    <div key={order.pedido_id} className="flex-none w-auto">
+                      <Link
+                        to={`/orderdetails/${order.pedido_id}`}
+                        className="block text-decoration-none"
+                      >
+                        <OrderCard
+                          cliente={order.cliente_nombre}
+                          telefono={order.cliente_telefono}
+                          fecha={order.pedido_fecha}
+                          estado={order.pedido_estado}
+                          destino={order.pedido_direccion_destino}
+                        />
+                      </Link>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </div>
   );
 }
 
 function OrderCard({ cliente, telefono, fecha, estado, destino }) {
   return (
-    <div className={styles.scrollItem}>
-      <Card className={styles.CardStyle}>
-        <Card.Body className={styles.textContainer}>
-          <Card.Text className={styles.TextStyle}>Cliente: {cliente}</Card.Text>
-          <Card.Text className={styles.TextStyle}>
-            Teléfono: {telefono}
-          </Card.Text>
-          <Card.Text className={styles.TextStyle}>
-            Fecha del pedido: {fecha}
-          </Card.Text>
-          <Card.Text className={styles.TextStyle}>Estado: {estado}</Card.Text>
-          <Card.Text className={styles.TextStyle}>Destino: {destino}</Card.Text>
-        </Card.Body>
-      </Card>
-    </div>
+     <Card className="w-48 p-2">
+            <Card.Body className="flex w-ato flex-col p-2 items-start gap-1 break-words overflow-hidden truncate">
+              <Card.Text className="text-xs font-semibold leading-normal m-0">Cliente: {cliente}</Card.Text>
+              <Card.Text className="text-xs font-semibold leading-normal m-0 truncate break-words">
+                Teléfono: {telefono}
+              </Card.Text>
+              <Card.Text className="text-xs font-semibold leadng-normal m-0 truncate break-words">
+                Fecha del pedido: {fecha}
+              </Card.Text>
+              <Card.Text className="text-xs font-semibold leading-normal m-0  truncate break-words">Estado: {estado}</Card.Text>
+              <Card.Text className="text-xs font-semibold leading-normal m-0 truncate break-words">Destino: {destino}</Card.Text>
+            </Card.Body>
+          </Card>
   );
 }
 

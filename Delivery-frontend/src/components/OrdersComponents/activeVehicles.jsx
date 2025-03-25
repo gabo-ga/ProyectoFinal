@@ -34,34 +34,30 @@ function ActiveVehicles(props) {
   }
 
   return (
-    <Container fluid className="pb-3">
-      <Row>
-        <Col xs={12}>
-          <h4 className={styles.TextStyle}>
-            <Link to="/vehicles" className={styles.TextStyle}>
-              {props.title}
-            </Link>
-          </h4>
-        </Col>
-      </Row>
-      <Row>
-        <div className={styles.scrollWrapper}>
-          <div className={styles.scrollContainer}>
-            {vehicles.map((vehicle, index) => (
-              <Col key={index} xs={12} md={7} lg={4}>
-                <OrderCard
-                  vehiculoNombre={vehicle.vehiculo_nombre}
-                  tipo={vehicle.vehiculo_tipo}
-                  placa={vehicle.placa}
-                  conductorNombre={vehicle.conductor_nombre}
-                  conductorTelefono={vehicle.conductor_telefono}
-                />
-              </Col>
-            ))}
-          </div>
-        </div>
-      </Row>
-    </Container>
+     <div className="flex h-full w-full flex-col">
+                    <h4 className="font-semibold flex items-center">
+                      <Link to="/vehicles" className="text-xs text-gray-800 hover:text-gray-600">
+                        {props.title}
+                      </Link>
+                    </h4>
+                <div className="flex-1 overflow-y-hidden overflow-x-auto pb-2">
+                  <div className="flex flex-nowrap h-full w-auto gap-4">
+                    
+                      {vehicles.map((vehicle, index) => (
+                        <div key={index} className="flex-none w-auto">
+                            <OrderCard
+                             vehiculoNombre={vehicle.vehiculo_nombre}
+                             tipo={vehicle.vehiculo_tipo}
+                             placa={vehicle.vehiculo_placa}
+                             conductorNombre={vehicle.conductor_nombre}
+                             conductorTelefono={vehicle.conductor_telefono}
+                            />
+                          
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </div>
   );
 }
 
@@ -73,23 +69,19 @@ function OrderCard({
   conductorTelefono,
 }) {
   return (
-    <div className={styles.scrollItem}>
-      <Card className={styles.CardStyle}>
-        <Card.Body className={styles.textContainer}>
-          <Card.Text className={styles.TextStyle}>
-            Vehículo: {vehiculoNombre}
-          </Card.Text>
-          <Card.Text className={styles.TextStyle}>Tipo: {tipo}</Card.Text>
-          <Card.Text className={styles.TextStyle}>Placa: {placa}</Card.Text>
-          <Card.Text className={styles.TextStyle}>
-            Conductor: {conductorNombre}
-          </Card.Text>
-          <Card.Text className={styles.TextStyle}>
-            Teléfono: {conductorTelefono}
-          </Card.Text>
-        </Card.Body>
-      </Card>
-    </div>
+    <Card className="w-48 p-2">
+            <Card.Body className="flex w-ato flex-col p-2 items-start gap-1 break-words overflow-hidden truncate">
+              <Card.Text className="text-xs font-semibold leading-normal m-0">Vehiculo: {vehiculoNombre}</Card.Text>
+              <Card.Text className="text-xs font-semibold leading-normal m-0 truncate break-words">
+                Tipo: {tipo}
+              </Card.Text>
+              <Card.Text className="text-xs font-semibold leadng-normal m-0 truncate break-words">
+                Placa: {placa}
+              </Card.Text>
+              <Card.Text className="text-xs font-semibold leading-normal m-0  truncate break-words">Conductor: {conductorNombre}</Card.Text>
+              <Card.Text className="text-xs font-semibold leading-normal m-0 truncate break-words">Teléfono: {conductorTelefono}</Card.Text>
+            </Card.Body>
+          </Card>
   );
 }
 

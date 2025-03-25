@@ -1,8 +1,4 @@
 import React, { useEffect, useState } from "react";
-import styles from "./orders.module.css";
-import Col from "react-bootstrap/esm/Col";
-import Container from "react-bootstrap/esm/Container";
-import Row from "react-bootstrap/esm/Row";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 import { fetchActiveOrders } from "../../api/apiService";
@@ -38,7 +34,6 @@ function ActiveOrders(props) {
   }
 
   return (
-  
       <div className="flex h-full w-full flex-col">
             <h4 className="font-semibold flex items-center">
               <Link to="/ordershistory" className="text-xs text-gray-800 hover:text-gray-600">
@@ -64,12 +59,9 @@ function ActiveOrders(props) {
                   </Link>
                 </div>
               ))}
-            
           </div>
         </div>
       </div>
-      
-    
   );
 }
 
