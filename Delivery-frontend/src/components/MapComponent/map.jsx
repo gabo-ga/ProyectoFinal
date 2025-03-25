@@ -158,7 +158,7 @@ function Map() {
   }
 
   return (
-    <GoogleMap mapContainerClassName="w-full h-full rounded-lg overflow-hidden shadow-lg grid row-span-5" center={center} zoom={12}>
+    <GoogleMap mapContainerClassName="w-full h-full rounded-lg overflow-hidden shadow-lg grid row-span-5 lg:row-span-6" center={center} zoom={12}>
       {routes.map((routeObj, index) => (
         <DirectionsRenderer
           key={index}

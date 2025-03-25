@@ -36,7 +36,7 @@ function ActiveVehicles(props) {
   return (
      <div className="flex h-full w-full flex-col">
                     <h4 className="font-semibold flex items-center">
-                      <Link to="/vehicles" className="text-xs text-gray-800 hover:text-gray-600">
+                      <Link to="/vehicles" className="text-xs text-gray-800 hover:text-gray-600 lg:text-base">
                         {props.title}
                       </Link>
                     </h4>
@@ -69,7 +69,7 @@ function OrderCard({
   conductorTelefono,
 }) {
   return (
-    <Card className="w-48 p-2">
+    <Card className="w-48 p-2 lg:w-52">
             <Card.Body className="flex w-ato flex-col p-2 items-start gap-1 break-words overflow-hidden truncate">
               <Card.Text className="text-xs font-semibold leading-normal m-0">Vehiculo: {vehiculoNombre}</Card.Text>
               <Card.Text className="text-xs font-semibold leading-normal m-0 truncate break-words">

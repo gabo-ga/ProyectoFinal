@@ -24,7 +24,7 @@ function Header() {
   const handleLogoutClose = () => setShowProfile(false);
 
   return (
-    <header className="h-12 lg:h-14 bg-[#1abc9c] flex items-center justify-end overflow-hidden">
+    <header className="h-12 lg:h-16 bg-[#1abc9c] flex items-center justify-end overflow-hidden">
       <div className="h-full flex items-center p-2">
         <ProfileIcon onClick={handleProfileClick} />
       </div>

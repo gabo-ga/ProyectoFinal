@@ -30,7 +30,7 @@ function CompletedOrders(props) {
   return (
     <div className="flex h-full w-full flex-col">
                 <h4 className="font-semibold flex items-center">
-                  <Link to="/ordershistory" className="text-xs text-gray-800 hover:text-gray-600">
+                  <Link to="/ordershistory" className="text-xs text-gray-800 hover:text-gray-600 lg:text-base">
                     {props.title}
                   </Link>
                 </h4>

@@ -30,17 +30,17 @@ function Metrics() {
     fetchData();
   }, []);
   return (
-    <section className="h-full w-full rounded-lg bg-white p-2">
-      <div className="grid grid-cols-2 gap-1">
-        <p className="text-xs font-semibold break-words m-0 lg:text-sm">
+    <section className="h-full w-full rounded-lg bg-white p-2 lg:flex">
+      <div className="grid grid-cols-2 gap-1 lg:w-full">
+        <p className="text-xs font-semibold break-words m-0 lg:text-lg">
           Pedidos en curso: {pedidosEnCurso}</p>
-        <p className="text-xs font-semibold break-words m-0 lg:text-sm">
+        <p className="text-xs font-semibold break-words m-0 lg:text-lg">
           Vehículos Disponibles: {vehiculosDisponibles}
         </p>
-        <p className="text-xs font-semibold break-words m-0 lg:text-sm">
+        <p className="text-xs font-semibold break-words m-0 lg:text-lg">
           Pedidos completados: {pedidosCompletados}
         </p>
-        <p className="text-xs font-semibold break-words m-0 lg:text-sm">
+        <p className="text-xs font-semibold break-words m-0 lg:text-lg">
           Pedidos cancelados: {pedidosCancelados}
         </p>
       </div>
