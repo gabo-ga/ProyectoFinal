@@ -41,9 +41,16 @@ function UserPage() {
     const cargarConfiguracion = async () => {
       try {
         const data = await fetchDireccionOrigen();
-        if (data.direccion) {
-          setDireccionOrigen(data.direccion);
-          setCoordenadasOrigen({ lat: data.lat, lng: data.lng });
+        console.log(data);
+        if (data[0].direccion) {
+          setDireccionOrigen(data[0].direccion);
+          
+        }
+        if(data[0].geojson && data[0].geojson.coordinates){
+          setCoordenadasOrigen({
+            lat: data[0].geojson.coordinates[1],
+            lng: data[0].geojson.coordinates[0],
+          });
         }
       } catch (error) {
         console.error(error.message);
