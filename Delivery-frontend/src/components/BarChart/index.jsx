@@ -12,7 +12,7 @@ const BarChart = ({data}) => {
         data={data}
         keys={["pedidos"]}
         indexBy="month"
-        margin={{ top: 20, right: 70, bottom: 20, left: 40 }}
+        margin={{ top: 20, right: 10, bottom: 20, left: 40 }}
         padding={0.3}
         colors={{ scheme: "category10" }}
         borderRadius={5}

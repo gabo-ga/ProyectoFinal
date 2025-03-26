@@ -5,6 +5,7 @@ import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import styles from "./index.module.css";
 import { DateRangePicker } from 'react-date-range';
 import { fetchAnalisisPedidosPorFecha } from "../../api/apiService";
 import BarChart from "../../components/BarChart";
@@ -70,8 +71,8 @@ function MetricsPage() {
   return (
     <>
       <Header />
-      <main className="bg-[#ecf0f1] h-auto p-8 gap-5 flex flex-col items-start">
-          <div className="w-full">
+      <main className="bg-[#ecf0f1] h-auto p-8 gap-2 flex flex-col items-start lg:flex-row">
+          <div className="w-full lg:w-auto">
             <DateRangePicker
               onChange={handleRangeChange}
               showSelectionPreview={true}
@@ -81,12 +82,12 @@ function MetricsPage() {
               direction="vertical"
             />
           </div>
-          <div className="w-full h-98">
+          <div className="w-full h-98 lg:w-auto">
             <BarChart data={chartData}/>
           </div>
-          <div className="h-86 grid grid-rows-3 grid-cols-2 gap-2">
+          <div className="h-86 grid grid-rows-3 grid-cols-2 gap-2 lg:grid-rows-6 lg:grid-cols-1 lg:h-98">
             <Card className="text-sm">
-              <Card.Body>
+              <Card.Body className="">
                 <Card.Text className="">Pedidos totales:</Card.Text>
                 <Card.Title>{pedidosTotales}</Card.Title>
               </Card.Body>
