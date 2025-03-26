@@ -222,13 +222,8 @@ class VehiculoViewSet(viewsets.ModelViewSet):
     queryset = Vehiculo.objects.all()
     serializer_class = VehiculoSerializer
     permission_classes = [AllowAny] 
-    #action para vehiculos disponibles
-    @action(detail=False, methods=['get'], url_path='vehiculos-disponibles')
-    def vehiculos_disponibles(self, request):
-        vehiculos_disponibles = obtener_vehiculos_disponibles()
 
-        return Response(vehiculos_disponibles)
-    
+    #accion para contar vehiculos    
     @action(detail=False, methods=['get'], url_path='count')
     def count(self, request):
         disponible = request.query_params.get('disponible', None)

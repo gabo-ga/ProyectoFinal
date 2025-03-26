@@ -129,14 +129,6 @@ class Vehiculo(models.Model):
     def __str__(self):
         return self.vehiculo_nombre
 
-    
-class HistorialGPS(models.Model):
-        vehiculo = models.ForeignKey('Vehiculo', on_delete=models.CASCADE)
-        posicion = gis_models.PointField(srid=4326)
-        marca_tiempo = models.DateTimeField(auto_now_add=False)
-    
-        def __str__(self):
-                return f"Historial GPS {self.id} - Vehiculo {self.vehiculo}"
 
 
 class AnalisisPedido(models.Model):
