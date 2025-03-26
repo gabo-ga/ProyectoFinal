@@ -5,7 +5,7 @@ import { Link} from "react-router-dom";
 import { AuthContext } from "../../AuthContext";
 
 function Logout({ onClose }) {
-  const { authTokens, logoutUser, username } = useContext(AuthContext);
+  const { authTokens, logoutUser, username,userId } = useContext(AuthContext);
 
   const handleLogout = () => {
     logoutUser();
@@ -33,7 +33,7 @@ function Logout({ onClose }) {
             <strong>{user ? `Hola ${username}` : "Cargando..."}</strong>
           </p>
           <p className="text-white mb-0 p-1 text-sm lg:text-md">
-          <Link to="/user">Configuracion</Link>
+          <Link to={`/user/${userId}`}>Configuracion</Link>
         </p>
         <p
           className="text-white mb-0 p-1 cursor-pointer text-sm lg:text-md"
