@@ -44,10 +44,10 @@ function VehicleForm() {
   return (
     <>
       <Header />
-      <main className="bg-[#ecf0f1] h-auto py-24 flex flex-col items-center">
+      <main className="bg-[#ecf0f1] h-auto py-24 flex flex-col items-center ">
         <div>
-          <h4>Añadir Nuevo Vehículo</h4>
-        <Card>
+          <h4>Añadir nuevo vehículo</h4>
+        <Card className="lg:w-98">
           <Card.Body>
             <Form onSubmit={handleSubmit(onSubmit)}>
               {/*vehiculo form*/}

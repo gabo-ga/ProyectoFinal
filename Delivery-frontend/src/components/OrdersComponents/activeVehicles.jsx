@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { fetchActiveVehicles } from "../../api/apiService.js";
+import { fetchActiveVehicles } from "../../api/vehicleFormService.js";
 
 function ActiveVehicles(props) {
   const [vehicles, setVehicles] = useState([]);
@@ -12,7 +12,7 @@ function ActiveVehicles(props) {
   useEffect(() => {
     const getVehicles = async () => {
       try {
-        const data = await fetchActiveVehicles(); // Llama a la función desde apiService
+        const data = await fetchActiveVehicles();
         setVehicles(data);
         setLoading(false);
       } catch (error) {
@@ -20,7 +20,6 @@ function ActiveVehicles(props) {
         setLoading(false);
       }
     };
-
     getVehicles();
   }, []);
 
@@ -41,17 +40,15 @@ function ActiveVehicles(props) {
                     </h4>
                 <div className="flex-1 overflow-y-hidden overflow-x-auto pb-2">
                   <div className="flex flex-nowrap h-full w-auto gap-4">
-                    
-                      {vehicles.map((vehicle, index) => (
-                        <div key={index} className="flex-none w-auto">
+                      {vehicles.map((vehicle) => (
+                        <div key={vehicle.id} className="flex-none w-auto">
                             <OrderCard
                              vehiculoNombre={vehicle.vehiculo_nombre}
-                             tipo={vehicle.vehiculo_tipo}
-                             placa={vehicle.vehiculo_placa}
-                             conductorNombre={vehicle.conductor_nombre}
-                             conductorTelefono={vehicle.conductor_telefono}
+                             tipo={vehicle.tipo}
+                             placa={vehicle.placa}
+                             conductorNombre={vehicle.conductor.nombre}
+                             conductorTelefono={vehicle.conductor.telefono}
                             />
-                          
                         </div>
                       ))}
                   </div>

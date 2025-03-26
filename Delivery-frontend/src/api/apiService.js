@@ -82,23 +82,6 @@ export const fetchDrivers = async () => {
   }
 };
 
-export const fetchActiveVehicles = async () => {
-  try {
-    const response = await axiosInstance.get('/api/vehiculos/vehiculos-disponibles/');
-    return response.data;
-  } catch (error) {
-    throw new Error('Error al cargar los vehículos disponibles');
-  }
-};
-
-export const deleteVehiculo = async (placa) => {
-  try {
-    await axiosInstance.delete(`/api/vehiculos/${placa}/`);
-  } catch (error) {
-    console.error('Error al eliminar el vehículo:', error);
-    throw error;
-  }
-};
 
 export const fetchPedidos = async () => {
   try {

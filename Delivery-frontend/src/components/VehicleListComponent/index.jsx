@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
-import { fetchActiveVehicles, deleteVehiculo } from "../../api/apiService.js";
+import { fetchActiveVehicles, deleteVehicle } from "../../api/vehicleFormService.js";
 
 function Vehicles() {
   const [vehiculos, setVehiculos] = useState([]);
@@ -33,7 +33,7 @@ function Vehicles() {
       )
     ) {
       try {
-        await deleteVehiculo(vehiculo.placa);
+        await deleteVehicle(vehiculo.id);
         setVehiculos(vehiculos.filter((v) => v.placa !== vehiculo.placa));
       } catch (error) {
         console.error("Error al eliminar el vehículo:", error);
@@ -52,10 +52,10 @@ function Vehicles() {
             {vehiculo.vehiculo_nombre}
           </div>
           <div className="text-sm lg:text-base">
-            {vehiculo.vehiculo_tipo}
+            {vehiculo.tipo}
           </div>
           <div className="hidden md:block lg:block">
-            {vehiculo.vehiculo_placa}
+            {vehiculo.placa}
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-3">
             <PencilSquare
