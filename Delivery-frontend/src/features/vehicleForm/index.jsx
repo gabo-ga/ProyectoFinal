@@ -5,9 +5,13 @@ import { Form, Button, Card } from "react-bootstrap";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
 import { fetchDrivers } from "../../api/apiService";
-import { addVehicle } from "../../api/vehicleFormService";
+import { addVehicle, fetchVehicleById } from "../../api/vehicleFormService";
+import { useNavigate, useParams } from "react-router-dom";
 
 function VehicleForm() {
+  const {id} = useParams();
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -15,6 +19,7 @@ function VehicleForm() {
     formState: {errors},
   } = useForm();
   const [drivers, setDrivers] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const obtenerConductores = async () => {
@@ -25,20 +30,38 @@ function VehicleForm() {
         console.error("Error al obtener los conductores:", error);
       }
     };
-
     obtenerConductores();
-  }, []);
+
+    if(id){
+      setIsEditing(true);
+      const obtenerVehiculo = async() => {
+        try{
+          const vehicleData = await fetchVehicleById(id);
+          reset(vehicleData);
+        }catch(error){
+          console.error("error al cargar el vehiculo", error)
+        }
+      };
+      obtenerVehiculo();
+    }
+  }, [id, reset]);
 
   const onSubmit = async (data) => {
-    try{
-      await addVehicle({...data, disponible: true});
-      alert("Vehiculo añadido con exito");
-      reset()
-    }catch(error){
-      alert("Error al añadir el vehiculo");
-      console.error("error al añadir el vehiculo", error)
+    try {
+      if (isEditing) {
+        await updateVehicle(id, data);
+        alert("Vehículo actualizado con éxito");
+      } else {
+        await addVehicle({ ...data, disponible: true });
+        alert("Vehículo añadido con éxito");
+      }
+
+      navigate("/vehicles");
+    } catch (error) {
+      alert("Error al procesar el vehículo");
+      console.error("Error:", error);
     }
-  }
+  };
 
 
   return (
@@ -46,7 +69,7 @@ function VehicleForm() {
       <Header />
       <main className="bg-[#ecf0f1] h-auto py-24 flex flex-col items-center ">
         <div>
-          <h4>Añadir nuevo vehículo</h4>
+          <h4>{isEditing ? "Editar Vehiculo" : "Añadir nuevo vehículo"}</h4>
         <Card className="lg:w-98">
           <Card.Body>
             <Form onSubmit={handleSubmit(onSubmit)}>
@@ -93,7 +116,7 @@ function VehicleForm() {
               </Form.Group>
                   {/**boton de envio */}
               <Button variant="primary" type="submit" className="mt-4">
-                Añadir Vehículo
+              {isEditing ? "Guardar cambios" : "Añadir vehículo"}
               </Button>
             </Form>
           </Card.Body>

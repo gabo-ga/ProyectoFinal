@@ -12,6 +12,16 @@ export const fetchActiveVehicles = async () => {
     }
   };
 
+//buscar vehiculo por ID 
+export const fetchVehicleById = async (vehicleId, vehicleData) => {
+    try {
+      const response = await axiosInstance.get(`${API_URL}${vehicleId}/`, vehicleData);
+      return response.data;
+    } catch (error) {
+      throw new Error('Error al cargar los vehículos disponibles');
+    }
+  };
+
 //funcion para añadir un vehiculo
 export const addVehicle = async (vehicleData) => {
     try {
