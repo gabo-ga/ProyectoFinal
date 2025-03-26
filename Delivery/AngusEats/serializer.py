@@ -221,10 +221,18 @@ class ConfiguracionSerializer(serializers.ModelSerializer):
 
     latitud = serializers.FloatField(write_only=True, required=False)
     longitud = serializers.FloatField(write_only=True, required=False)
+    direccion = serializers.CharField(source="direccion_origen", required=False)
+    coordenadas = serializers.SerializerMethodField()
 
     class Meta:
         model = Configuracion
-        fields = ['id', 'direccion_origen', 'punto_origen', 'latitud', 'longitud']
+        fields = ['id', 'direccion', 'coordenadas', 'latitud', 'longitud']
+        
+    #metodo para extraer las coordenadas
+    def get_coordenadas(self, obj):
+        if obj.punto_origen:
+            return obj.punto_origen.wkt
+        return None
 
     def create(self, validated_data):
         latitud = validated_data.pop('latitud', None)

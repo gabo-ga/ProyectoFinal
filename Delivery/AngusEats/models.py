@@ -143,7 +143,6 @@ class AnalisisPedido(models.Model):
         return f"Analisis {self.id} = {self.fecha_analisis}"
     
 #Model para la configuracion de direccino origen
-# models.py
 class Configuracion(models.Model):
     direccion_origen = models.CharField(max_length=255, blank=True, null=True) 
     punto_origen = gis_models.PointField(srid=4326, null=True, blank=True)

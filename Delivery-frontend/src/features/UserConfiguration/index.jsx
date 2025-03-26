@@ -31,8 +31,8 @@ function UserPage() {
     const cargarDatosUsuario = async () => {
       try {
         const userData = await fetchUserById(userId);
-        setUserEmail(userData.email);
-        setUserName(`${userData.first_name} ${userData.last_name}`);
+        setUserEmail(userData.correo);
+        setUserName(userData.nombre);
       } catch (error) {
         console.error("Error al cargar datos del usuario:", error.message);
       }

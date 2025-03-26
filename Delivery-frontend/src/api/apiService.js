@@ -103,7 +103,7 @@ export const deletePedido = async (id) => {
 
 export const fetchDireccionOrigen = async () => {
   try {
-    const response = await axiosInstance.get('/api/configuracion/obtener-origen/');
+    const response = await axiosInstance.get('/api/configuracion/');
     return response.data;
   } catch (error) {
     throw new Error('Error al cargar la configuración');
@@ -184,7 +184,7 @@ export const saveOrUpdatePedido = async (data, id = null) => {
 
 export const fetchUserById = async () => {
   try {
-    const response = await axiosInstance.get('/api/users/1/');
+    const response = await axiosInstance.get('/api/usuarios/6/');
     return response.data;
   } catch (error) {
     console.error('Error al obtener los datos del usuario:', error);

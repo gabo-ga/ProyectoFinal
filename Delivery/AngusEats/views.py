@@ -294,60 +294,28 @@ class UbicacionViewSet(viewsets.ModelViewSet):
             )
 
 
-class ConfiguracionViewSet(viewsets.ViewSet):
+class ConfiguracionViewSet(viewsets.ModelViewSet):
+    queryset = Configuracion.objects.all()
     serializer_class = ConfiguracionSerializer
     permission_classes = [AllowAny]
 
     def list(self, request):
-        config, created = Configuracion.objects.get_or_create(id=1)
-        serializer = self.serializer_class(config)
-        return Response(serializer.data)
-    
-    @action(detail=False, methods=['get'], url_path='obtener-origen')
-    def obtener_origen(self, request):
-        config, created = Configuracion.objects.get_or_create(id=1)
+        config, _ = Configuracion.objects.get_or_create(id=1)
         serializer = self.serializer_class(config)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['post'], url_path='guardar-origen')
+
+    @action(detail=False, methods=['patch'], url_path='guardar-origen')
     def guardar_origen(self, request):
-        direccion_origen = request.data.get("direccion_origen")
-        lat = request.data.get("lat")
-        lng = request.data.get("lng")
+        config, _ = Configuracion.objects.get_or_create(id=1)
 
-        print("Datos recibidos - Dirección:", direccion_origen, "Lat:", lat, "Lng:", lng)
-
-        # Verificar que lat y lng sean válidos
-        try:
-            lat = float(lat)
-            lng = float(lng)
-            print("Latitud y longitud convertidas a float:", lat, lng)
-        except (TypeError, ValueError) as e:
-            print("Error al convertir lat y lng a float:", e)
-            return Response({"error": "Coordenadas inválidas. Asegúrate de enviar lat y lng como números válidos."}, status=400)
-
-        # Intentar crear el Point
-        try:
-            punto_origen = Point(lng, lat,) 
-            print("Punto de origen creado correctamente:", punto_origen)
-
-            # Crear o actualizar la configuración
-            configuracion, created = Configuracion.objects.update_or_create(
-                id=1,
-                defaults={
-                    "direccion_origen": direccion_origen,
-                    "punto_origen": punto_origen
-                }
-            )
-
-            # Confirmar que el punto se haya guardado correctamente en la base de datos
-            serializer = self.serializer_class(configuracion)
+        serializer = self.get_serializer(config, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
             return Response({
-                "status": "Dirección de origen guardada",
-                "data": serializer.data
+                "status": "Direccion de origen guardada",
+                "data" : serializer.data
             }, status=200)
-        except Exception as e:
-            print("Error al crear el punto de origen:", e)
-            return Response({"error": "Error al crear el punto de origen"}, status=400)
+        return Response(serializer.errors, status=400)
   
   
