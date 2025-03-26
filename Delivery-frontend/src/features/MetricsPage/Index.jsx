@@ -71,8 +71,8 @@ function MetricsPage() {
   return (
     <>
       <Header />
-      <main className="bg-[#ecf0f1] h-auto p-8 gap-2 flex flex-col items-start lg:flex-row">
-          <div className="w-full lg:w-auto">
+      <main className="bg-[#ecf0f1] h-auto p-8 gap-2 flex flex-col items-start lg:flex-row lg:h-98">
+          <div className="w-full grid lg:w-auto lg:grid-rows-2">
             <DateRangePicker
               onChange={handleRangeChange}
               showSelectionPreview={true}
@@ -86,40 +86,40 @@ function MetricsPage() {
             <BarChart data={chartData}/>
           </div>
           <div className="h-86 grid grid-rows-3 grid-cols-2 gap-2 lg:grid-rows-6 lg:grid-cols-1 lg:h-98">
-            <Card className="text-sm">
-              <Card.Body className="">
-                <Card.Text className="">Pedidos totales:</Card.Text>
-                <Card.Title>{pedidosTotales}</Card.Title>
+            <Card className="text-sm lg:text-base">
+              <Card.Body className="flex flex-col lg:flex-row lg:gap-1 lg:align-baseline">
+                <Card.Text className="m-1 lg:m-0 lg:flex lg:items-center">Pedidos totales:</Card.Text>
+                <Card.Title className="m-1 lg:m-0 lg:items-center">{pedidosTotales}</Card.Title>
               </Card.Body>
             </Card>
             <Card className="text-sm">
-              <Card.Body>
-                <Card.Text>Pedidos entregados:</Card.Text>
+              <Card.Body className="flex flex-col lg:flex-row lg: gap-2">
+                <Card.Text className="m-0">Pedidos entregados:</Card.Text>
                 <Card.Title>{pedidosEntregados}</Card.Title>
               </Card.Body>
             </Card>
             <Card className="text-sm">
-              <Card.Body>
-                <Card.Text>Promedio de precio:</Card.Text>
+              <Card.Body className="flex flex-col lg:flex-row lg: gap-2">
+                <Card.Text className="m-0">Promedio de precio:</Card.Text>
                 <Card.Title>{pedidosEntregados}</Card.Title>
               </Card.Body>
             </Card>
 
           <Card className="text-sm">
-              <Card.Body>
-                <Card.Text>Pedidos cancelados:</Card.Text>
+              <Card.Body className="flex flex-col lg:flex-row lg: gap-2">
+                <Card.Text className="m-0">Pedidos cancelados:</Card.Text>
                 <Card.Title>{pedidosCancelados}</Card.Title>
               </Card.Body>
             </Card>
             <Card className="text-sm">
-              <Card.Body>
-                <Card.Text>Tiempo promedio de entrega (minutos):</Card.Text>
+              <Card.Body className="flex flex-col lg:flex-row lg: gap-2">
+                <Card.Text className="m-0">Tiempo promedio de entrega (minutos):</Card.Text>
                 <Card.Title>{tiempoPromedioEntrega}</Card.Title>
               </Card.Body>
             </Card>
             <Card className="text-sm">
-              <Card.Body>
-                <Card.Text>Kilómetros recorridos totales:</Card.Text>
+              <Card.Body className="flex flex-col lg:flex-row lg: gap-2">
+                <Card.Text className="m-0">Kilómetros recorridos totales:</Card.Text>
                 <Card.Title>{kilometrosRecorridosTotales}</Card.Title>
               </Card.Body>
             </Card>
