@@ -63,6 +63,14 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/edit-vehicles/:id"
+            element={
+              <PrivateRoute>
+                <VehicleForm/>
+              </PrivateRoute>
+            }
+          />
           <Route path="/addvehicle" element={<VehicleForm />} />
           <Route
             path="/orderdetails/:id"

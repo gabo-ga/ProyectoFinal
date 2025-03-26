@@ -23,7 +23,7 @@ function Vehicles() {
 
   const handleEdit = (vehiculo) => {
     // Lógica para editar el vehículo
-    navigate(`/editar-vehiculo/${vehiculo.placa}`);
+    navigate(`/edit-vehicles/${vehiculo.id}`);
   };
 
   const handleDelete = async (vehiculo) => {
