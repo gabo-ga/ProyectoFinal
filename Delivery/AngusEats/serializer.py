@@ -1,8 +1,10 @@
 from rest_framework import serializers
+import json
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.gis.geos import Point
+from django.contrib.gis.geos import GEOSGeometry
 from .models import Pedido, Vehiculo, Cliente, Configuracion, Ubicacion, EstadoPedido, AnalisisPedido, Usuario
 #serializers
 
@@ -219,33 +221,23 @@ class AnalisisPedidoSerializer(serializers.ModelSerializer):
 #serializer para la configuracion
 class ConfiguracionSerializer(serializers.ModelSerializer):
 
-    latitud = serializers.FloatField(write_only=True, required=False)
-    longitud = serializers.FloatField(write_only=True, required=False)
+    geojson = serializers.SerializerMethodField()
     direccion = serializers.CharField(source="direccion_origen", required=False)
-    coordenadas = serializers.SerializerMethodField()
 
     class Meta:
         model = Configuracion
-        fields = ['id', 'direccion', 'coordenadas', 'latitud', 'longitud']
+        fields = ['id', 'direccion', 'geojson']
         
     #metodo para extraer las coordenadas
-    def get_coordenadas(self, obj):
+    def get_geojson(self, obj):
         if obj.punto_origen:
-            return obj.punto_origen.wkt
+            return json.loads(obj.punto_origen.geojson)
         return None
 
-    def create(self, validated_data):
-        latitud = validated_data.pop('latitud', None)
-        longitud = validated_data.pop('longitud', None)
-        if latitud is not None and longitud is not None:
-            validated_data['punto_origen'] = Point(longitud, latitud, srid=4326)
-        return super().create(validated_data)
-
     def update(self, instance, validated_data):
-        latitud = validated_data.pop('latitud', None)
-        longitud = validated_data.pop('longitud', None)
-        if latitud is not None and longitud is not None:
-            instance.punto_origen = Point(longitud, latitud, srid=4326)
+        geojson_data = validated_data.pop("geojson", None)
+        if geojson_data:
+            instance.punto_origen = GEOSGeometry(json.dumps(geojson_data))
         instance.direccion_origen = validated_data.get('direccion_origen', instance.direccion_origen)
         instance.save()
         return instance

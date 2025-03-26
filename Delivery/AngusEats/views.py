@@ -299,12 +299,6 @@ class ConfiguracionViewSet(viewsets.ModelViewSet):
     serializer_class = ConfiguracionSerializer
     permission_classes = [AllowAny]
 
-    def list(self, request):
-        config, _ = Configuracion.objects.get_or_create(id=1)
-        serializer = self.serializer_class(config)
-        return Response(serializer.data)
-
-
     @action(detail=False, methods=['patch'], url_path='guardar-origen')
     def guardar_origen(self, request):
         config, _ = Configuracion.objects.get_or_create(id=1)
