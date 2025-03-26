@@ -41,8 +41,8 @@ function UserPage() {
     const cargarConfiguracion = async () => {
       try {
         const data = await fetchDireccionOrigen();
-        if (data.direccion_origen) {
-          setDireccionOrigen(data.direccion_origen);
+        if (data.direccion) {
+          setDireccionOrigen(data.direccion);
           setCoordenadasOrigen({ lat: data.lat, lng: data.lng });
         }
       } catch (error) {
@@ -120,12 +120,12 @@ function UserPage() {
   return (
     <>
       <Header />
-      <Container fluid className={styles.body}>
-        <Card className={styles.card}>
+      <main className="bg-[#ecf0f1] h-auto py-12 px-4 flex items-center justify-center w-full lg:px-24">
+        <Card className="w-full md:w-98 lg:w-1/2">
           <Card.Body>
-            <Col xs={12} className={styles.container}>
+            <div className="flex items-center flex-col gap-3">
               <PersonCircle size={100} />
-              <Form className={styles.formContainer} onSubmit={handleSave}>
+              <Form className="w-full flex flex-col gap-3" onSubmit={handleSave}>
                 <EmailInput value={userEmail} />
                 <NameComponent value={userName} />
                 <Form.Group controlId="direccionOrigen">
@@ -142,10 +142,10 @@ function UserPage() {
                 />
                 <AcceptButton type="submit" />
               </Form>
-            </Col>
+              </div>
           </Card.Body>
         </Card>
-      </Container>
+      </main>
       <Footer />
     </>
   );
