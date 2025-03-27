@@ -112,7 +112,7 @@ export const fetchDireccionOrigen = async () => {
 
 export const saveDireccionOrigen = async (direccionOrigenData) => {
   try {
-    const response = await axiosInstance.post('/api/configuracion/guardar-origen/', direccionOrigenData);
+    const response = await axiosInstance.patch('/api/configuracion/guardar-origen/', direccionOrigenData);
     return response.data;
   } catch (error) {
     throw new Error('Error al guardar la configuración');
