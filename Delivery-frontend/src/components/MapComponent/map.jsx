@@ -6,7 +6,7 @@ import {
   DirectionsRenderer,
 } from "@react-google-maps/api";
 import { fetchPedidosCoordenadas } from "../../api/apiService";
-import { calculateRoute } from "../../api/mapService";
+import { calculateRoute, useGoogleMapsScript } from "../../api/mapService";
 import { useAuth } from "../../AuthContext";
 import {
   initSocket,
@@ -23,9 +23,7 @@ function Map() {
   const { userId } = useAuth();
   const [location, setLocation] = useState(null);
 
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-  });
+  const { isLoaded, loadError } = useGoogleMapsScript();
 
   // Obtener ubicaciones de vehículos
   useEffect(() => {
