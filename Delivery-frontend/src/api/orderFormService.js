@@ -6,24 +6,24 @@ import axiosInstance from "../axiosInstance";
 export const obtenerOrigenFijo = async (setFormData) => {
   try {
     const data = await fetchOrigenFijo();
-    if (data.direccion_origen && data.punto_origen) {
-      const [lng, lat] = data.punto_origen
-        .replace("POINT (", "")
-        .replace(")", "")
-        .split(" ")
-        .map(parseFloat);
-      setFormData((prevData) => ({
-        ...prevData,
-        origen_id: data.id,
-        direccion_origen: data.direccion_origen,
-        coordenadas_origen_lat: lat,
-        coordenadas_origen_lng: lng,
-      }));
+    if (Array.isArray(data) && data.length > 0) {
+      const origen = data[0];
+      if (origen.direccion && origen.geojson && Array.isArray(origen.geojson.coordinates)) {
+        const [lng, lat] = origen.geojson.coordinates;
+        setFormData((prevData) => ({
+          ...prevData,
+          origen_id: origen.id,
+          direccion_origen: origen.direccion,
+          coordenadas_origen_lat: lat,
+          coordenadas_origen_lng: lng,
+        }));
+      }
     }
   } catch (error) {
     console.error(error.message);
   }
 };
+
 
 /**
  * Obtener la dirección de un destino por ID.

@@ -148,7 +148,7 @@ export const fetchPedidosCoordenadas = async (conductorId) => {
 // Servicios del formulario de pedidos
 export const fetchOrigenFijo = async () => {
   try {
-    const response = await axiosInstance.get('/api/configuracion/obtener-origen/');
+    const response = await axiosInstance.get('/api/configuracion/');
     return response.data;
   } catch (error) {
     console.error('Error al obtener la dirección de origen:', error);
