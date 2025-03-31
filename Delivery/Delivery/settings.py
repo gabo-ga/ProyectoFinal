@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'AngusEats',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'coreapi',
     'sslserver',
     'django_extensions',
@@ -183,5 +184,5 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'AUTH_HEADER_TYPES': ('Bearer',),
     'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
+    #'BLACKLIST_AFTER_ROTATION': True,
 }
