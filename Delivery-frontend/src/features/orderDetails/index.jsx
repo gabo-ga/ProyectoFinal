@@ -59,6 +59,7 @@ function OrderDetails() {
     const success = await updateOrderStatus(3);
     if (success) {
       alert("Pedido cancelado");
+      navigate("/dashboard");
     }
   };
 
@@ -114,18 +115,16 @@ function OrderDetails() {
               </Col>
             </Row>
 
-            <div className={styles.buttonContainer}>
-              <Button
-                variant="primary"
-                className="me-2"
-                onClick={handleComplete}
-              >
-                Terminar
-              </Button>
-              <Button variant="secondary" onClick={handleCancel}>
-                Cancelar
-              </Button>
-            </div>
+            {!["entregado", "cancelado"].includes(pedido.pedido_estado) && (
+              <div className={styles.buttonContainer}>
+                <Button variant="primary" className="me-2" onClick={handleComplete}>
+                  Terminar
+                </Button>
+                <Button variant="secondary" onClick={handleCancel}>
+                  Cancelar
+                </Button>
+              </div>
+            )}
           </Card.Body>
         </Card>
       </div>
