@@ -89,10 +89,22 @@ export const AuthProvider = ({ children }) => {
   };
 
   const tokenExpirationTime = useMemo(() => {
-    return authTokens.access_token
-      ? jwt_decode(authTokens.access_token).exp * 1000
-      : null;
-  }, [authTokens.access_token]);
+    if (
+      authTokens &&
+      typeof authTokens.access_token === "string" &&
+      authTokens.access_token.trim() !== ""
+    ) {
+      try {
+        const decoded = jwt_decode(authTokens.access_token);
+        return decoded.exp * 1000;
+      } catch (error) {
+        console.error("Error al decodificar el token:", error.message);
+        return null;
+      }
+    }
+    return null;
+  }, [authTokens]);
+  
 
   useEffect(() => {
     if (authTokens.access_token) {
