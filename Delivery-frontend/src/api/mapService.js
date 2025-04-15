@@ -1,4 +1,6 @@
 import { useLoadScript } from "@react-google-maps/api";
+import { orderByDistance } from 'geolib'
+import { fetchPedidosCoordenadas } from "./apiService";
 
 const libraries = ["places"];
 
@@ -53,3 +55,54 @@ export const calculateRoute = (origin, destination, waypoints) => {
     );
   });
 };
+
+const data = await fetchPedidosCoordenadas(7);
+const ruta = prepararRutaDesdePedidos(data);
+
+function prepararRutaDesdePedidos(data) {
+  if (!data || data.length < 2) {
+    console.warn("Se requieren al menos 2 pedidos para generar una ruta.");
+    return null;
+  }
+
+  // Paso 1: Definir el origen (todos los pedidos lo comparten)
+  const origin = {
+    latitude: data[0].ORIGEN_LNG,  // ⚠️ Invertidos en el JSON
+    longitude: data[0].ORIGEN_LAT,
+  };
+
+  // Paso 2: Crear lista de destinos con su ID (para tracking)
+  const destinos = data.map((pedido) => ({
+    id: pedido.ID,
+    latitude: pedido.DESTINO_LNG,
+    longitude: pedido.DESTINO_LAT,
+  }));
+
+  // Paso 3: Ordenar los destinos por distancia al origen
+  const destinosOrdenados = orderByDistance(origin, destinos);
+
+  // Paso 4: El destino final será el más lejano (último en la lista)
+  const destinoFinal = destinosOrdenados.at(-1);
+
+  // Paso 5: Los demás serán waypoints
+  const waypoints = destinosOrdenados.slice(0, -1).map((p) => ({
+    location: {
+      lat: p.latitude,
+      lng: p.longitude,
+    },
+    stopover: true,
+  }));
+
+  // Paso 6: Retornar objeto listo para usar con Google Maps
+  return {
+    origin: {
+      lat: origin.latitude,
+      lng: origin.longitude,
+    },
+    destination: {
+      lat: destinoFinal.latitude,
+      lng: destinoFinal.longitude,
+    },
+    waypoints,
+  };
+}
