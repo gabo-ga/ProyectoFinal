@@ -6,6 +6,9 @@ class LocationConsumer(AsyncWebsocketConsumer):
         self.conductor_id = self.scope['url_route']['kwargs']['conductor_id']
         self.room_group_name = f'location_{self.conductor_id}'
         
+        if self.conductor_id == 'admin':
+            self.room_group_name = 'admin_location'
+        
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
@@ -25,6 +28,15 @@ class LocationConsumer(AsyncWebsocketConsumer):
         
         await self.channel_layer.group_send(
             self.room_group_name,{
+                'type': 'location_update',
+                'latitude': latitude, 
+                'longitude': longitude,
+                'conductor_id': self.conductor_id
+            }
+        )
+        
+        await self.channel_layer.group_send(
+            'admin_location', {
                 'type': 'location_update',
                 'latitude': latitude, 
                 'longitude': longitude,
