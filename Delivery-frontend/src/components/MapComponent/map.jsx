@@ -24,6 +24,8 @@ function Map() {
   const [location, setLocation] = useState(null);
 
   const { isLoaded, loadError } = useGoogleMapsScript();
+  console.log('API KEY:', import.meta.env.VITE_GOOGLE_MAPS_API_KEY);
+
 
   useEffect(() => {
     if (!userId) return;

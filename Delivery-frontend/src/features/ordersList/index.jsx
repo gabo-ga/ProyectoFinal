@@ -27,7 +27,7 @@ function OrdersHistory() {
         <div className="bg-[#ecf0f1] h-screen p-4 flex flex-col items-start gap-2 flex-shrink-0">
           {/*Gestion de pedidos y botones*/}
           <div className="w-full grid grid-cols-2">
-              <p className="flex self-end text-md font-bold m-0 lg:text-xl">GESTION DE PEDIDOS</p>
+              <p className="flex self-end text-md font-bold m-0 lg:text-xl">GESTIÓN DE PEDIDOS</p>
             <div className="flex justify-end h-auto gap-2 lg:gap-4">
               <FilterButton onFiltrar={handleFiltroChange}></FilterButton>
               <DownloadButton data={pedidos}></DownloadButton>
