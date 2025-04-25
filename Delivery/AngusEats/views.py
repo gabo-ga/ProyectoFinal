@@ -102,7 +102,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.select_related('cliente', 'conductor', 'origen', 'destino', 'estado')
     serializer_class = PedidoSerializer
     permission_classes = [AllowAny] 
-    #action para pedidos en curso o entregados o cancelados
+    #accion personalizada para pedidos en curso 
     @action(detail=False, methods=['get'], url_path='en-curso')
     def pedidos_en_curso(self, request):
         try:
