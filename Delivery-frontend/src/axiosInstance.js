@@ -1,9 +1,7 @@
-// src/axiosInstance.js
-
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import dayjs from 'dayjs';
-//import https from 'https';
+
 
 
 const baseURL = 'http://localhost:8000';
@@ -16,7 +14,6 @@ let tokens = {
 const axiosInstance = axios.create({
   baseURL: baseURL,
   timeout: 5000,
-  //withCredentials: true,
   headers: {
     Authorization: tokens.access ? 'Bearer ' + tokens.access : null,
     'Content-Type': 'application/json',
