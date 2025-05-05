@@ -5,8 +5,11 @@ import ActionBar from "../../components/ActionsBar/Actions";
 import styles from "./index.module.css";
 import AddButton from "../../components/AddButton/button";
 import Vehicles from "../../components/VehicleListComponent";
+import { useAuth } from "../../AuthContext";
 
 function VehicleList() {
+  const {userId} = useAuth();
+
   return (
     <>
       <Header></Header>
@@ -16,7 +19,7 @@ function VehicleList() {
             <h4>GESTIÓN DE VEHÍCULOS</h4>
           </Col>
           <Col xs={2} md={1}>
-            <AddButton redirectTo="/addvehicle"></AddButton>
+          {userId === 6 && <AddButton redirectTo="/addvehicle"></AddButton>}
           </Col>
         </Row>
         <Row className={styles.row}>

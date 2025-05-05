@@ -1,19 +1,19 @@
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
-import styles from "./index.module.css";
-import Container from "react-bootstrap/esm/Container";
-import Row from "react-bootstrap/esm/Row";
 import AddButton from "../../components/AddButton/button";
 import ActionBar from "../../components/ActionsBar/Actions";
 import Order from "../../components/OrderListComponent";
 import FilterButton from "../../components/FilterButton";
 import { useState } from "react";
+import { useAuth } from "../../AuthContext";
 import { FilterProvider } from "../../contexts/FilterContext";
 import DownloadButton from "../../components/DownloadButton";
 
 function OrdersHistory() {
+  const {userId} = useAuth();
   const [filtros, setFiltros] = useState({ cliente: "", estado: "" });
   const [pedidos, setPedidos] = useState([]);
+
 
   const handleFiltroChange = (nuevosFiltros) => {
     console.log("Filtros recibidos:", nuevosFiltros);
@@ -31,7 +31,7 @@ function OrdersHistory() {
             <div className="flex justify-end h-auto gap-2 lg:gap-4">
               <FilterButton onFiltrar={handleFiltroChange}></FilterButton>
               <DownloadButton data={pedidos}></DownloadButton>
-              <AddButton redirectTo="/addorder"></AddButton>
+              {userId === 6 && <AddButton redirectTo="/addorder"></AddButton>}
             </div>
           </div>
           {/*barra de titulos*/}

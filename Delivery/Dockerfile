@@ -1,5 +1,5 @@
 #usar la imagen de python
-FROM python:3.9-slim
+FROM python:3.12-slim
 
 #directorio de trabajo
 WORKDIR /app
