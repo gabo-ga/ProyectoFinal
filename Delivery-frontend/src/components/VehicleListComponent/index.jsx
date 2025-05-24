@@ -12,6 +12,7 @@ function Vehicles() {
     const obtenerVehiculos = async () => {
       try {
         const data = await fetchActiveVehicles();
+
         setVehiculos(data);
       } catch (error) {
         console.error("Error al obtener los vehículos:", error);
@@ -43,10 +44,10 @@ function Vehicles() {
 
   return (
     <section className="bg-white rounded-lg flex w-full flex-col">
-      {vehiculos.map((vehiculo, index) => (
-        <div className="grid grid-cols-3 p-2 md:grid-cols-5 lg:grid-cols-5">
+      {vehiculos.map((vehiculo)  => (
+        <div key={vehiculo.id} className="grid grid-cols-3 p-2 md:grid-cols-5 lg:grid-cols-5">
           <div className="hidden md:block lg:block">
-            {index + 1}
+            {vehiculo.id}
           </div>
           <div className="text-sm lg:text-base">
             {vehiculo.vehiculo_nombre}

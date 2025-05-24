@@ -18,8 +18,15 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(
     () => !!authTokens.access_token
   );
-  const [userId, setUserId] = useState(null);
-  const [username, setUserName] = useState(null);
+  const [userId, setUserId] = useState(() => {
+    const storedUserId = localStorage.getItem("user_id");
+    return storedUserId ? parseInt(storedUserId, 10) : null;
+  });
+
+  const [username, setUserName] = useState(() => {
+    const storedUsername = localStorage.getItem("username");
+    return storedUsername ? storedUsername : null;
+  });
 
   useEffect(() => {
     if (authTokens.access_token) {
@@ -49,6 +56,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("access_token", tokens.access_token);
       localStorage.setItem("refresh_token", tokens.refresh_token);
       localStorage.setItem("user_id", response.data.user_id);
+      localStorage.setItem("username", response.data.username);
       axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${tokens.access_token}`;
@@ -62,6 +70,8 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("username");
     delete axios.defaults.headers.common["Authorization"];
   };
 

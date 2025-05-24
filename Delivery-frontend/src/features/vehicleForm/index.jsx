@@ -5,7 +5,7 @@ import { Form, Button, Card } from "react-bootstrap";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
 import { fetchDrivers } from "../../api/apiService";
-import { addVehicle, fetchVehicleById } from "../../api/vehicleFormService";
+import { addVehicle, fetchVehicleById, updateVehicle } from "../../api/vehicleFormService";
 import { useNavigate, useParams } from "react-router-dom";
 
 function VehicleForm() {
@@ -49,7 +49,7 @@ function VehicleForm() {
   const onSubmit = async (data) => {
     try {
       if (isEditing) {
-        await updateVehicle(id, data);
+        await updateVehicle(id, data); 
         alert("Vehículo actualizado con éxito");
       } else {
         await addVehicle({ ...data, disponible: true });
