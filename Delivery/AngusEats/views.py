@@ -15,7 +15,7 @@ from rest_framework.viewsets import ViewSet
 from django.utils.dateparse import parse_datetime
 #queries
 from .queries import (contar_pedidos, contar_vehiculos, obtener_pedidos_en_curso,  
-                      obtener_vehiculos_disponibles, obtener_detalle_coordenadas, obtener_conductores, obtener_detalle_pedidos, actualizar_estado_pedido)
+                      obtener_vehiculos_disponibles, obtener_detalle_coordenadas, obtener_conductores, obtener_detalle_pedidos, actualizar_estado_pedido, obtener_analisis_pedidos)
 
 # Serializadores
 from .serializer import ( #UserSerializer, 
@@ -242,24 +242,33 @@ class AnalisisPedidoViewSet(viewsets.ModelViewSet):
         fecha_inicio_str = request.query_params.get('fecha_inicio', None)
         fecha_fin_str = request.query_params.get('fecha_fin', None)
         
-        fecha_inicio = parse_datetime(fecha_inicio_str) if fecha_inicio_str else None
-        fecha_fin = parse_datetime(fecha_fin_str) if fecha_fin_str else None
-        
-        queryset = self.get_queryset()
-        if(fecha_inicio and fecha_fin):
-            queryset = queryset.filter(fecha_analisis__range=[fecha_inicio, fecha_fin])
-        elif fecha_inicio:
-            queryset = queryset.filter(fecha_analisis__gte=fecha_inicio)
-        elif fecha_fin:
-            queryset = queryset.filter(fecha_analisis__lte=fecha_fin)
+        if not fecha_inicio_str or not fecha_fin_str:
+            return Response({
+                "error": "Debe proporcionar fecha_inicio y fecha_fin"
+            }, status=400)
         
         try:
-            ultimo_registro = queryset.latest('fecha_analisis')
-        except AnalisisPedido.DoesNotExist:
-            return Response({"error": "No se encontraron registros"}, status=404)
-        
-        serializer = self.get_serializer(ultimo_registro)
-        return Response(serializer.data)
+            fecha_inicio = parse_datetime(fecha_inicio_str)
+            fecha_fin = parse_datetime(fecha_fin_str)
+            
+            if not fecha_inicio or not fecha_fin:
+                return Response({
+                    "error": "Formato de fecha inválido"
+                }, status=400)
+            
+            resultado = obtener_analisis_pedidos(fecha_inicio, fecha_fin)
+            
+            if not resultado:
+                return Response({
+                    "error": "No se encontraron registros para el período especificado"
+                }, status=404)
+            
+            return Response(resultado)
+            
+        except Exception as e:
+            return Response({
+                "error": f"Error al procesar la solicitud: {str(e)}"
+            }, status=500)
 
     
     
@@ -311,5 +320,4 @@ class ConfiguracionViewSet(viewsets.ModelViewSet):
                 "data" : serializer.data
             }, status=200)
         return Response(serializer.errors, status=400)
-  
-  
+

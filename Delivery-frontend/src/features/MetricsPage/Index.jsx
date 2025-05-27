@@ -43,7 +43,7 @@ function MetricsPage() {
         setPedidosEntregados(data.pedidos_entregados || 0);
         setTiempoPromedioEntrega(data.tiempo_promedio_entrega_minutos || 0);
         setKilometrosRecorridosTotales(
-          parseFloat(data.kilometros_recorridos_totales) || 0
+          Number((parseFloat(data.distancia_total_km) || 0).toFixed(2))
         );
         setPedidosCancelados(data.pedidos_cancelados || 0);
 

@@ -25,7 +25,6 @@ def contar_pedidos(estado_ids):
     # Retornar el conteo de pedidos
     return result[0]['total_pedidos'] if result else 0
 
-
 def contar_vehiculos(disponible=None):
     """Cuenta vehículos según su estado de disponibilidad."""
     query = """
@@ -133,8 +132,6 @@ def obtener_detalle_pedidos():
     """
     return execute_sql_query(query)
 
-
-
 def obtener_vehiculos_disponibles():
     """Devuelve los vehículos disponibles."""
     query = """
@@ -226,4 +223,59 @@ def actualizar_estado_pedido(pk, nuevo_estado_id):
     """
     with connection.cursor() as cursor:
         cursor.execute(query, [nuevo_estado_id, pk])
+
+def obtener_analisis_pedidos(fecha_inicio, fecha_fin):
+    """
+    Obtiene análisis de pedidos entre dos fechas específicas.
+    
+    Args:
+        fecha_inicio (datetime): Fecha inicial del rango
+        fecha_fin (datetime): Fecha final del rango
+    
+    Returns:
+        dict: Diccionario con estadísticas de pedidos
+    """
+    query = """
+    WITH pedidos_filtrados AS (
+        SELECT 
+            p.*,
+            u.coordenadas
+        FROM "AngusEats_pedido" p
+        JOIN "AngusEats_ubicacion" u ON p.destino_id = u.id
+        WHERE p.fecha_entrega BETWEEN %s AND %s
+        AND u.coordenadas IS NOT NULL
+    ),
+    pedidos_ordenados AS (
+        SELECT 
+            id,
+            coordenadas,
+            ROW_NUMBER() OVER (ORDER BY id) AS rn
+        FROM pedidos_filtrados
+    ),
+    distancia_total AS (
+        SELECT 
+            COALESCE(SUM(ST_Distance(p1.coordenadas::geography, p2.coordenadas::geography)), 0) / 1000 AS distancia_total_km
+        FROM pedidos_ordenados p1
+        JOIN pedidos_ordenados p2 ON p1.rn + 1 = p2.rn
+    ),
+    resumen_pedidos AS (
+        SELECT 
+            COUNT(id) AS pedidos_totales,
+            SUM(CASE WHEN estado_id = 2 THEN 1 ELSE 0 END) AS pedidos_entregados,
+            SUM(CASE WHEN estado_id = 3 THEN 1 ELSE 0 END) AS pedidos_cancelados,
+            ROUND(AVG(precio)) AS promedio_precios,
+            ROUND(AVG(EXTRACT(EPOCH FROM (fecha_entrega - fecha_creacion)) / 60)) AS tiempo_promedio_entrega_minutos
+        FROM pedidos_filtrados
+    )
+
+    SELECT 
+        r.*,
+        d.distancia_total_km
+    FROM resumen_pedidos r
+    CROSS JOIN distancia_total d;
+    """
+    
+    params = [fecha_inicio, fecha_fin]
+    result = execute_sql_query(query, params)
+    return result[0] if result else None
 
