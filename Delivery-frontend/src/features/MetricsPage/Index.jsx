@@ -37,6 +37,7 @@ function MetricsPage() {
           fechaInicio: formatDate(range[0].startDate),
           fechaFin: formatDate(range[0].endDate)
         });
+        console.log("Datos obtenidos:", data);
 
         setPedidosTotales(data.pedidos_totales || 0);
         setPedidosEntregados(data.pedidos_entregados || 0);

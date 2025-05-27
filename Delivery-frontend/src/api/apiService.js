@@ -265,8 +265,7 @@ export const fetchAnalisisPedidosPorFecha = async ({ fechaInicio, fechaFin } = {
     const response = await axiosInstance.get(url);
     return response.data;
   } catch (error) {
-    console.error('Error al obtener análisis de pedidos:', error);
-    throw new Error('Error al obtener análisis de pedidos por fecha');
+    console.error('No se encontraron registros:', error);
   }
 };
 
