@@ -59,7 +59,7 @@ export const calculateRoute = (origin, destination, waypoints) => {
 const data = await fetchPedidosCoordenadas(7);
 const ruta = prepararRutaDesdePedidos(data);
 
-function prepararRutaDesdePedidos(data) {
+export function prepararRutaDesdePedidos(data) {
   if (!data || data.length < 2) {
     console.warn("Se requieren al menos 2 pedidos para generar una ruta.");
     return null;

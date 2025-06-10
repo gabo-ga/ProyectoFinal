@@ -2,23 +2,23 @@ import React, { useEffect, useState } from "react";
 import {
   GoogleMap,
   Marker,
-  DirectionsRenderer, InfoWindow
+  DirectionsRenderer,
+  InfoWindow
 } from "@react-google-maps/api";
 import { fetchPedidosCoordenadas } from "../../api/apiService";
-import { calculateRoute, useGoogleMapsScript } from "../../api/mapService";
+import {
+  calculateRoute,
+  useGoogleMapsScript
+} from "../../api/mapService";
 import { useAuth } from "../../AuthContext";
 import { orderByDistance } from 'geolib';
 import { useWebSocket } from "../../hooks/useWebSocket";
 
 function Map() {
-  const center = { lat: -17.3895, lng: -66.1568 };
-
-  const [vehiculos, setVehiculos] = useState([]);
   const [routes, setRoutes] = useState([]);
   const { userId } = useAuth();
   const [selectedItem, setSelectedItem] = useState(null);
   const { location } = useWebSocket(userId);
-
   const { isLoaded, loadError } = useGoogleMapsScript();
 
   const prepararRutaDesdePedidos = (data) => {
@@ -37,22 +37,13 @@ function Map() {
     const destinoFinal = destinosOrdenados.at(-1);
 
     const waypoints = destinosOrdenados.slice(0, -1).map((p) => ({
-      location: {
-        lat: p.latitude,
-        lng: p.longitude,
-      },
+      location: { lat: p.latitude, lng: p.longitude },
       stopover: true,
     }));
 
     return {
-      origin: {
-        lat: origin.latitude,
-        lng: origin.longitude,
-      },
-      destination: {
-        lat: destinoFinal.latitude,
-        lng: destinoFinal.longitude,
-      },
+      origin: { lat: origin.latitude, lng: origin.longitude },
+      destination: { lat: destinoFinal.latitude, lng: destinoFinal.longitude },
       waypoints,
     };
   };
@@ -60,6 +51,8 @@ function Map() {
   useEffect(() => {
     const fetchAndCalculateRoute = async () => {
       try {
+        const tempRoutes = [];
+
         if (userId === 6) {
           const conductores = [
             { id: 7, color: "red" },
@@ -67,11 +60,10 @@ function Map() {
             { id: 11, color: "green" },
             { id: 12, color: "yellow" },
           ];
-          const tempRoutes = [];
 
           for (const conductor of conductores) {
             const data = await fetchPedidosCoordenadas(conductor.id);
-            if (data.length < 2) continue;
+            if (!data || data.length < 2) continue;
 
             const { origin, destination, waypoints } = prepararRutaDesdePedidos(data);
             const routeResult = await calculateRoute(origin, destination, waypoints);
@@ -80,25 +72,31 @@ function Map() {
               directions: routeResult,
               color: conductor.color,
               conductorId: conductor.id,
+              origin,
+              destination,
+              waypoints,
+              pedidos: data
             });
           }
-
-          setRoutes(tempRoutes);
         } else {
           const data = await fetchPedidosCoordenadas(userId);
-          if (data.length < 2) return;
+          if (!data || data.length < 2) return;
 
           const { origin, destination, waypoints } = prepararRutaDesdePedidos(data);
           const routeResult = await calculateRoute(origin, destination, waypoints);
 
-          setRoutes([
-            {
-              directions: routeResult,
-              color: "blue",
-              conductorId: userId,
-            },
-          ]);
+          tempRoutes.push({
+            directions: routeResult,
+            color: "blue",
+            conductorId: userId,
+            origin,
+            destination,
+            waypoints,
+            pedidos: data
+          });
         }
+
+        setRoutes(tempRoutes);
       } catch (err) {
         console.error("Error al obtener o calcular rutas", err);
       }
@@ -114,24 +112,96 @@ function Map() {
   return (
     <GoogleMap
       mapContainerClassName="w-full h-full rounded-lg overflow-hidden shadow-lg grid row-span-5 lg:row-span-6"
-      //center={center}
       zoom={12}
     >
-      {routes.map((routeObj, index) => (
-        <DirectionsRenderer
-          key={index}
-          directions={routeObj.directions}
-          options={{
-            polylineOptions: {
-              strokeColor: routeObj.color,
-              strokeWeight: 4,
-              strokeOpacity: 0.8,
-            },
-          }}
-        />
+      {routes.map((routeObj, idx) => (
+        <React.Fragment key={idx}>
+          <DirectionsRenderer
+            directions={routeObj.directions}
+            options={{
+              suppressMarkers: true,
+              polylineOptions: {
+                strokeColor: routeObj.color,
+                strokeWeight: 4,
+                strokeOpacity: 0.8,
+              },
+            }}
+          />
+
+          {/* Origen */}
+          <Marker
+            position={routeObj.origin}
+            icon="https://maps.google.com/mapfiles/ms/icons/green-dot.png"
+            onClick={() => setSelectedItem({ routeIdx: idx, type: 'origin', wpIdx: null })}
+          />
+
+          {/* Waypoints */}
+          {routeObj.waypoints.map((wp, i) => (
+            <Marker
+              key={i}
+              position={wp.location}
+              label={`${i + 1}`}
+              onClick={() => setSelectedItem({ routeIdx: idx, type: 'waypoint', wpIdx: i })}
+            />
+          ))}
+
+          {/* Destino */}
+          <Marker
+            position={routeObj.destination}
+            icon="https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+            onClick={() => setSelectedItem({ routeIdx: idx, type: 'destination', wpIdx: null })}
+          />
+        </React.Fragment>
       ))}
 
-      
+      {/* InfoWindow dinámico */}
+      {selectedItem && (() => {
+        const { routeIdx, type, wpIdx } = selectedItem;
+        const route = routes[routeIdx];
+        let position, content;
+
+        if (type === 'origin') {
+          position = route.origin;
+          content = (
+            <div>
+              <strong>Origen</strong><br />
+              Cliente: {route.pedidos[0].CLIENTE}<br />
+              Dirección: {route.pedidos[0].ORIGEN_DIRECCION}
+            </div>
+          );
+        } else if (type === 'destination') {
+          position = route.destination;
+          const last = route.pedidos.length - 1;
+          content = (
+            <div>
+              <strong>Destino</strong><br />
+              Cliente: {route.pedidos[last].CLIENTE}<br />
+              Dirección: {route.pedidos[last].DESTINO_DIRECCION}
+            </div>
+          );
+        } else {
+          position = route.waypoints[wpIdx].location;
+          const pedido = route.pedidos[wpIdx + 1];
+          content = (
+            <div>
+              <strong>Parada #{wpIdx + 1}</strong><br />
+              Cliente: {pedido.CLIENTE}<br />
+              Dirección: {pedido.DESTINO_DIRECCION}
+            </div>
+          );
+        }
+
+        return (
+          <InfoWindow
+            position={position}
+            onCloseClick={() => setSelectedItem(null)}
+          >
+            {content}
+          </InfoWindow>
+        );
+      })()}
+
+      {/* Marcador en tiempo real */}
       {location && (
         <Marker
           position={location}

@@ -161,28 +161,29 @@ def obtener_detalle_coordenadas(estado_id, conductor_id):
     """
     base_query = """
         SELECT
-            p.id AS "ID",
-            c.nombre AS "CLIENTE",
-            ST_X(u_origen.coordenadas) AS "ORIGEN_LAT",
-            ST_Y(u_origen.coordenadas) AS "ORIGEN_LNG",
-            ST_X(u_destino.coordenadas) AS "DESTINO_LAT",
-            ST_Y(u_destino.coordenadas) AS "DESTINO_LNG"
-        FROM 
-            "AngusEats_pedido" p
-        JOIN 
-            "AngusEats_ubicacion" u_origen
-        ON 
-            p.origen_id = u_origen.id
-        JOIN 
-            "AngusEats_ubicacion" u_destino
-        ON 
-            p.destino_id = u_destino.id
-        JOIN 
-            "AngusEats_cliente" c
-        ON
-            p.cliente_id = c.id
-        WHERE 
-            p.estado_id = %s
+    p.id AS "ID",
+    c.nombre AS "CLIENTE",
+    -- Origen
+    ST_X(u_origen.coordenadas) AS "ORIGEN_LAT",
+    ST_Y(u_origen.coordenadas) AS "ORIGEN_LNG",
+    u_origen.direccion       AS "ORIGEN_DIRECCION",
+    -- Destino
+    ST_X(u_destino.coordenadas) AS "DESTINO_LAT",
+    ST_Y(u_destino.coordenadas) AS "DESTINO_LNG",
+    u_destino.direccion        AS "DESTINO_DIRECCION"
+FROM 
+    "AngusEats_pedido" p
+JOIN 
+    "AngusEats_ubicacion" u_origen
+  ON p.origen_id  = u_origen.id
+JOIN 
+    "AngusEats_ubicacion" u_destino
+  ON p.destino_id = u_destino.id
+JOIN 
+    "AngusEats_cliente" c
+  ON p.cliente_id = c.id
+WHERE 
+    p.estado_id = %s
     """
     params = [estado_id]
     
