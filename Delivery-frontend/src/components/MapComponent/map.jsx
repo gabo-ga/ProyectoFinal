@@ -2,18 +2,13 @@ import React, { useEffect, useState } from "react";
 import {
   GoogleMap,
   Marker,
-  DirectionsRenderer,
+  DirectionsRenderer, InfoWindow
 } from "@react-google-maps/api";
 import { fetchPedidosCoordenadas } from "../../api/apiService";
 import { calculateRoute, useGoogleMapsScript } from "../../api/mapService";
 import { useAuth } from "../../AuthContext";
-import {
-  initSocket,
-  sendLocation,
-  closeSocket,
-  socket,
-} from "../../api/socketService";
 import { orderByDistance } from 'geolib';
+import { useWebSocket } from "../../hooks/useWebSocket";
 
 function Map() {
   const center = { lat: -17.3895, lng: -66.1568 };
@@ -21,39 +16,10 @@ function Map() {
   const [vehiculos, setVehiculos] = useState([]);
   const [routes, setRoutes] = useState([]);
   const { userId } = useAuth();
-  const [location, setLocation] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const { location } = useWebSocket(userId);
 
   const { isLoaded, loadError } = useGoogleMapsScript();
-
-
-
-  useEffect(() => {
-    if (!userId) return;
-    initSocket(userId);
-
-    socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      const lat = parseFloat(data.latitude);
-      const lng = parseFloat(data.longitude);
-      setLocation({ lat, lng });
-    };
-
-    return () => {
-      closeSocket();
-    };
-  }, [userId]);
-
-  useEffect(() => {
-    if (userId !== 6) {
-      const intervalId = setInterval(() => {
-        navigator.geolocation.getCurrentPosition((position) => {
-          const { latitude, longitude } = position.coords;
-          sendLocation(latitude, longitude);
-        });
-      }, 5000);
-      return () => clearInterval(intervalId);
-    }
-  }, [userId]);
 
   const prepararRutaDesdePedidos = (data) => {
     const origin = {
@@ -143,6 +109,7 @@ function Map() {
 
   if (loadError) return <div>Error al cargar el mapa</div>;
   if (!isLoaded) return <div>Cargando mapa...</div>;
+  console.log(routes)
 
   return (
     <GoogleMap
@@ -163,6 +130,8 @@ function Map() {
           }}
         />
       ))}
+
+      
       {location && (
         <Marker
           position={location}
