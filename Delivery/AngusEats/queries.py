@@ -157,11 +157,12 @@ def obtener_vehiculos_disponibles():
 def obtener_detalle_coordenadas(estado_id, conductor_id):
     """
     Obtiene las coordenadas de origen y destino de los pedidos con un estado específico
-    y un conductor especifico.
+    y un conductor especifico y el nombre del cliente.
     """
     base_query = """
         SELECT
             p.id AS "ID",
+            c.nombre AS "CLIENTE",
             ST_X(u_origen.coordenadas) AS "ORIGEN_LAT",
             ST_Y(u_origen.coordenadas) AS "ORIGEN_LNG",
             ST_X(u_destino.coordenadas) AS "DESTINO_LAT",
@@ -176,6 +177,10 @@ def obtener_detalle_coordenadas(estado_id, conductor_id):
             "AngusEats_ubicacion" u_destino
         ON 
             p.destino_id = u_destino.id
+        JOIN 
+            "AngusEats_cliente" c
+        ON
+            p.cliente_id = c.id
         WHERE 
             p.estado_id = %s
     """
