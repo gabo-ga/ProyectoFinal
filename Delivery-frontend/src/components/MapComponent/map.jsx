@@ -8,6 +8,7 @@ import {
 import { fetchPedidosCoordenadas } from "../../api/apiService";
 import {
   calculateRoute,
+  calculateRouteDistances,  // Add this import
   useGoogleMapsScript
 } from "../../api/mapService";
 import { useAuth } from "../../AuthContext";
@@ -16,6 +17,7 @@ import { useWebSocket } from "../../hooks/useWebSocket";
 
 function Map() {
   const [routes, setRoutes] = useState([]);
+  const [routeDistances, setRouteDistances] = useState({});  // Add this state
   const { userId } = useAuth();
   const [selectedItem, setSelectedItem] = useState(null);
   const { location } = useWebSocket(userId);
@@ -52,6 +54,7 @@ function Map() {
     const fetchAndCalculateRoute = async () => {
       try {
         const tempRoutes = [];
+        const tempDistances = {};
 
         if (userId === 6) {
           const conductores = [
@@ -67,6 +70,7 @@ function Map() {
 
             const { origin, destination, waypoints } = prepararRutaDesdePedidos(data);
             const routeResult = await calculateRoute(origin, destination, waypoints);
+            const distanceResult = await calculateRouteDistances(origin, destination, waypoints);
 
             tempRoutes.push({
               directions: routeResult,
@@ -77,6 +81,8 @@ function Map() {
               waypoints,
               pedidos: data
             });
+
+            tempDistances[conductor.id] = distanceResult;
           }
         } else {
           const data = await fetchPedidosCoordenadas(userId);
@@ -84,6 +90,7 @@ function Map() {
 
           const { origin, destination, waypoints } = prepararRutaDesdePedidos(data);
           const routeResult = await calculateRoute(origin, destination, waypoints);
+          const distanceResult = await calculateRouteDistances(origin, destination, waypoints);
 
           tempRoutes.push({
             directions: routeResult,
@@ -94,9 +101,12 @@ function Map() {
             waypoints,
             pedidos: data
           });
+
+          tempDistances[userId] = distanceResult;
         }
 
         setRoutes(tempRoutes);
+        setRouteDistances(tempDistances);
       } catch (err) {
         console.error("Error al obtener o calcular rutas", err);
       }
@@ -162,31 +172,52 @@ function Map() {
 
         if (type === 'origin') {
           position = route.origin;
+          const distances = routeDistances[route.conductorId];
           content = (
-            <div>
+            <div className="p-2">
               <strong>Origen</strong><br />
               Cliente: {route.pedidos[0].CLIENTE}<br />
-              Dirección: {route.pedidos[0].ORIGEN_DIRECCION}
+              Dirección: {route.pedidos[0].ORIGEN_DIRECCION}<br />
+              {distances && distances.segments[0] && (
+                <div className="mt-2 text-sm">
+                  <div>Distancia al siguiente punto: {distances.segments[0].distance}</div>
+                  <div>Tiempo estimado: {distances.segments[0].duration}</div>
+                </div>
+              )}
+            </div>
+          );
+        } else if (type === 'waypoint') {
+          position = route.waypoints[wpIdx].location;
+          const pedido = route.pedidos[wpIdx + 1];
+          const distances = routeDistances[route.conductorId];
+          content = (
+            <div className="p-2">
+              <strong>Parada #{wpIdx + 1}</strong><br />
+              Cliente: {pedido.CLIENTE}<br />
+              Dirección: {pedido.DESTINO_DIRECCION}<br />
+              {distances && distances.segments[wpIdx + 1] && (
+                <div className="mt-2 text-sm">
+                  <div>Distancia al siguiente punto: {distances.segments[wpIdx + 1].distance}</div>
+                  <div>Tiempo estimado: {distances.segments[wpIdx + 1].duration}</div>
+                </div>
+              )}
             </div>
           );
         } else if (type === 'destination') {
           position = route.destination;
           const last = route.pedidos.length - 1;
+          const distances = routeDistances[route.conductorId];
           content = (
-            <div>
+            <div className="p-2">
               <strong>Destino</strong><br />
               Cliente: {route.pedidos[last].CLIENTE}<br />
-              Dirección: {route.pedidos[last].DESTINO_DIRECCION}
-            </div>
-          );
-        } else {
-          position = route.waypoints[wpIdx].location;
-          const pedido = route.pedidos[wpIdx + 1];
-          content = (
-            <div>
-              <strong>Parada #{wpIdx + 1}</strong><br />
-              Cliente: {pedido.CLIENTE}<br />
-              Dirección: {pedido.DESTINO_DIRECCION}
+              Dirección: {route.pedidos[last].DESTINO_DIRECCION}<br />
+              {distances && (
+                <div className="mt-2 text-sm">
+                  <div>Distancia total recorrida: {distances.total.distance}</div>
+                  <div>Tiempo total estimado: {distances.total.duration}</div>
+                </div>
+              )}
             </div>
           );
         }
