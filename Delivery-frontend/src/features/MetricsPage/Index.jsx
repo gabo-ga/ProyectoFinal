@@ -111,8 +111,8 @@ function MetricsPage() {
             </Card>
             <Card className="text-sm">
               <Card.Body className="flex flex-col lg:flex-row lg: gap-2">
-                <Card.Text className="m-0">Tiempo promedio de entrega (minutos):</Card.Text>
-                <Card.Title>{tiempoPromedioEntrega}</Card.Title>
+                <Card.Text className="m-0">Tiempo promedio de entrega (horas):</Card.Text>
+                <Card.Title>{tiempoPromedioEntrega/60}</Card.Title>
               </Card.Body>
             </Card>
             <Card className="text-sm">

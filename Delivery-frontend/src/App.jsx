@@ -1,7 +1,6 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./features/login";
 import Dashboard from "./features/dashboard";
 import OrdersHistory from "./features/ordersList";
 import PrivateRoute from "./PrivateRoute";
@@ -12,6 +11,7 @@ import VehicleList from "./features/vehiclesDetail";
 import VehicleForm from "./features/vehicleForm";
 import MetricsPage from "./features/MetricsPage/Index";
 import { AuthProvider } from "./AuthContext";
+import Login from "./pages/LoginPage";
 
 function App() {
   return (
