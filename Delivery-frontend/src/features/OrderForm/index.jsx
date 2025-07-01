@@ -11,12 +11,7 @@ import CustomerSelect from "../../components/CostumerSelect";
 import DriverField from "../../components/DriverField";
 import PriceField from "../../components/PriceField";
 import DescriptionField from "../../components/DescriptionField";
-import {
-  fetchOrigenFijo,
-  fetchPedidoById,
-  saveOrUpdatePedido,
-  fetchDriversWithActiveOrders, // Cambiado: Uso de la nueva función para obtener conductores
-} from "../../api/apiService";
+import { crearUbicacion } from "../../api/apiService";
 import styles from "./index.module.css";
 import MapWithMarker from "../../components/MapWithMarkerComponent";
 import {
@@ -27,17 +22,16 @@ import {
 
 function OrderForm() {
   const [formData, setFormData] = useState({
-    direccion_origen: "",
-    coordenadas_origen_lat: null,
-    coordenadas_origen_lng: null,
-    direccion_destino: "",
-    coordenadas_destino_lat: null,
-    coordenadas_destino_lng: null,
-    cliente: "",
-    estado: "pendiente",
+    origen_id: null,
+    destino_id: null,
+    cliente_id: null,
+    estado_id: 1,
     precio: "",
     detalle: "",
-    conductor_designado: "",
+    conductor: null,
+
+    //campo adicional
+    destino_direccion: "",
   });
 
   const [drivers, setDrivers] = useState([]); // Lista de conductores con pedidos activos
@@ -66,13 +60,41 @@ function OrderForm() {
     }
   }, [id]);
 
-  const handleDestinationPlaceSelected = (data) => {
-    setFormData({
-      ...formData,
-      direccion_destino: data.address,
-      coordenadas_destino_lat: data.lat,
-      coordenadas_destino_lng: data.lng,
-    });
+  const handleDestinationPlaceSelected = async (data) => {
+    try {
+      if (
+        !data ||
+        typeof data.address !== "string" ||
+        typeof data.lat !== "number" ||
+        typeof data.lng !== "number"
+      ) {
+        console.error("Datos incompletos o inválidos seleccionados:", data);
+        return;
+      }
+
+      console.log("Datos seleccionados:", data);
+
+      //se crea la ubicacion y devuelve el id
+      const destinoId = await crearUbicacion(data.address, data.lat, data.lng);
+
+      if (!destinoId) {
+        console.error("El backend no devolvió un ID válido para la ubicación.");
+        return;
+      }
+
+      setFormData((prevData) => ({
+        ...prevData,
+        direccion_destino: data.address,
+        coordenadas_destino_lat: data.lat,
+        coordenadas_destino_lng: data.lng,
+        destino_id: destinoId,
+      }));
+
+      console.log("Ubicación creada con ID:", destinoId);
+    } catch (error) {
+      console.error("Error al crear la ubicación de destino:", error);
+      alert("No se pudo crear la ubicación. Por favor, inténtelo de nuevo.");
+    }
   };
 
   const handleMarkerPositionChanged = (position) => {
@@ -94,12 +116,13 @@ function OrderForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Datos del formulario:", formData);
     try {
-      const success = await handleOrderSubmit(formData);
-      if (success) navigate("/dashboard");
+      const success = await handleOrderSubmit(formData, id);
+      if (success) {
+        navigate("/dashboard");
+      }
     } catch (error) {
-      console.error("Error al enviar el pedido:", error);
+      console.error("Error al enviar el formulario:", error);
     }
   };
 
@@ -125,10 +148,10 @@ function OrderForm() {
               </Col>
               <Col xs={12} md={10}>
                 <Form.Group controlId="fromDestiny">
-                  <Form.Label>DIRECCIÓN DESTINO:</Form.Label>
+                  <Form.Label>DIRECCIÓN DE DESTINO:</Form.Label>
                   <AddressSearch
                     onPlaceSelected={handleDestinationPlaceSelected}
-                    initialAddress={formData.direccion_destino}
+                    initialAddress={formData.destino_direccion}
                   />
                 </Form.Group>
               </Col>
@@ -146,16 +169,14 @@ function OrderForm() {
               </Col>
               <Col xs={12} md={10}>
                 <CustomerSelect
-                  value={formData.cliente}
+                  value={formData.cliente_id}
                   onChange={handleInputChange}
-                  name="cliente"
+                  name="cliente_id"
                 />
               </Col>
-              {/* Campo para seleccionar conductor */}
               <Col xs={12} md={10}>
                 <DriverField
-                  drivers={drivers}
-                  value={formData.conductor_designado}
+                  value={formData.conductor}
                   onChange={handleInputChange}
                 />
               </Col>

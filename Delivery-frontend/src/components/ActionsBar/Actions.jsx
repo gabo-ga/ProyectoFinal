@@ -1,29 +1,23 @@
-import Col from "react-bootstrap/esm/Col";
-import Container from "react-bootstrap/esm/Container";
-import Row from "react-bootstrap/esm/Row";
-import styles from "./Actions.module.css";
 
 function ActionBar({ label1, label2, label3, label4, label5 }) {
   return (
-    <Container fluid className={styles.container}>
-      <Row className={styles.row}>
-        <Col md={2} className={styles.hiddenOnXS}>
+    <section className="bg-white rounded-lg w-full grid grid-cols-3 p-2 md:grid-cols-5 lg:grid-cols-5"> 
+        <div className="hidden md:block lg:block">
           {label1}
-        </Col>
-        <Col xs={4} md={3}>
+        </div>
+        <div className="">
           {label2}
-        </Col>
-        <Col xs={4} md={2}>
+        </div>
+        <div className="">
           {label3}
-        </Col>
-        <Col md={2} className={styles.hiddenOnXS}>
+        </div>
+        <div className="hidden md:block lg:block">
           {label4}
-        </Col>
-        <Col className={styles.hiddenOnXS} xs={3} md={2}>
+        </div>
+        <div className="">
           {label5}
-        </Col>
-      </Row>
-    </Container>
+        </div>
+    </section>
   );
 }
 

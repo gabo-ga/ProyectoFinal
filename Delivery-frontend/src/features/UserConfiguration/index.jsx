@@ -31,8 +31,8 @@ function UserPage() {
     const cargarDatosUsuario = async () => {
       try {
         const userData = await fetchUserById(userId);
-        setUserEmail(userData.email);
-        setUserName(`${userData.first_name} ${userData.last_name}`);
+        setUserEmail(userData.correo);
+        setUserName(userData.nombre);
       } catch (error) {
         console.error("Error al cargar datos del usuario:", error.message);
       }
@@ -41,9 +41,14 @@ function UserPage() {
     const cargarConfiguracion = async () => {
       try {
         const data = await fetchDireccionOrigen();
-        if (data.direccion_origen) {
-          setDireccionOrigen(data.direccion_origen);
-          setCoordenadasOrigen({ lat: data.lat, lng: data.lng });
+        if (data[0].direccion) {
+          setDireccionOrigen(data[0].direccion);
+        }
+        if(data[0].geojson && data[0].geojson.coordinates){
+          setCoordenadasOrigen({
+            lat: data[0].geojson.coordinates[1],
+            lng: data[0].geojson.coordinates[0],
+          });
         }
       } catch (error) {
         console.error(error.message);
@@ -54,76 +59,86 @@ function UserPage() {
     cargarConfiguracion();
   }, [userId]);
 
-  const handlePlaceSelected = ({ address, lat, lng }) => {
-    setDireccionOrigen(address);
-    setCoordenadasOrigen({ lat, lng });
-  };
+const handlePlaceSelected = ({ address, lat, lng }) => {
+  setDireccionOrigen(address);
+  setCoordenadasOrigen({
+    type: "Point",
+    coordinates: [lng, lat],
+  });
+};
 
-  const handleMarkerPositionChanged = (newPosition) => {
-    setCoordenadasOrigen(newPosition);
+const handleMarkerPositionChanged = async (newPosition) => {
+  try {
+    const newGeoJson = {
+      type: "Point",
+      coordinates: [newPosition.lng, newPosition.lat],
+    };
+    setCoordenadasOrigen(newGeoJson);
 
-    // Actualiza la dirección en función de las nuevas coordenadas
-    fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${
-        newPosition.lat
-      },${newPosition.lng}&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.results[0]) {
-          setDireccionOrigen(data.results[0].formatted_address);
-        }
-      })
-      .catch((error) => console.error("Error al obtener la dirección:", error));
-  };
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-    try {
-      const data = await saveDireccionOrigen({
-        direccion_origen: direccionOrigen,
-        lat: coordenadasOrigen.lat,
-        lng: coordenadasOrigen.lng,
-      });
-      console.log("Respuesta del servidor:", data);
-    } catch (error) {
-      console.error(error.message);
+    const formattedAddress = await fetchAddressFromCoordinates(newPosition);
+    if (formattedAddress) {
+      setDireccionOrigen(formattedAddress);
+    } else {
+      console.warn(
+        "No se pudo obtener una dirección para las coordenadas proporcionadas."
+      );
     }
-  };
+  } catch (error) {
+    console.error(
+      "Error al manejar el cambio de posición del marcador:",
+      error
+    );
+  }
+};
 
-  return (
-    <>
-      <Header />
-      <Container fluid className={styles.body}>
-        <Card className={styles.card}>
-          <Card.Body>
-            <Col xs={12} className={styles.container}>
-              <PersonCircle size={50} />
-              <Card.Title>Hola: {userName}</Card.Title>
-              <Form className={styles.formContainer} onSubmit={handleSave}>
-                <EmailInput value={userEmail} />
-                <NameComponent value={userName} />
-                <Form.Group controlId="direccionOrigen">
-                  <Form.Label>Dirección de Origen</Form.Label>
-                  <AddressSearch
-                    onPlaceSelected={handlePlaceSelected}
-                    initialAddress={direccionOrigen}
-                  />
-                </Form.Group>
-                {/* Mapa interactivo con marcador reutilizable */}
-                <MapWithMarker
-                  center={coordenadasOrigen}
-                  onMarkerPositionChanged={handleMarkerPositionChanged}
+const handleSave = async (e) => {
+  e.preventDefault();
+  try {
+    const payload = {
+      direccion: direccionOrigen,
+      geojson: coordenadasOrigen,
+    };
+
+    const data = await saveDireccionOrigen(payload);
+    console.log("Respuesta del servidor:", data);
+  } catch (error) {
+    console.error("Error al guardar la configuración:", error.message);
+  }
+};
+
+return (
+  <>
+    <Header />
+    <main className="bg-[#ecf0f1] h-auto py-12 px-4 flex items-center justify-center w-full lg:px-24">
+      <Card className="w-full md:w-98 lg:w-1/2">
+        <Card.Body>
+          <div className="flex items-center flex-col gap-3">
+            <PersonCircle size={100} />
+            <Form className="w-full flex flex-col gap-3" onSubmit={handleSave}>
+              <EmailInput value={userEmail} />
+              <NameComponent value={userName} />
+              <Form.Group controlId="direccionOrigen">
+                <Form.Label>Dirección de Origen</Form.Label>
+                <AddressSearch
+                  onPlaceSelected={handlePlaceSelected}
+                  initialAddress={direccionOrigen}
                 />
-                <AcceptButton type="submit" />
-              </Form>
-            </Col>
-          </Card.Body>
-        </Card>
-      </Container>
-      <Footer />
-    </>
-  );
+              </Form.Group>
+              {/* Mapa interactivo con marcador reutilizable */}
+              {/*<MapWithMarker
+                center={coordenadasOrigen}
+                onMarkerPositionChanged={handleMarkerPositionChanged}
+              />*/}
+              <AcceptButton type="submit" />
+            </Form>
+          </div>
+        </Card.Body>
+      </Card>
+    </main>
+    <Footer />
+  </>
+);
+
 }
 
 export default UserPage;

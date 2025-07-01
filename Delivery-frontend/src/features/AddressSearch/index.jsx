@@ -4,28 +4,37 @@ import SearchInput from "../../components/AddressInput/index";
 import { useGoogleMapsScript } from "../../api/mapService";
 
 function AddressSearch({ onPlaceSelected, initialAddress = "" }) {
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState(initialAddress || "");
   const searchBoxRef = useRef(null);
 
   useEffect(() => {
-    setAddress(initialAddress);
+    setAddress(initialAddress || "");
   }, [initialAddress]);
 
   const { isLoaded, loadError } = useGoogleMapsScript();
 
   const handlePlaceChanged = useCallback(() => {
     const place = searchBoxRef.current?.getPlaces();
+    //console.log("Lugares obtenidos:", place);
+
     if (place && place.length > 0) {
       const selectedPlace = place[0];
+      //console.log("Lugar seleccionado:", selectedPlace);
+
       const formattedAddress = selectedPlace.formatted_address;
-      const lat = selectedPlace.geometry.location.lat();
-      const lng = selectedPlace.geometry.location.lng();
-      setAddress(formattedAddress);
-      onPlaceSelected({
-        address: formattedAddress,
-        lat: lat,
-        lng: lng,
-      });
+      const lat = selectedPlace.geometry?.location?.lat();
+      const lng = selectedPlace.geometry?.location?.lng();
+
+      if (lat && lng) {
+        setAddress(formattedAddress);
+        onPlaceSelected({
+          address: formattedAddress,
+          lat: lat,
+          lng: lng,
+        });
+      } else {
+        console.error("Coordenadas no encontradas en el lugar seleccionado.");
+      }
     }
   }, [onPlaceSelected]);
 

@@ -1,60 +1,49 @@
-import Card from "react-bootstrap/esm/Card";
-import styles from "./logout.module.css";
+
 import { XLg } from "react-bootstrap-icons";
-import React, { useEffect, useState, useContext } from "react";
-import axiosInstance from "../../axiosInstance";
-import { Link, useNavigate } from "react-router-dom";
+import React, {useContext } from "react";
+import { Link} from "react-router-dom";
 import { AuthContext } from "../../AuthContext";
 
 function Logout({ onClose }) {
-  const [user, setUser] = useState(null);
-  const { logoutUser } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axiosInstance.get(
-          "https://localhost:8000/api/v1/users/1"
-        );
-        setUser(response.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
+  const { authTokens, logoutUser, username,userId } = useContext(AuthContext);
 
   const handleLogout = () => {
     logoutUser();
-    navigate("/login");
+    window.location.href = "/login";
   };
 
-  const userId = 1;
+  const user = authTokens
+    ? {
+        nombre: authTokens,
+      }
+    : null;
+
   return (
-    <Card className={styles.cardStyle}>
-      <Card.Body className={styles.cardContainer}>
-        <div className={styles.closeContainer}>
-          <XLg className={styles.closeButton} onClick={onClose}>
-            &times;
-          </XLg>
-        </div>
-        <Card.Title className={styles.textStyle}>
-          {user ? `Hola ${user.first_name}` : "Cargando..."}
-        </Card.Title>
-        <Card.Text className={styles.textStyle}>
-          <Link to="/user">Configuracion</Link>{" "}
-        </Card.Text>
-        <Card.Text
-          className={styles.textStyle}
+    
+    <div className="absolute z-50">
+      <div className="bg-[#1abc9c] w-38 flex flex-col fixed rounded-lg p-3 lg:w-44">
+        <div className="flex flex-col">
+        <div className="flex justify-end">
+            <XLg 
+              className="cursor-pointer" 
+              onClick={onClose}
+            />
+          </div>
+          <p className="text-white mb-0 p-1 text-md lg:text-xl">
+            <strong>{user ? `Hola ${username}` : "Cargando..."}</strong>
+          </p>
+          <p className="text-white mb-0 p-1 text-sm lg:text-md">
+          <Link to={`/user/${userId}`}>Configuracion</Link>
+        </p>
+        <p
+          className="text-white mb-0 p-1 cursor-pointer text-sm lg:text-md"
           onClick={handleLogout}
-          style={{ cursor: "pointer" }}
         >
           Cerrar Sesión
-        </Card.Text>
-      </Card.Body>
-    </Card>
+        </p>
+        </div>
+      </div>
+      </div>
   );
 }
 

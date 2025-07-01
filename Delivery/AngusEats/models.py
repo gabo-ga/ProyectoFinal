@@ -131,7 +131,6 @@ class Vehiculo(models.Model):
 
 
 
-
 class AnalisisPedido(models.Model):
     pedidos_totales = models.IntegerField()
     pedidos_entregados = models.IntegerField()

@@ -1,23 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Container from "react-bootstrap/esm/Container";
-import Row from "react-bootstrap/esm/Row";
-import Col from "react-bootstrap/esm/Col";
-import styles from "./metrics.module.css";
 import {
   fetchPedidosEnCurso,
   fetchVehiculosDisponibles,
 } from "../../api/apiService";
 
 function Metrics() {
-  return (
-    <Container className={styles.MetricsContainer}>
-      <MetricsBody />
-    </Container>
-  );
-}
-
-function MetricsBody() {
   const [pedidosEnCurso, setPedidosEnCurso] = useState(0);
+  const [pedidosCompletados, setPedidosCompletados] = useState(0);
+  const [pedidosCancelados, setPedidosCancelados] = useState(0);
   const [vehiculosDisponibles, setVehiculosDisponibles] = useState(0);
 
   useEffect(() => {
@@ -25,6 +15,10 @@ function MetricsBody() {
       try {
         const pedidosCount = await fetchPedidosEnCurso();
         setPedidosEnCurso(pedidosCount);
+        const pedidosEntregados = await fetchPedidosEnCurso(2);
+        setPedidosCompletados(pedidosEntregados);
+        const pedidosCancelados = await fetchPedidosEnCurso(3);
+        setPedidosCancelados(pedidosCancelados);
 
         const vehiculosCount = await fetchVehiculosDisponibles();
         setVehiculosDisponibles(vehiculosCount);
@@ -35,19 +29,24 @@ function MetricsBody() {
 
     fetchData();
   }, []);
-
   return (
-    <Row>
-      <Col xs={12} md={6}>
-        <h3 className={styles.TextStyle}>Pedidos en curso: {pedidosEnCurso}</h3>
-      </Col>
-      <Col xs={12} md={6}>
-        <h3 className={styles.TextStyle}>
+    <section className="h-full w-full rounded-lg bg-white p-2 lg:flex">
+      <div className="grid grid-cols-2 gap-1 lg:w-full">
+        <p className="text-xs font-semibold break-words m-0 lg:text-lg">
+          Pedidos en curso: {pedidosEnCurso}</p>
+        <p className="text-xs font-semibold break-words m-0 lg:text-lg">
           Vehículos Disponibles: {vehiculosDisponibles}
-        </h3>
-      </Col>
-    </Row>
+        </p>
+        <p className="text-xs font-semibold break-words m-0 lg:text-lg">
+          Pedidos completados: {pedidosCompletados}
+        </p>
+        <p className="text-xs font-semibold break-words m-0 lg:text-lg">
+          Pedidos cancelados: {pedidosCancelados}
+        </p>
+      </div>
+    </section>
   );
 }
+
 
 export default Metrics;

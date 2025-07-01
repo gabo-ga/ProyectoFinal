@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
-import styles from "./orders.module.css";
-import Col from "react-bootstrap/esm/Col";
-import Container from "react-bootstrap/esm/Container";
-import Row from "react-bootstrap/esm/Row";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 import { fetchActiveOrders } from "../../api/apiService";
+import { useAuth } from "../../AuthContext";
 
 function ActiveOrders(props) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const { userId } = useAuth();
+
   useEffect(() => {
     const getOrders = async () => {
       try {
-        const data = await fetchActiveOrders();
+        const data = await fetchActiveOrders(userId);
         setOrders(data);
         setLoading(false);
       } catch (error) {
@@ -24,7 +23,7 @@ function ActiveOrders(props) {
       }
     };
     getOrders();
-  }, []);
+  }, [userId]);
 
   if (loading) {
     return <p>Cargando pedidos...</p>;
@@ -35,25 +34,20 @@ function ActiveOrders(props) {
   }
 
   return (
-    <>
-      <Container fluid>
-        <Row>
-          <Col xs={12}>
-            <h4 className={styles.TextStyle}>
-              <Link to="/ordershistory" className={styles.TextStyle}>
+      <div className="flex h-full w-full flex-col">
+            <h4 className="font-semibold flex items-center">
+              <Link to="/ordershistory" className="text-xs text-gray-800 hover:text-gray-600 lg:text-base">
                 {props.title}
               </Link>
             </h4>
-          </Col>
-        </Row>
-        <Row>
-          <div className={styles.scrollWrapper}>
-            <div className={styles.scrollContainer}>
-              {orders.map((order, index) => (
-                <Col xs={12} md={5} key={index}>
+        <div className="flex-1 overflow-y-hidden overflow-x-auto pb-2">
+          <div className="flex flex-nowrap h-full w-auto gap-4">
+            
+              {orders.map((order) => (
+                <div key={order.pedido_id} className="flex-none w-auto">
                   <Link
                     to={`/orderdetails/${order.pedido_id}`}
-                    className={styles.linkStyle}
+                    className="block text-decoration-none"
                   >
                     <OrderCard
                       cliente={order.cliente_nombre}
@@ -63,33 +57,31 @@ function ActiveOrders(props) {
                       destino={order.pedido_direccion_destino}
                     />
                   </Link>
-                </Col>
+                </div>
               ))}
-            </div>
           </div>
-        </Row>
-      </Container>
-    </>
+        </div>
+      </div>
   );
 }
 
 function OrderCard({ cliente, telefono, fecha, estado, destino }) {
   return (
-    <div className={styles.scrollItem}>
-      <Card className={styles.CardStyle}>
-        <Card.Body className={styles.textContainer}>
-          <Card.Text className={styles.TextStyle}>Cliente: {cliente}</Card.Text>
-          <Card.Text className={styles.TextStyle}>
+    
+      <Card className="w-48 p-2 lg:w-54">
+        <Card.Body className="flex w-ato flex-col p-2 items-start gap-1 break-words overflow-hidden truncate">
+          <Card.Text className="text-xs font-semibold leading-normal m-0 lg:text-sm">Cliente: {cliente}</Card.Text>
+          <Card.Text className="text-xs font-semibold leading-normal m-0 truncate break-words lg:text-sm">
             Teléfono: {telefono}
           </Card.Text>
-          <Card.Text className={styles.TextStyle}>
+          <Card.Text className="text-xs font-semibold leadng-normal m-0 truncate break-words lg:text-sm">
             Fecha del pedido: {fecha}
           </Card.Text>
-          <Card.Text className={styles.TextStyle}>Estado: {estado}</Card.Text>
-          <Card.Text className={styles.TextStyle}>Destino: {destino}</Card.Text>
+          <Card.Text className="text-xs font-semibold leading-normal m-0  truncate break-words lg:text-sm">Estado: {estado}</Card.Text>
+          <Card.Text className="text-xs font-semibold leading-normal m-0 truncate break-words lg:text-sm">Destino: {destino}</Card.Text>
         </Card.Body>
       </Card>
-    </div>
+    
   );
 }
 

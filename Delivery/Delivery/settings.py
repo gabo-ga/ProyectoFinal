@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,13 +42,28 @@ INSTALLED_APPS = [
     'corsheaders',
     'AngusEats',
     'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'coreapi',
     'sslserver',
     'django_extensions',
+    'channels',
 ]
 
-CORS_ALLOWED_ORIGINS = ["https://localhost:5173", 'https://localhost:3000',
+ASGI_APPLICATION = "Delivery.asgi.application"
+
+CORS_ALLOWED_ORIGINS = ["https://localhost:5173", 'https://localhost:3000','http://localhost:3000',
     'https://127.0.0.1:8000', "https://127.0.0.1:5173", "http://localhost:5173"]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", 'http://localhost:3000',]
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -98,6 +114,8 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
+AUTH_USER_MODEL = 'AngusEats.Usuario'
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -135,13 +153,18 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-GDAL_LIBRARY_PATH = '/opt/local/lib/libgdal.dylib'
-GEOS_LIBRARY_PATH = '/opt/local/lib/libgeos_c.dylib'
+#mac os antigua
+#GDAL_LIBRARY_PATH = '/opt/homebrew/local/lib/libgdal.dylib'
+#GEOS_LIBRARY_PATH = '/opt/homebrew/local/lib/libgeos_c.dylib'
+
+GDAL_LIBRARY_PATH = '/opt/homebrew/Cellar/gdal/3.10.2_2/lib/libgdal.dylib'
+GEOS_LIBRARY_PATH = '/opt/homebrew/Cellar/geos/3.13.1/lib/libgeos_c.dylib'
 
 #Rest Framework 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':(
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -149,13 +172,17 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }
 
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+
 #jwt config
 
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'AUTH_HEADER_TYPES': ('Bearer',),
     'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
+    #'BLACKLIST_AFTER_ROTATION': True,
 }

@@ -1,16 +1,16 @@
-// src/components/Order.js
 import React, { useEffect, useState } from "react";
-import { Col, Container, Row } from "react-bootstrap";
-import styles from "./index.module.css";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import { fetchPedidos, deletePedido } from "../../api/apiService.js";
+import { useFilter } from "../../contexts/FilterContext"; // Importa el contexto
 
-function Order() {
+function Order({ onPedidosLoad }) {
   const [pedidos, setPedidos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  const { filters } = useFilter(); // Consumir filtros desde el contexto
 
   useEffect(() => {
     loadPedidos();
@@ -21,6 +21,10 @@ function Order() {
       const data = await fetchPedidos();
       setPedidos(data);
       setIsLoading(false);
+
+      if (onPedidosLoad) {
+        onPedidosLoad(data);
+      }
     } catch (error) {
       console.error(error.message);
       setError(error);
@@ -34,7 +38,7 @@ function Order() {
         const success = await deletePedido(id);
         if (success) {
           alert("Pedido eliminado con éxito");
-          loadPedidos(); // Actualizar la lista de pedidos
+          loadPedidos();
         } else {
           alert("Error al eliminar el pedido");
         }
@@ -49,6 +53,16 @@ function Order() {
     navigate(`/editOrder/${id}`);
   };
 
+  // Filtrar pedidos según los valores en `filters`
+  const pedidosFiltrados = pedidos.filter((pedido) => {
+    const clienteCoincide =
+      !filters.cliente || pedido.CLIENTE === filters.cliente;
+    const estadoCoincide =
+      !filters.estado || pedido.ESTADO.toLowerCase() === filters.estado;
+
+    return clienteCoincide && estadoCoincide;
+  });
+
   if (isLoading) {
     return <div>Cargando...</div>;
   }
@@ -58,34 +72,34 @@ function Order() {
   }
 
   return (
-    <Container fluid className={styles.container}>
-      {pedidos.map((pedido) => (
-        <Row key={pedido.ID} className="w-100">
-          <Col md={2} className={styles.hideOnXS}>
+    <section className="bg-white rounded-lg flex w-full flex-col">
+      {pedidosFiltrados.map((pedido) => (
+        <div key={pedido.ID} className="grid grid-cols-3 p-2 lg:grid-cols-5">
+          <div className="hidden md:block lg:block">
             {pedido.ID}
-          </Col>
-          <Col xs={4} md={3}>
+          </div>
+          <div className="text-sm lg:text-base">
             {pedido.CLIENTE}
-          </Col>
-          <Col xs={3} md={2}>
+          </div>
+          <div className="text-sm lg:text-base">
             {pedido.ESTADO}
-          </Col>
-          <Col md={2} className={styles.hideOnXS}>
+          </div>
+          <div className="hidden md:block lg:block">
             {pedido.DIRECCION_DESTINO}
-          </Col>
-          <Col xs={3} md={2}>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-3">
             <PencilSquare
-              className={styles.icons}
+              className="size-7 lg:size-10"
               onClick={() => handleEdit(pedido.ID)}
             />
             <Trash
-              className={styles.icons}
+              className="size-7 lg:size-10"
               onClick={() => handleDelete(pedido.ID)}
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       ))}
-    </Container>
+    </section>
   );
 }
 

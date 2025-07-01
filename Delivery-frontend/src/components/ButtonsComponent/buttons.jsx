@@ -6,9 +6,9 @@ import Col from "react-bootstrap/esm/Col";
 
 function ButtonsContainer() {
   return (
-    <Container>
-      <Row className={styles.ButtonsContainer}>
-        <Col xs={12} md={12}>
+    <Container className={styles.ButtonsContainer}>
+      <Row className="w-100">
+        <Col className="p-0" xs={12} md={12}>
           <Button
             text={"Análisis de datos"}
             className={styles.TextStyle}

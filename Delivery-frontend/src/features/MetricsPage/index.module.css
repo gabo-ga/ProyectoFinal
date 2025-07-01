@@ -1,15 +1,4 @@
-.body{
-    background-color: #ecf0f1;
-    height: 80vh;
-    padding: 5rem 8rem;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    flex-shrink: 0;
-  }
 
-.row{
-    width: 100%;
-    margin-bottom: 1.5rem;
+:global(.rdrDefinedRangesWrapper) {
+  display: none !important;
 }

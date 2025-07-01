@@ -9,6 +9,7 @@ const DescriptionField = ({ value, onChange }) => (
       onChange={onChange}
       name="detalle"
       rows={3}
+      required
     />
   </Form.Group>
 );

@@ -1,10 +1,8 @@
 // src/components/Vehicles.js
 import React, { useEffect, useState } from "react";
-import { Col, Container, Row } from "react-bootstrap";
-import styles from "./index.module.css";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
-import { fetchActiveVehicles, deleteVehiculo } from "../../api/apiService.js";
+import { fetchActiveVehicles, deleteVehicle } from "../../api/vehicleFormService.js";
 
 function Vehicles() {
   const [vehiculos, setVehiculos] = useState([]);
@@ -25,7 +23,7 @@ function Vehicles() {
 
   const handleEdit = (vehiculo) => {
     // Lógica para editar el vehículo
-    navigate(`/editar-vehiculo/${vehiculo.placa}`);
+    navigate(`/edit-vehicles/${vehiculo.id}`);
   };
 
   const handleDelete = async (vehiculo) => {
@@ -35,7 +33,7 @@ function Vehicles() {
       )
     ) {
       try {
-        await deleteVehiculo(vehiculo.placa);
+        await deleteVehicle(vehiculo.id);
         setVehiculos(vehiculos.filter((v) => v.placa !== vehiculo.placa));
       } catch (error) {
         console.error("Error al eliminar el vehículo:", error);
@@ -44,37 +42,35 @@ function Vehicles() {
   };
 
   return (
-    <Container fluid className={styles.container}>
-      {/* Datos de los vehículos */}
-      {vehiculos.map((vehiculo, index) => (
-        <Row key={vehiculo.placa} className="w-100">
-          <Col md={2} className={styles.hideOnXS}>
-            {index + 1} {/* Puedes usar un campo de ID si está disponible */}
-          </Col>
-          <Col xs={4} md={3}>
+    <section className="bg-white rounded-lg flex w-full flex-col">
+      {vehiculos.map((vehiculo)  => (
+        <div key={vehiculo.id} className="grid grid-cols-3 p-2 md:grid-cols-5 lg:grid-cols-5">
+          <div className="hidden md:block lg:block">
+            {vehiculo.id}
+          </div>
+          <div className="text-sm lg:text-base">
             {vehiculo.vehiculo_nombre}
-          </Col>
-          <Col xs={3} md={2}>
-            {vehiculo.vehiculo_tipo}
-          </Col>
-          <Col md={2} className={styles.hideOnXS}>
+          </div>
+          <div className="text-sm lg:text-base">
+            {vehiculo.tipo}
+          </div>
+          <div className="hidden md:block lg:block">
             {vehiculo.placa}
-          </Col>
-          <Col xs={3} md={2}>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-3">
             <PencilSquare
-              className={styles.icons}
+              className="size-7 lg:size-10 cursor-pointer"
               onClick={() => handleEdit(vehiculo)}
-              style={{ cursor: "pointer", marginRight: "10px" }}
             />
             <Trash
-              className={styles.icons}
+              className="size-7 lg:size-10 cursor-pointer"
               onClick={() => handleDelete(vehiculo)}
-              style={{ cursor: "pointer" }}
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       ))}
-    </Container>
+    
+    </section>
   );
 }
 

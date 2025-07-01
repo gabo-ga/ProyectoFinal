@@ -6,21 +6,38 @@ import axiosInstance from "../axiosInstance";
 export const obtenerOrigenFijo = async (setFormData) => {
   try {
     const data = await fetchOrigenFijo();
-    if (data.direccion_origen && data.punto_origen) {
-      const [lng, lat] = data.punto_origen
-        .replace("SRID=4326;POINT (", "")
-        .replace(")", "")
-        .split(" ")
-        .map(parseFloat);
-      setFormData((prevData) => ({
-        ...prevData,
-        direccion_origen: data.direccion_origen,
-        coordenadas_origen_lat: lat,
-        coordenadas_origen_lng: lng,
-      }));
+    if (Array.isArray(data) && data.length > 0) {
+      const origen = data[0];
+      if (origen.direccion && origen.geojson && Array.isArray(origen.geojson.coordinates)) {
+        const [lng, lat] = origen.geojson.coordinates;
+        setFormData((prevData) => ({
+          ...prevData,
+          origen_id: origen.id,
+          direccion_origen: origen.direccion,
+          coordenadas_origen_lat: lat,
+          coordenadas_origen_lng: lng,
+        }));
+      }
     }
   } catch (error) {
     console.error(error.message);
+  }
+};
+
+
+/**
+ * Obtener la dirección de un destino por ID.
+ * @param {number|string} destinoId - ID del destino.
+ * @returns {Promise<string>} - Dirección del destino.
+ */
+export const fetchDireccionByDestinoId = async (destinoId) => {
+  try {
+    const response = await axiosInstance.get(`/api/ubicaciones/${destinoId}/destino/`);
+    const direccion = response.data.direccion; 
+    return direccion;
+  } catch (error) {
+    console.error("Error al obtener la dirección del destino:", error);
+    throw error;
   }
 };
 
@@ -29,17 +46,13 @@ export const cargarPedido = async (id, setFormData) => {
   try {
     const data = await fetchPedidoById(id);
     setFormData({
-      direccion_origen: data.direccion_origen || "",
-      coordenadas_origen_lat: data.coordenadas_origen?.lat || "",
-      coordenadas_origen_lng: data.coordenadas_origen?.lng || "",
-      direccion_destino: data.direccion_destino || "",
-      coordenadas_destino_lat: data.coordenadas_destino?.lat || "",
-      coordenadas_destino_lng: data.coordenadas_destino?.lng || "",
-      cliente: data.cliente || "",
+      cliente_id: data.cliente || "",
+      conductor: data.conductor || null,
+      origen: data.origen || "",
+      destino_direccion: data.destino_data?.direccion || "",
       estado: data.estado || "",
       precio: data.precio || "",
-      date: data.fecha_entrega ? data.fecha_entrega.split("T")[0] : "",
-      time: data.fecha_entrega ? data.fecha_entrega.split("T")[1].substring(0, 5) : "",
+      fecha_entrega: data.fecha_entrega || "",
       detalle: data.detalle || "",
     });
   } catch (error) {
@@ -47,21 +60,21 @@ export const cargarPedido = async (id, setFormData) => {
   }
 };
 
-// Manejar el envío de datos
-export const handleOrderSubmit = async (formData) => {
-  const dataToSend = {
-    ...formData,
-    coordenadas_origen: {
-      lat: formData.coordenadas_origen_lat,
-      lng: formData.coordenadas_origen_lng,
-    },
-    coordenadas_destino: {
-      lat: formData.coordenadas_destino_lat,
-      lng: formData.coordenadas_destino_lng,
-    },
-  };
 
-  // Eliminar campos redundantes si es necesario
+// Manejar el envío de datos
+export const handleOrderSubmit = async (formData, pedidoId = null) => {
+  const dataToSend = {
+    cliente: formData.cliente_id, 
+    conductor: formData.conductor,
+    origen: formData.origen_id,
+    destino: formData.destino_id,
+    estado: formData.estado_id, 
+    precio: parseFloat(formData.precio),
+    detalle: formData.detalle, 
+  };
+  
+
+  // Eliminar campos redundantes
   delete dataToSend.coordenadas_origen_lat;
   delete dataToSend.coordenadas_origen_lng;
   delete dataToSend.coordenadas_destino_lat;
@@ -70,10 +83,17 @@ export const handleOrderSubmit = async (formData) => {
   console.log("Datos enviados al backend:", dataToSend);
 
   try {
-    const response = await axiosInstance.post("api/v1/pedidos/", dataToSend);
+    let response;
+    if (pedidoId) {
+      // Actualizar pedido existente
+      response = await axiosInstance.put(`api/pedidos/${pedidoId}/editar`, dataToSend);
+    } else {
+      // Crear nuevo pedido
+      response = await axiosInstance.post("api/pedidos/", dataToSend);
+    }
 
-    if (response.status === 201) {
-      alert("Pedido añadido con éxito");
+    if (response.status === 201 || response.status === 200) {
+      alert(`Pedido ${pedidoId ? "actualizado" : "añadido"} con éxito`);
       return true;
     } else {
       console.error("Error al enviar el formulario:", response.statusText);
@@ -86,3 +106,4 @@ export const handleOrderSubmit = async (formData) => {
     return false;
   }
 };
+

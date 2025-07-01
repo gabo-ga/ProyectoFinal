@@ -1,36 +1,28 @@
-import styles from "./index.module.css";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
 import Map from "../../components/MapComponent/map";
-
 import ActiveOrders from "../../components/OrdersComponents/activeOrders";
 import ButtonsContainer from "../../components/ButtonsComponent/buttons";
 import Metrics from "../../components/MetricsComponent";
 import CompletedOrders from "../../components/OrdersComponents/completedOrders";
 import ActiveVehicles from "../../components/OrdersComponents/activeVehicles";
 
-import Container from "react-bootstrap/esm/Container";
-import Row from "react-bootstrap/esm/Row";
-import Col from "react-bootstrap/esm/Col";
-
 function Dashboard() {
   return (
     <>
       <Header></Header>
-      <Container fluid className={styles.Body}>
-        <Row className={styles.BodyContainer}>
-          <Col xs={12} sm={6} className={styles.MapContainer}>
+      <main className="bg-[#ecf0f1] p-4 gap-2 flex flex-col md:flex-row lg:flex-row lg:max-h-screen">
+        <section className="w-full grid grid-rows-7 gap-2 md:w-full lg:max-w-2xl lg:grid-rows-8">
             <Map></Map>
             <Metrics></Metrics>
             <ButtonsContainer></ButtonsContainer>
-          </Col>
-          <Col xs={12} sm={6} className={styles.OrdersContainer}>
+            </section>
+            <section className="flex flex-col md:w-full lg:w-3xl">
             <ActiveOrders title={"PEDIDOS EN CURSO"}></ActiveOrders>
             <CompletedOrders title={"PEDIDOS COMPLETADOS"}></CompletedOrders>
             <ActiveVehicles title={"VEHICULOS ACTIVOS"}></ActiveVehicles>
-          </Col>
-        </Row>
-      </Container>
+            </section>
+      </main>
       <Footer></Footer>
     </>
   );

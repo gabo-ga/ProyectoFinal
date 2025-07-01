@@ -1,13 +1,10 @@
-import Container from "react-bootstrap/esm/Container";
-import styles from "./footer.module.css";
+import React from "react";
 
 function Footer() {
   return (
-    <>
-      <Container fluid className={styles.FooterStyle}>
-        <h2>Proyecto de Grado 2/24</h2>
-      </Container>
-    </>
+    <footer className="flex w-full h-2 justify-center items-center bg-[#1abc9c] p-4 lg:h-14">
+      
+    </footer>
   );
 }
 

@@ -1,37 +1,35 @@
-import Row from "react-bootstrap/esm/Row";
-import styles from "./header.module.css";
-import Container from "react-bootstrap/esm/Container";
-import Col from "react-bootstrap/esm/Col";
-import { PersonCircle } from "react-bootstrap-icons";
 import React, { useState } from "react";
+import { PersonCircle } from "react-bootstrap-icons";
 import Logout from "../../components/LogoutComponent";
-import styles2 from "../../components/LogoutComponent/logout.module.css";
+
+//icono
+const ProfileIcon = ({ onClick }) => (
+  <PersonCircle
+    className="w-9 h-9 cursor-pointer hover:scale-110 transition-transform lg:w-10 lg:h-10"
+    onClick={onClick}
+  />
+);
+
+// Logout Modal
+const LogoutModal = ({ onClose }) => (
+  <div className="absolute right-38 top-12 lg:top-14 lg:right-44 z-50">
+    <Logout onClose={onClose} />
+  </div>
+);
 
 function Header() {
   const [showProfile, setShowProfile] = useState(false);
+
+  const handleProfileClick = () => setShowProfile(true);
+  const handleLogoutClose = () => setShowProfile(false);
+
   return (
-    <>
-      <Container fluid className={styles.HeaderStyles}>
-        <Row className={styles.row}>
-          <Col xs={12} md={6}></Col>
-          <Col
-            xs={12}
-            md={6}
-            className={`${styles.ProfileContainer} d-flex justify-content-end`}
-          >
-            <PersonCircle
-              className={styles.profile}
-              onClick={() => setShowProfile(true)}
-            ></PersonCircle>
-          </Col>
-        </Row>
-      </Container>
-      {showProfile && (
-        <div className={styles2.logoutPosition}>
-          <Logout onClose={() => setShowProfile(false)} />
-        </div>
-      )}
-    </>
+    <header className="h-12 lg:h-16 bg-[#1abc9c] flex items-center justify-end overflow-hidden">
+      <div className="h-full flex items-center p-2">
+        <ProfileIcon onClick={handleProfileClick} />
+      </div>
+      {showProfile && <LogoutModal onClose={handleLogoutClose} />}
+    </header>
   );
 }
 

@@ -1,9 +1,9 @@
-// src/axiosInstance.js
-
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import dayjs from 'dayjs';
 //import https from 'https';
+
+
 
 
 const baseURL = 'http://localhost:8000';
@@ -45,9 +45,7 @@ axiosInstance.interceptors.request.use(async (request) => {
       request.headers.Authorization = 'Bearer ' + tokens.access;
     } catch (error) {
       console.error('Error al refrescar el token:', error);
-      // Opcional: Manejar el cierre de sesión o redirección
-      // Por ejemplo, puedes redirigir al usuario al inicio de sesión
-      // window.location.href = '/login';
+
     }
   }
   return request;
