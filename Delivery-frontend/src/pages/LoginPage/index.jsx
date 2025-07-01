@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import UsernameInput from "../../components/LoginComponents/userNameInput";
 import PasswordInput from "../../components/LoginComponents/PasswordInput";
 import LoginButton from "../../components/LoginComponents/LoginButton";
@@ -7,21 +8,30 @@ import LoginError from "../../components/LoginComponents/LoginError";
 import { useAuth } from "../../AuthContext";
 
 function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const { loginUser } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors }
+  } = useForm({
+    defaultValues: {
+      username: "",
+      password: ""
+    }
+  });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage("");
+  const onSubmit = async (data) => {
     try {
-      await loginUser(username, password);
+      await loginUser(data.username, data.password);
       navigate("/dashboard");
     } catch (error) {
       console.error(error);
-      setErrorMessage("Usuario o contraseña incorrectos");
+      setError("root", {
+        type: "manual",
+        message: "Usuario o contraseña incorrectos"
+      });
     }
   };
 
@@ -33,21 +43,37 @@ function Login() {
             INICIAR SESIÓN
           </h2>
           
-          {errorMessage && (
+          {errors.root && (
             <div className="mt-4">
-              <LoginError message={errorMessage} />
+              <LoginError message={errors.root.message} />
             </div>
           )}
 
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="rounded-md shadow-sm space-y-4">
-              <UsernameInput value={username} onChange={setUsername} />
-              <PasswordInput value={password} onChange={setPassword} />
+              <UsernameInput
+                {...register("username", {
+                  required: "El usuario es requerido",
+                  minLength: {
+                    value: 3,
+                    message: "El usuario debe tener al menos 3 caracteres"
+                  }
+                })}
+                error={errors.username}
+              />
+              <PasswordInput
+                {...register("password", {
+                  required: "La contraseña es requerida",
+                  minLength: {
+                    value: 6,
+                    message: "La contraseña debe tener al menos 6 caracteres"
+                  }
+                })}
+                error={errors.password}
+              />
             </div>
 
-            <div>
-              <LoginButton />
-            </div>
+            <LoginButton />
           </form>
         </div>
       </div>

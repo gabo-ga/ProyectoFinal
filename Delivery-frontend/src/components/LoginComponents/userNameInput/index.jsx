@@ -1,21 +1,26 @@
-import React from "react";
-import { Form } from "react-bootstrap";
-import styles from "./index.module.css";
+import React, { forwardRef } from "react";
 
-function UsernameInput({ value, onChange }) {
+const UsernameInput = forwardRef(({ error, ...props }, ref) => {
   return (
-    <Form.Group controlId="username" className="mb-3">
-      <Form.Label className={styles.LabelStyle}>Nombre de usuario</Form.Label>
-      <Form.Control
-        className={styles.InputStyle}
+    <div className="mb-4">
+      <label className="block text-gray-700 text-sm font-bold mb-2">
+        Usuario
+      </label>
+      <input
         type="text"
-        placeholder="Ingrese su nombre de usuario"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        autoComplete="username"
+        className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#1abc9c] 
+          ${error ? 'border-red-500' : 'border-[#bdbdbd]'}`}
+        placeholder="Ingrese su usuario"
+        ref={ref}
+        {...props}
       />
-    </Form.Group>
+      {error && (
+        <p className="mt-1 text-xs text-red-500">{error.message}</p>
+      )}
+    </div>
   );
-}
+});
+
+UsernameInput.displayName = 'UsernameInput';
 
 export default UsernameInput;
